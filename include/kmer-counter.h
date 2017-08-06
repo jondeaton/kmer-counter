@@ -2,12 +2,17 @@
 
 PyObject *KmerError;
 
+static const size_t kNumThreads = 8;
+
 // Python setup declarations
-static PyObject *countKmers(PyObject *self, PyObject * args);
-PyMODINIT_FUNC PyInit_kmer_counter(void);
+static PyObject *PyCountKmers(PyObject *self, PyObject *args);
+static PyObject *PyScheduleCount(PyObject *self, PyObject *args);
+static PyObject *PyWaitCount(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
-  {"countAsync", (PyCFunction) countKmers, METH_VARARGS, "Counts k-mers"},
+  {"count", (PyCFunction) PyCountKmers, METH_VARARGS, "Count k-mers"},
+  {"countAsync", (PyCFunction) PyScheduleCount, METH_VARARGS, "Counts k-mers asynchronously"},
+  {"wait", (PyCFunction) PyWaitCount, METH_VARARGS, "Wait for asynchronous calls to finish"},
   {NULL, NULL, 0, NULL}
 };
 
@@ -18,3 +23,5 @@ static struct PyModuleDef kmer_counter = {
   -1, /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
   module_methods
 };
+
+PyMODINIT_FUNC PyInit_kmer_counter(void);

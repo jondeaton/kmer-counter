@@ -72,7 +72,7 @@ void populateMap(map<char, int>& symbolIndexMap, const char* symbols) {
  * ------------------------
  * This function calculates the index of the kmer in the kmer array where its stored
  * @param kmer
- * @param kmerLength 
+ * @param kmerLength
  * @param symbolIndexMap
  * @param significances
  * @param numSymbols

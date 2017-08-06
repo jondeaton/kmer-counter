@@ -9,6 +9,7 @@ using namespace std;
 
 // Global variables
 boost::asio::io_service ioService;
+boost::thread_group threadpool;
 
 /**
  * Method: Main
@@ -32,33 +33,76 @@ int main(int argc, char *argv[]) {
  * up the k-mer counter.
  */
 static void initiateKmerCounter() {
-  cout << "Initiate called" << endl;
-  // TODO: Setup threadpool
+  cout << "K-mer counter threadpool..." << endl;
+  boost::asio::io_service::work work(ioService);
+
+  cout << "Adding threads..." << endl;
+
+  for (size_t i = 0; i < kNumThreads; i++) {
+    threadpool.create_thread(
+      boost::bind(&boost::asio::io_service::run, &ioService)
+    );
+  }
+
+  cout << "Initialized." << endl;
 }
 
 /**
- * Method: countKmers
+ * Function: PyCountKmers
  * --------------------
  *
  * @param self
  * @param args
  * @return
  */
-static PyObject *countKmers(PyObject *self, PyObject * args) {
-  const char *command;
+static PyObject *PyCountKmers(PyObject *self, PyObject *args) {
 
-  if(!PyArg_ParseTuple(args, "s", &args))
+  char* sequence;
+  int kmerLength;
+  char* symbols;
+  long* kmerCount;
+
+  bool parsed = PyArg_ParseTuple(args, "sdsd", &sequence, &kmerLength, &symbols, &kmerCount);
+
+  if (!parsed) return NULL;
+
+  int error = countKMers(sequence, kmerLength, symbols, kmerCount);
+  if (error < 0) {
     return NULL;
-
-  cout << "Count was called" << endl;
+  }
   return NULL;
 }
 
+/**
+ *
+ * @param self
+ * @param args
+ * @return
+ */
+static PyObject *PyScheduleCount(PyObject *self, PyObject *args) {
+
+};
+
+/**
+ *
+ * @param self
+ * @param args
+ * @return
+ */
+static PyObject *PyWaitCount(PyObject *self, PyObject *args) {
 
 
-PyMODINIT_FUNC PyInit_kmer_counter(void)
-{
+};
+
+
+/**
+ * Function: PyInit_kmer_counter
+ * -----------------------------
+ * Python initialization function for k-mer counter
+ */
+PyMODINIT_FUNC PyInit_kmer_counter(void) {
   initiateKmerCounter();
   return PyModule_Create(&kmer_counter);
 }
+
 
