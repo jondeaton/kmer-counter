@@ -1,16 +1,15 @@
+#!/usr/bin/env python3.6
 import os
 from distutils.core import setup
 from distutils.extension import Extension
-from Cython.Build import cythonize
-from Cython.Distutils import build_ext
 
 os.environ["CC"] = "clang"
 os.environ["CXX"] = "clang++"
 
 kmerCounterModule = Extension('kmer_counter',
                               language="c++",
-                              include_dirs = ['/usr/include', '/usr/local/include', 'include'],
-                              library_dirs = ['/usr/local/lib'],
+                              include_dirs = ['/usr/include', '/usr/local/include', 'include', '/opt/local/include'],
+                              library_dirs = ['/usr/local/lib', '/opt/local/lib'],
                               sources = ['src/kmer-counter.cpp'])
 
 setup (name = 'Kmer-Counter',
