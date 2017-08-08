@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 project(Kmer-Counter)
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(PythonLibs REQUIRED)
+find_package(PythonLibs 3 REQUIRED)
+find_package( PythonInterp 3 REQUIRED )
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(Boost_USE_STATIC_LIBS ON)
@@ -22,4 +23,4 @@ set(SOURCE_FILES
         README.md
         setup.py)
 
-add_executable(kmer_counter ${SOURCE_FILES} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+add_library(kmer_counter.so ${SOURCE_FILES} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
