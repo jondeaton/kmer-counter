@@ -30,27 +30,27 @@ int main(int argc, char *argv[]) {
  * Method: initiateKmerCounter
  * ---------------------------
  * Initializing method called on import for setting
- * up the k-mer counter.
+ * up the k-mer counter. This method initializes the thread
+ * pool that can be used to asynchronously count k-mers
  */
 static void initiateKmerCounter() {
-  cout << "K-mer counter threadpool..." << endl;
-  boost::asio::io_service::work work(ioService);
+  cout << "Initializing k-mer counter threadpool..." << endl;
 
-  cout << "Adding threads..." << endl;
+//  boost::asio::io_service::work work(ioService);
+//
+//  for (size_t i = 0; i < kNumThreads; i++) {
+//    threadpool.create_thread(
+//      boost::bind(&boost::asio::io_service::run, &ioService)
+//    );
+//  }
 
-  for (size_t i = 0; i < kNumThreads; i++) {
-    threadpool.create_thread(
-      boost::bind(&boost::asio::io_service::run, &ioService)
-    );
-  }
-
-  cout << "Initialized." << endl;
+  cout << "K-mer counter Initialized." << endl;
 }
 
 /**
  * Function: PyCountKmers
  * --------------------
- *
+ * Basic k-mer counting functino
  * @param self
  * @param args
  * @return
@@ -62,7 +62,7 @@ static PyObject *PyCountKmers(PyObject *self, PyObject *args) {
   char* symbols;
   long* kmerCount;
 
-  bool parsed = PyArg_ParseTuple(args, "sdsd", &sequence, &kmerLength, &symbols, &kmerCount);
+  int parsed = PyArg_ParseTuple(args, "sdsd", &sequence, &kmerLength, &symbols, &kmerCount);
 
   if (!parsed) return NULL;
 
@@ -70,28 +70,35 @@ static PyObject *PyCountKmers(PyObject *self, PyObject *args) {
   if (error < 0) {
     return NULL;
   }
-  return NULL;
+
+  return Py_BuildValue(""); // Return None
 }
 
 /**
- *
+ * Funciton: PyScheduleCount
+ * -------------------------
+ * Schedules an asynchronous k-mer counting
  * @param self
  * @param args
  * @return
  */
 static PyObject *PyScheduleCount(PyObject *self, PyObject *args) {
 
+
+  return Py_BuildValue(""); // Return None
 };
 
 /**
- *
+ * Function: PyWaitCount
+ * ---------------------
+ * Waits for all previous asynchronous calls to PyScheduleCount to finish
  * @param self
  * @param args
  * @return
  */
 static PyObject *PyWaitCount(PyObject *self, PyObject *args) {
 
-
+  return Py_BuildValue(""); // Return None
 };
 
 
