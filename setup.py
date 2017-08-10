@@ -8,6 +8,7 @@ os.environ["CXX"] = "clang++"
 
 kmerCounterModule = Extension('kmer_counter',
                               language="c++",
+                              extra_link_args=["-std=c++11"], #"-stdlib=libc++"
                               include_dirs = ['/usr/include', '/usr/local/include', 'include', '/opt/local/include'],
                               library_dirs = ['/usr/local/lib', '/opt/local/lib'],
                               sources = ['src/kmer-counter.cpp'])
