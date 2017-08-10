@@ -36,13 +36,13 @@ int main(int argc, char *argv[]) {
 static void initiateKmerCounter() {
   cout << "Initializing k-mer counter threadpool..." << endl;
 
-//  boost::asio::io_service::work work(ioService);
-//
-//  for (size_t i = 0; i < kNumThreads; i++) {
-//    threadpool.create_thread(
-//      boost::bind(&boost::asio::io_service::run, &ioService)
-//    );
-//  }
+  boost::asio::io_service::work work(ioService);
+
+  for (size_t i = 0; i < kNumThreads; i++) {
+    threadpool.create_thread(
+      boost::bind(&boost::asio::io_service::run, &ioService)
+    );
+  }
 
   cout << "K-mer counter Initialized." << endl;
 }
