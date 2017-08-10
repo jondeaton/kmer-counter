@@ -2,8 +2,17 @@ cmake_minimum_required(VERSION 3.8)
 project(Kmer-Counter)
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(PythonLibs 3 REQUIRED)
-find_package( PythonInterp 3 REQUIRED )
+IF(NOT CMAKE_BUILD_TYPE)
+    SET(CMAKE_BUILD_TYPE "DEBUG")
+    #SET(CMAKE_BUILD_TYPE "RELEASE")
+    #SET(CMAKE_BUILD_TYPE "RELWITHDEBINFO")
+    #SET(CMAKE_BUILD_TYPE "MINSIZEREL")
+ENDIF()
+
+set(Python_ADDITIONAL_VERSIONS 3.6)
+
+find_package(PythonLibs 3.6 REQUIRED)
+find_package( PythonInterp 3.6 REQUIRED )
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(Boost_USE_STATIC_LIBS ON)
@@ -11,6 +20,7 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
 find_package(Boost)
+#find_package(Boost COMPONENTS python)
 include_directories(${Boost_INCLUDE_DIR})
 
 include_directories("include")
@@ -23,4 +33,7 @@ set(SOURCE_FILES
         README.md
         setup.py)
 
-add_library(kmer_counter.so ${SOURCE_FILES} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+#add_executable(kmer_counter.so ${SOURCE_FILES} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+
+add_library(kmer_counter SHARED src/kmer-counter.cxx)
+target_link_libraries(kmer_counter ${Boost_LIBRARIES})
