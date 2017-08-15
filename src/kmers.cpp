@@ -1,3 +1,4 @@
+#include "kmers.h"
 #include <cstdio>
 #include <map>
 #include <string.h>

@@ -25,13 +25,13 @@ include_directories(src)
 
 set(SOURCE_FILES
         include/kmer-counter.h
-        include/kmers.h
         src/kmer-counter.cpp
+        include/kmers.h
         src/kmers.cpp)
 
 SET(GCC_COVERAGE_COMPILE_FLAGS "-fPIC")
-SET(GCC_COVERAGE_LINK_FLAGS "-I/usr/include/python3.6")
+#SET(GCC_COVERAGE_LINK_FLAGS "-I/usr/include/python3.6")
 
 add_executable(kmer_counter.so ${SOURCE_FILES})
-target_link_libraries(kmer_counter.so ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(kmer_counter.so ${PYTHON_LIBRARIES} -lpthread ${Boost_LIBRARIES})
 

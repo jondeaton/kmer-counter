@@ -1,10 +1,10 @@
 #include "kmer-counter.h"
+#include "kmers.h"
 #include <cstdio>
 #include <iostream>
 #include <boost/asio/io_service.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
-#include "kmers.cpp"
 using namespace std;
 
 // Global variables

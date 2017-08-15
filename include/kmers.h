@@ -6,6 +6,6 @@
 #ifndef KMER_COUNTER_KMERS_H
 #define KMER_COUNTER_KMERS_H
 
-int countKMers(const char* sequence, const int kmerLength, const char* symbols, long* kmerCount);
+int countKMers(const char* sequence, const int kmerLength, const char* symbols, long* kmerCount); 
 
 #endif //KMER_COUNTER_KMERS_H
