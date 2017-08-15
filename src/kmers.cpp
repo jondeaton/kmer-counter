@@ -1,11 +1,13 @@
 #include <cstdio>
 #include <map>
+#include <string.h>
 using namespace std;
 
-// Function Declarations
-void populateMap(map<char, int>& symbolIndexMap, const char* symbols);
-int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbolIndexMap, const int* significances, const int numSymbols, int index);
-int ipow(int base, int exp);
+// Static function declarations
+static void populateMap(map<char, int>& symbolIndexMap, const char* symbols);
+static int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbolIndexMap,
+                          const int* significances, const int numSymbols, int index);
+static int ipow(int base, int exp);
 
 /**
  * Function: countKMers
@@ -59,7 +61,7 @@ int countKMers(const char* sequence, const int kmerLength, const char* symbols, 
  * @param symbolIndexMap: The map to populate
  * @param symbols: The symbols to populate it with
  */
-void populateMap(map<char, int>& symbolIndexMap, const char* symbols) {
+static void populateMap(map<char, int>& symbolIndexMap, const char* symbols) {
   int numSymbols = strlen(symbols);
   for (int i = 0; i < numSymbols; i++) {
     symbolIndexMap[symbols[i]] = i;
@@ -79,7 +81,8 @@ void populateMap(map<char, int>& symbolIndexMap, const char* symbols) {
  * @param index
  * @return
  */
-int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbolIndexMap, const int* significances, const int numSymbols, int index) {
+static int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbolIndexMap,
+                          const int* significances, const int numSymbols, int index) {
   if (index < 0) {
     // Must recalculate
     // index = sum([lookup[kmer[n]] * pow(num_symbols, kmer_length - n - 1) for n in xrange(kmer_length)])
@@ -108,7 +111,7 @@ int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbo
  * @param exp
  * @return
  */
-int ipow(int base, int exp) {
+static int ipow(int base, int exp) {
   if (base == 0 || base == 1) return base;
 
   int result = 1;

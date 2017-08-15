@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 11)
 IF(NOT CMAKE_BUILD_TYPE)
     SET(CMAKE_BUILD_TYPE "DEBUG")
     #SET(CMAKE_BUILD_TYPE "RELEASE")
-    #SET(CMAKE_BUILD_TYPE "RELWITHDEBINFO")
-    #SET(CMAKE_BUILD_TYPE "MINSIZEREL")
 ENDIF()
 
 set(Python_ADDITIONAL_VERSIONS 3.6)
@@ -19,21 +17,21 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-find_package(Boost)
-#find_package(Boost COMPONENTS python)
+find_package(Boost REQUIRED COMPONENTS system thread)
 include_directories(${Boost_INCLUDE_DIR})
 
-include_directories("include")
+include_directories(include)
 include_directories(src)
 
 set(SOURCE_FILES
         include/kmer-counter.h
-        src/kmers.cpp
+        include/kmers.h
         src/kmer-counter.cpp
-        README.md
-        setup.py)
+        src/kmers.cpp)
 
-#add_executable(kmer_counter.so ${SOURCE_FILES} ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+SET(GCC_COVERAGE_COMPILE_FLAGS "-fPIC")
+SET(GCC_COVERAGE_LINK_FLAGS "-I/usr/include/python3.6")
 
-add_library(kmer_counter SHARED src/kmer-counter.cxx)
-target_link_libraries(kmer_counter ${Boost_LIBRARIES})
+add_executable(kmer_counter.so ${SOURCE_FILES})
+target_link_libraries(kmer_counter.so ${PYTHON_LIBRARIES} ${Boost_LIBRARIES})
+
