@@ -1,11 +1,14 @@
+#include "kmers.h"
 #include <cstdio>
 #include <map>
+#include <string.h>
 using namespace std;
 
-// Function Declarations
-void populateMap(map<char, int>& symbolIndexMap, const char* symbols);
-int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbolIndexMap, const int* significances, const int numSymbols, int index);
-int ipow(int base, int exp);
+// Static function declarations
+static void populateMap(map<char, int>& symbolIndexMap, const char* symbols);
+static unsigned int calculateIndex(const char* kmer, const size_t kmerLength, map<char, int>& symbolIndexMap,
+                          const int* significances, const unsigned int numSymbols, int index);
+static unsigned int ipow(unsigned int base, unsigned int exp);
 
 /**
  * Function: countKMers
@@ -22,10 +25,10 @@ int ipow(int base, int exp);
 int countKMers(const char* sequence, const int kmerLength, const char* symbols, long* kmerCount) {
   if (kmerLength == 0) return 0;
 
-  int sequenceLength = strlen(sequence);
+  size_t sequenceLength = strlen(sequence);
   if (sequenceLength < kmerLength) return 0;
 
-  int numSymbols = strlen(symbols);
+  size_t numSymbols = strlen(symbols);
   if (numSymbols == 0) return 0;
 
   // Stores mapping from symbol to lexicographic index
@@ -33,8 +36,8 @@ int countKMers(const char* sequence, const int kmerLength, const char* symbols, 
   populateMap(symbolIndexMap, symbols);
 
   // Stores the lexocographic significance of each letter in a kmer
-  int* significances = new int[kmerLength + 1];
-  for (int i = 0; i <= kmerLength; i++) significances[i] = ipow(numSymbols, i);
+  unsigned int* significances = new unsigned int[kmerLength + 1];
+  for (size_t i = 0; i <= kmerLength; i++) significances[i] = ipow(numSymbols, i);
 
   // index is the lexicographic index in the kmerCount array corresponding
   // to the kmer under the sliding window. -1 indicates that there is no index
@@ -42,7 +45,7 @@ int countKMers(const char* sequence, const int kmerLength, const char* symbols, 
   int index = -1;
 
   // Slide a window of size kmerLength along the sequence
-  int maximumIndex = sequenceLength - kmerLength;
+  size_t maximumIndex = sequenceLength - kmerLength;
   for (int i = 0; i <= maximumIndex; i++) {
     const char* kmer = sequence + i; // slide the window
     index = calculateIndex(kmer, kmerLength, symbolIndexMap, significances, numSymbols, index);
@@ -59,7 +62,7 @@ int countKMers(const char* sequence, const int kmerLength, const char* symbols, 
  * @param symbolIndexMap: The map to populate
  * @param symbols: The symbols to populate it with
  */
-void populateMap(map<char, int>& symbolIndexMap, const char* symbols) {
+static void populateMap(map<char, int>& symbolIndexMap, const char* symbols) {
   int numSymbols = strlen(symbols);
   for (int i = 0; i < numSymbols; i++) {
     symbolIndexMap[symbols[i]] = i;
@@ -79,7 +82,8 @@ void populateMap(map<char, int>& symbolIndexMap, const char* symbols) {
  * @param index
  * @return
  */
-int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbolIndexMap, const int* significances, const int numSymbols, int index) {
+static unsigned int calculateIndex(const char* kmer, const unsigned int kmerLength, map<char, unsigned int>& symbolIndexMap,
+                          const int* significances, const int numSymbols, int index) {
   if (index < 0) {
     // Must recalculate
     // index = sum([lookup[kmer[n]] * pow(num_symbols, kmer_length - n - 1) for n in xrange(kmer_length)])
@@ -108,7 +112,7 @@ int calculateIndex(const char* kmer, const int kmerLength, map<char, int>& symbo
  * @param exp
  * @return
  */
-int ipow(int base, int exp) {
+static unsigned int ipow(unsigned int base, unsigned int exp) {
   if (base == 0 || base == 1) return base;
 
   int result = 1;

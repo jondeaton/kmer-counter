@@ -123,6 +123,33 @@ kmer_counter/fast:
 	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/build
 .PHONY : kmer_counter/fast
 
+src/kmer-counter.o: src/kmer-counter.cpp.o
+
+.PHONY : src/kmer-counter.o
+
+# target to build an object file
+src/kmer-counter.cpp.o:
+	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/src/kmer-counter.cpp.o
+.PHONY : src/kmer-counter.cpp.o
+
+src/kmer-counter.i: src/kmer-counter.cpp.i
+
+.PHONY : src/kmer-counter.i
+
+# target to preprocess a source file
+src/kmer-counter.cpp.i:
+	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/src/kmer-counter.cpp.i
+.PHONY : src/kmer-counter.cpp.i
+
+src/kmer-counter.s: src/kmer-counter.cpp.s
+
+.PHONY : src/kmer-counter.s
+
+# target to generate assembly for a file
+src/kmer-counter.cpp.s:
+	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/src/kmer-counter.cpp.s
+.PHONY : src/kmer-counter.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -132,6 +159,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... kmer_counter"
+	@echo "... src/kmer-counter.o"
+	@echo "... src/kmer-counter.i"
+	@echo "... src/kmer-counter.s"
 .PHONY : help
 
 

@@ -88,6 +88,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/include/kmer-counter.h">
+			<Option target="kmer_counter"/>
+		</Unit>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.cpp">
+			<Option target="kmer_counter"/>
+		</Unit>
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
