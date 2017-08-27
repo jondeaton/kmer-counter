@@ -37,8 +37,8 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="kmer_counter">
-				<Option output="/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/kmer_counter" prefix_auto="0" extension_auto="0"/>
+			<Target title="count-kmers">
+				<Option output="/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/count-kmers" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -56,14 +56,14 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 kmer_counter"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 count-kmers"/>
 					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="kmer_counter/fast">
-				<Option output="/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/kmer_counter" prefix_auto="0" extension_auto="0"/>
+			<Target title="count-kmers/fast">
+				<Option output="/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/count-kmers" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
@@ -81,18 +81,33 @@
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 kmer_counter/fast"/>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 count-kmers/fast"/>
 					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/include/async-kmer-counter.h">
+			<Option target="count-kmers"/>
+		</Unit>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/include/fasta-parser.h">
+			<Option target="count-kmers"/>
+		</Unit>
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/include/kmer-counter.h">
-			<Option target="kmer_counter"/>
+			<Option target="count-kmers"/>
+		</Unit>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.cpp">
+			<Option target="count-kmers"/>
+		</Unit>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.cpp">
+			<Option target="count-kmers"/>
 		</Unit>
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.cpp">
-			<Option target="kmer_counter"/>
+			<Option target="count-kmers"/>
+		</Unit>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/main.cpp">
+			<Option target="count-kmers"/>
 		</Unit>
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>

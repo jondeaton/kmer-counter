@@ -111,17 +111,71 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named kmer_counter
+# Target rules for targets named count-kmers
 
 # Build rule for target.
-kmer_counter: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 kmer_counter
-.PHONY : kmer_counter
+count-kmers: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 count-kmers
+.PHONY : count-kmers
 
 # fast build rule for target.
-kmer_counter/fast:
-	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/build
-.PHONY : kmer_counter/fast
+count-kmers/fast:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/build
+.PHONY : count-kmers/fast
+
+src/async-kmer-counter.o: src/async-kmer-counter.cpp.o
+
+.PHONY : src/async-kmer-counter.o
+
+# target to build an object file
+src/async-kmer-counter.cpp.o:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o
+.PHONY : src/async-kmer-counter.cpp.o
+
+src/async-kmer-counter.i: src/async-kmer-counter.cpp.i
+
+.PHONY : src/async-kmer-counter.i
+
+# target to preprocess a source file
+src/async-kmer-counter.cpp.i:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.i
+.PHONY : src/async-kmer-counter.cpp.i
+
+src/async-kmer-counter.s: src/async-kmer-counter.cpp.s
+
+.PHONY : src/async-kmer-counter.s
+
+# target to generate assembly for a file
+src/async-kmer-counter.cpp.s:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.s
+.PHONY : src/async-kmer-counter.cpp.s
+
+src/fasta-parser.o: src/fasta-parser.cpp.o
+
+.PHONY : src/fasta-parser.o
+
+# target to build an object file
+src/fasta-parser.cpp.o:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o
+.PHONY : src/fasta-parser.cpp.o
+
+src/fasta-parser.i: src/fasta-parser.cpp.i
+
+.PHONY : src/fasta-parser.i
+
+# target to preprocess a source file
+src/fasta-parser.cpp.i:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.i
+.PHONY : src/fasta-parser.cpp.i
+
+src/fasta-parser.s: src/fasta-parser.cpp.s
+
+.PHONY : src/fasta-parser.s
+
+# target to generate assembly for a file
+src/fasta-parser.cpp.s:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.s
+.PHONY : src/fasta-parser.cpp.s
 
 src/kmer-counter.o: src/kmer-counter.cpp.o
 
@@ -129,7 +183,7 @@ src/kmer-counter.o: src/kmer-counter.cpp.o
 
 # target to build an object file
 src/kmer-counter.cpp.o:
-	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/src/kmer-counter.cpp.o
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o
 .PHONY : src/kmer-counter.cpp.o
 
 src/kmer-counter.i: src/kmer-counter.cpp.i
@@ -138,7 +192,7 @@ src/kmer-counter.i: src/kmer-counter.cpp.i
 
 # target to preprocess a source file
 src/kmer-counter.cpp.i:
-	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/src/kmer-counter.cpp.i
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.i
 .PHONY : src/kmer-counter.cpp.i
 
 src/kmer-counter.s: src/kmer-counter.cpp.s
@@ -147,8 +201,35 @@ src/kmer-counter.s: src/kmer-counter.cpp.s
 
 # target to generate assembly for a file
 src/kmer-counter.cpp.s:
-	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/src/kmer-counter.cpp.s
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.s
 .PHONY : src/kmer-counter.cpp.s
+
+src/main.o: src/main.cpp.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
 
 # Help Target
 help:
@@ -158,10 +239,19 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... kmer_counter"
+	@echo "... count-kmers"
+	@echo "... src/async-kmer-counter.o"
+	@echo "... src/async-kmer-counter.i"
+	@echo "... src/async-kmer-counter.s"
+	@echo "... src/fasta-parser.o"
+	@echo "... src/fasta-parser.i"
+	@echo "... src/fasta-parser.s"
 	@echo "... src/kmer-counter.o"
 	@echo "... src/kmer-counter.i"
 	@echo "... src/kmer-counter.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 

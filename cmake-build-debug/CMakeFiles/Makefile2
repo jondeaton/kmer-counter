@@ -60,39 +60,39 @@ CMAKE_SOURCE_DIR = /Users/jonpdeaton/GitHub/kmer-counter
 CMAKE_BINARY_DIR = /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug
 
 #=============================================================================
-# Target rules for target CMakeFiles/kmer_counter.dir
+# Target rules for target CMakeFiles/count-kmers.dir
 
 # All Build rule for target.
-CMakeFiles/kmer_counter.dir/all:
-	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/depend
-	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target kmer_counter"
-.PHONY : CMakeFiles/kmer_counter.dir/all
+CMakeFiles/count-kmers.dir/all:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/depend
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5 "Built target count-kmers"
+.PHONY : CMakeFiles/count-kmers.dir/all
 
 # Include target in all.
-all: CMakeFiles/kmer_counter.dir/all
+all: CMakeFiles/count-kmers.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/kmer_counter.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/kmer_counter.dir/all
+CMakeFiles/count-kmers.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles 5
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/count-kmers.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/kmer_counter.dir/rule
+.PHONY : CMakeFiles/count-kmers.dir/rule
 
 # Convenience name for target.
-kmer_counter: CMakeFiles/kmer_counter.dir/rule
+count-kmers: CMakeFiles/count-kmers.dir/rule
 
-.PHONY : kmer_counter
-
-# clean rule for target.
-CMakeFiles/kmer_counter.dir/clean:
-	$(MAKE) -f CMakeFiles/kmer_counter.dir/build.make CMakeFiles/kmer_counter.dir/clean
-.PHONY : CMakeFiles/kmer_counter.dir/clean
+.PHONY : count-kmers
 
 # clean rule for target.
-clean: CMakeFiles/kmer_counter.dir/clean
+CMakeFiles/count-kmers.dir/clean:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/clean
+.PHONY : CMakeFiles/count-kmers.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/count-kmers.dir/clean
 
 .PHONY : clean
 
