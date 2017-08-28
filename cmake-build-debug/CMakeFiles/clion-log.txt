@@ -1,5 +1,4 @@
 /Applications/CLion.app/Contents/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/jonpdeaton/GitHub/kmer-counter
--- Boost version: 1.59.0
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug

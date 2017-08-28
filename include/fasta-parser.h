@@ -22,17 +22,7 @@ public:
    * @param fastaStream : A stream containing
    * @return : A FastaIterator object around the stream
    */
-  FastaIterator parse(std::ifstream fastaStream);
-
-  /**
-   * Public method: parse
-   * --------------------
-   * Creates a FastaIterator object to iterate over
-   * the fasta records in the fasta file
-   * @param fastaFile : A path to a fasta file
-   * @return : Iterator over the records in the file
-   */
-  FastaIterator parse(const std::string& fastaFile);
+  FastaIterator parse(std::istream& fastaStream);
 
   /**
    * Public method: parseHeader
@@ -41,7 +31,7 @@ public:
    * @param header : A fasta record header
    * @return : The ID contained within the header
    */
-  std::string parseHeader(const std::string header);
+  std::string parseHeader(const std::string& header);
 };
 
 #endif

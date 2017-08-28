@@ -1,52 +1,51 @@
+/*
+ * File: fasta-iterator.cpp
+ * ------------------------
+ * Defines the implementation of the FastaIterator class
+ */
+
 #include "fasta-iterator.h"
-#include <boost/algorithm/string/predicate.hpp>
 using namespace std;
 
-FastaIterator::FastaIterator(std::ifstream& in) : in(in) {}
+bool startsWith(string& str, char character);
 
-FastaIterator::FastaIterator(const string &fastaFile) {
-  ifstream file(fastaFile);
-  in = file;
+FastaIterator::FastaIterator(istream* in) : end(false) {
+  this->in = in;
 }
 
-pair<string, string> FastaIterator::begin() {
-  pair<string, string> record;
+FastaIterator::FastaIterator(const string &fastaFile) : end(false) {
+  this->in = new ifstream(fastaFile);
+}
 
+void FastaIterator::begin(pair<string, string>& record) {
   string line;
 
+  bool found = true;
   // Search for first record
-  while (getline(in, line)) {
-    if (line == nullptr) return nullptr;
+  while (getline(*in, line) && startsWith(line, '>'))
+      record.first = line;
 
-    if (boost::starts_with(line, '>')) {
-      record.first = line; // found it
-      break;
-    }
-  }
-
-  // Read in sequence until the next record
-  readInRecord(record.second);
-  return record;
+  end = in->eof(); // Check if the file was found
+  if (!end) readInRecord(record.second); // Read in sequence until the next record
 };
 
-pair<string, string> FastaIterator::next() {
-  if (next_header == nullptr) return nullptr;
+void FastaIterator::next(pair<string, string>& record) {
+  if (end) return;
 
-  pair<string, string> record;
   record.first = next_header;
+  record.second = "";
   readInRecord(record.second);
-  return record;
 };
 
 void FastaIterator::readInRecord(string& target) {
   string line;
-  while (getline(in, line)) {
+  while (getline(*in, line) && !startsWith(line, '>'))
+    target += line; // todo: figure out how not to copy
 
-    // Check if ran into the next record
-    if (boost::starts_with(line, '>')) {
-      next_header = line;
-      break;
-    }
-    target += line; // todo: figure out hot to not copy!
-  }
+  if (in->eof()) end = true; // end of file
+  else next_header = line; // ran into the next record
+}
+
+bool startsWith(string& str, char character) {
+  return str.c_str()[0] == character;
 }

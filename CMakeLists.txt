@@ -7,12 +7,12 @@ IF(NOT CMAKE_BUILD_TYPE)
     #SET(CMAKE_BUILD_TYPE "RELEASE")
 ENDIF()
 
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIR})
+#set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_MULTITHREADED ON)
+#set(Boost_USE_STATIC_RUNTIME OFF)
+#
+#find_package(Boost REQUIRED)
+#include_directories(${Boost_INCLUDE_DIR})
 
 include_directories(include)
 include_directories(src)
@@ -29,4 +29,4 @@ set(SOURCE_FILES
         src/main.cpp)
 
 add_executable(count-kmers ${SOURCE_FILES})
-target_link_libraries(count-kmers ${Boost_LIBRARIES})
+#target_link_libraries(count-kmers ${Boost_LIBRARIES})

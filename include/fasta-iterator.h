@@ -18,7 +18,7 @@ public:
    * Creates a FastaIterator object around the provided ifstream
    * @param in : Stream to read fata contents from
    */
-  FastaIterator(std::ifstream& in);
+  FastaIterator(std::istream* in);
 
   /**
    * Constructor: FastaIterator
@@ -35,7 +35,7 @@ public:
    * Gets the first record from the ifstream if any
    * @return : A pair of
    */
-  std::pair<std::string, std::string> begin();
+  void begin(std::pair<std::string, std::string>& record);
 
   /**
    * Public method: next
@@ -43,18 +43,12 @@ public:
    * Gets the next record from the instream
    * @return
    */
-  std::pair<std::string, std::string> next();
+  void next(std::pair<std::string, std::string>& record);
 
-  /**
-   * Public method: end
-   * ------------------
-   * Signifies the end of the FastaIterator
-   * @return : A nullptr specifying the end of the fasta sequence
-   */
-  std::pair<std::string, std::string>* end() { return nullptr; }
+  bool end;
 
 private:
-  std::ifstream in;
+  std::istream* in;
   std::string next_header;
 
   /**
@@ -65,6 +59,7 @@ private:
    * @param target : A string to put the sequence into
    */
   void readInRecord(std::string& target);
+
 };
 
 #endif

@@ -29,16 +29,16 @@ bool sumFiles = false;
 bool fromstdin = true;
 std::string directory;
 
-void printUsage();
-void parseCommandLineOptions(int argc, char* argv[]);
+static void printUsage();
+static void parseCommandLineOptions(int argc, char* argv[]);
 
 int main(int argc, char* argv[]) {
   parseCommandLineOptions(argc, argv);
 
   AsyncKmerCounter counter(symbols, kmerLength, sumFiles);
 
-  if (fromstdin) counter.countAsync(std::stdin, std::stdout);
-  else counter.countDirectory(directory, std::stdout);
+  if (fromstdin) counter.countAsync(std::cin, std::cout);
+  else counter.countDirectory(directory, std::cout);
 }
 
 /**
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
  * the --help flag or has specified flags incorrectly.
  */
 static void printUsage(){
-  std::stderr << "usage:\n\t./count-kmers < sequences.fasta > kmer_counts.kmer" << std::endl;
+  std::cerr << "usage:\n\t./count-kmers < sequences.fasta > kmer_counts.kmer" << std::endl;
   // todo
 }
 

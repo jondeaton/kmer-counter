@@ -2,18 +2,18 @@
 using namespace std;
 
 KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :
-  symbols(symbols), numSymbols(symbols.length()), kmerLength(kmerLength),
-  kmerCountVectorSize(ipow(kmerLength, numSymbols)) {
+  symbols(symbols), numSymbols(symbols.length()), kmerLength(kmerLength) {
+  kmerCountVectorSize = ipow(kmerLength, numSymbols);
   populateMap();
 }
 
 void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
   if (kmerLength == 0) return;
 
-  unsigned int sequenceLength = strlen(sequence);
+  unsigned int sequenceLength = sequence.length();
   if (sequenceLength < kmerLength) return;
 
-  unsigned int numSymbols = strlen(symbols);
+  unsigned int numSymbols = symbols.length();
   if (numSymbols == 0) return;
 
   // Stores the lexocographic significance of each letter in a kmer

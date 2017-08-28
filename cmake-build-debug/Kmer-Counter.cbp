@@ -44,7 +44,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/opt/local/include"/>
 					<Add directory="/Users/jonpdeaton/GitHub/kmer-counter/include"/>
 					<Add directory="/Users/jonpdeaton/GitHub/kmer-counter/src"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
@@ -69,7 +68,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/opt/local/include"/>
 					<Add directory="/Users/jonpdeaton/GitHub/kmer-counter/include"/>
 					<Add directory="/Users/jonpdeaton/GitHub/kmer-counter/src"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>

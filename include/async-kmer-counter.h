@@ -12,9 +12,9 @@
 #include <iostream>
 #include <cstring>
 
-#include <boost/asio/io_service.hpp>
-#include <boost/bind.hpp>
-#include <boost/thread/thread.hpp>
+//#include <boost/asio/io_service.hpp>
+//#include <boost/bind.hpp>
+//#include <boost/thread/thread.hpp>
 
 class AsyncKmerCounter {
 
@@ -42,14 +42,14 @@ public:
    * @param directory
    * @param out
    */
-  void countDirectory(const std::string& directory, const std::iostream out);
+  void countDirectory(const std::string& directory, std::ostream& out);
 
   /**
    *
    * @param in
    * @param out
    */
-  void countAsync(std::ifstream in, std::ofstream out);
+  void countAsync(std::istream& in, std::ostream& out);
 
 
   /**
@@ -57,7 +57,7 @@ public:
    * @param in
    * @param out
    */
-  void count(std::ifstream in, std::ofstream out);
+  void count(std::istream& in, std::ostream& out);
 
   /**
    * Destructor: AsyncKmerCounter
@@ -74,9 +74,9 @@ private:
   KmerCounter kmerCounter;
   FastaParser fastaParser;
 
-  boost::asio::io_service ioService;
-  boost::asio::io_service::work work;
-  boost::thread_group threadpool;
+//  boost::asio::io_service ioService;
+//  boost::asio::io_service::work work;
+//  boost::thread_group threadpool;
 
 };
 #endif
