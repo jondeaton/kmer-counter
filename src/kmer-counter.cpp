@@ -1,11 +1,9 @@
 #include "kmer-counter.h"
 using namespace std;
 
-KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength){
-  this->symbols = symbols;
-  numSymbols = symbols.size();
-  this->kmerLength = kmerLength;
-
+KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :
+  symbols(symbols), numSymbols(symbols.length()), kmerLength(kmerLength),
+  kmerCountVectorSize(ipow(kmerLength, numSymbols)) {
   populateMap();
 }
 

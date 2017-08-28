@@ -1,7 +1,8 @@
 /**
  * File: kmer-counter.h
  * --------------------
- * This file defines the KmerCounter class which is for counring k-mers.
+ * Presents the inferface of KmerCounter, a class that will count k-mers
+ * in sequences for arbitrary symbol sets and k-mer lengths.
  */
 
 #ifndef _kmer_counter_
@@ -22,7 +23,7 @@ public:
    * @param symbols
    * @param kmerLength
    */
-  KmerCounter(const std::string& symbols, const unsigned int kmerLength);
+  KmerCounter(const std::string& symbols, unsigned int kmerLength);
 
   /**
    * Public Method: count
@@ -37,6 +38,7 @@ private:
   std::string symbols;
   unsigned int numSymbols;
   unsigned int kmerLength;
+  unsigned int kmerCountVectorSize;
   std::map<char, int> symbolIndexMap;
 
   unsigned int calculateIndex(const char* kmer, const unsigned int* significances, int index);

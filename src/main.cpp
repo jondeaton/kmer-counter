@@ -25,24 +25,44 @@
 #include "getopt.h"
 #include <iostream>
 
-const std::string symbols = "ATGC";
-const unsigned int kmerLength = 4;
+std::string symbols = "ATGC";
+unsigned int kmerLength = 4;
+bool sumFiles = false;
+bool fromstdin = true;
+std::string directory;
 
-std::ifstream in;
+void printUsage();
+void parseCommandLineOptions(int argc, char* argv[]);
 
 int main(int argc, char* argv[]) {
+  parseCommandLineOptions(argc, argv);
 
-  if (argc == 1) {
-    // Read from stdin and print to stdout
-    in = std::stdin;
-  }
-  else if (argc > 1) {
+  AsyncKmerCounter counter(symbols, kmerLength, sumFiles);
 
-  }
+  if (fromstdin) counter.countAsync(std::stdin, std::stdout);
+  else counter.countDirectory(directory, std::stdout);
+}
 
+/**
+ * Function: printUsage
+ * --------------------
+ * Prints command line usage instructions for this
+ * utility. For use in the case where the user has specified
+ * the --help flag or has specified flags incorrectly.
+ */
+static void printUsage(){
+  std::stderr << "usage:\n\t./count-kmers < sequences.fasta > kmer_counts.kmer" << std::endl;
+  // todo
+}
 
-  AsyncKmerCounter counter(symbols, kmerLength);
-  counter.countFastaFile()
-
-
+/**
+ * Function: parseCommandLineOptions
+ * ---------------------------------
+ * Parses the command line options from the command line arguments
+ * and sets global variables to reflect these options
+ * @param argc : Number of command line options including script name
+ * @param argv : NULL terminated list of arguments
+ */
+static void parseCommandLineOptions(int argc, char* argv[]) {
+  // todo
 }
