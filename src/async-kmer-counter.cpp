@@ -20,12 +20,13 @@ AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmer
 void AsyncKmerCounter::count(istream& in, ostream& out) {
 
   FastaIterator it(&in);
-  auto counts = new long[kmerCounter.kmerCountVectorSize];
+
+  // Gotta use heap because variable length array
+  long* counts = new long[kmerCounter.kmerCountVectorSize];
 
   pair<string, string> record;
-  for (it.begin(record); it.end ; it.next(record)) {
-
-    counts = {0}; // Set elements of array to zero
+  for (it.begin(record); !it.end ; it.next(record)) {
+    memset(counts, 0, sizeof(long));
     kmerCounter.count(record.second, counts);
 
     // Output to file
@@ -34,15 +35,19 @@ void AsyncKmerCounter::count(istream& in, ostream& out) {
       out << ", " << counts[i];
     out << endl;
   }
+
+  delete(counts);
 }
 
+void AsyncKmerCounter::countFastaFile(const std::string &fastaFile, const std::string &outfile) {}
+
+void AsyncKmerCounter::countDirectory(const std::string &directory, std::ostream &out) {}
 
 void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
-
+  count(in, out); // DEBUGGING
 //  ioService.reset();
 }
 
 AsyncKmerCounter::~AsyncKmerCounter() {
-  // Destructor must destroy all of the threads in the threadpool
-//  threadpool.join_all();
+//  threadpool.join_all(); // Destructor must destroy all of the threads in the threadpool
 }

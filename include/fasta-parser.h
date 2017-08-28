@@ -2,6 +2,18 @@
  * File: fasta-parser.h
  * --------------------
  * Presents the interface of the FastaParser class
+ *
+ * Usage example:
+ *
+ * istream is("sequences.fasta");
+ * FastaIterator it(is);
+ *
+ * for (FastaIterator it = parser.begin(); it != parser.end(); it++) {
+ *  string& header = it->first;
+ *  string& sequence = it->second;
+ *  // etc...
+ * }
+ *
  */
 
 #ifndef _fasta_parser_
@@ -16,13 +28,30 @@ class FastaParser {
 public:
 
   /**
-   * Public method: parse
+   * Public Method: parse
    * --------------------
    * Creates a FastaIterator given a stream of fasta contents
    * @param fastaStream : A stream containing
    * @return : A FastaIterator object around the stream
    */
   FastaIterator parse(std::istream& fastaStream);
+
+
+  /**
+   * Public Method: begin
+   * --------------------
+   * For use iterating
+   * @return
+   */
+  FastaIterator begin();
+
+  /**
+   * Public Method: end
+   * ------------------
+   * For use iterating through
+   * @return
+   */
+  FastaIterator end();
 
   /**
    * Public method: parseHeader

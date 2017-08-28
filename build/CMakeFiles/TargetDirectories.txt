@@ -1,3 +1,3 @@
-/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/rebuild_cache.dir
-/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/edit_cache.dir
-/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/count-kmers.dir
+/mnt/nfs/repos/kmer-counter/build/CMakeFiles/rebuild_cache.dir
+/mnt/nfs/repos/kmer-counter/build/CMakeFiles/count-kmers.dir
+/mnt/nfs/repos/kmer-counter/build/CMakeFiles/edit_cache.dir

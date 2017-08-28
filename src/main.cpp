@@ -49,8 +49,8 @@ int main(int argc, char* argv[]) {
  * the --help flag or has specified flags incorrectly.
  */
 static void printUsage(){
-  std::cerr << "usage:\n\t./count-kmers < sequences.fasta > kmer_counts.kmer" << std::endl;
   // todo
+  std::cerr << "usage:\n\t./count-kmers < sequences.fasta > kmer_counts.kmer" << std::endl;
 }
 
 /**

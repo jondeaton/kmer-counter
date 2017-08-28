@@ -43,10 +43,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/jonpdeaton/GitHub/kmer-counter
+CMAKE_SOURCE_DIR = /mnt/nfs/repos/kmer-counter
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug
+CMAKE_BINARY_DIR = /mnt/nfs/repos/kmer-counter/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/count-kmers.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/count-kmers.dir/flags.make
 
 CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o: CMakeFiles/count-kmers.dir/flags.make
 CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o: ../src/async-kmer-counter.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o -c /Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/repos/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o -c /mnt/nfs/repos/kmer-counter/src/async-kmer-counter.cpp
 
 CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.cpp > CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/nfs/repos/kmer-counter/src/async-kmer-counter.cpp > CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.i
 
 CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.cpp -o CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/nfs/repos/kmer-counter/src/async-kmer-counter.cpp -o CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.s
 
 CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o.provides.build: CMakeFil
 
 CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o: CMakeFiles/count-kmers.dir/flags.make
 CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o: ../src/kmer-counter.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o -c /Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/repos/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o -c /mnt/nfs/repos/kmer-counter/src/kmer-counter.cpp
 
 CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.cpp > CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/nfs/repos/kmer-counter/src/kmer-counter.cpp > CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.i
 
 CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.cpp -o CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/nfs/repos/kmer-counter/src/kmer-counter.cpp -o CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.s
 
 CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o.requires:
 
@@ -107,16 +107,16 @@ CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o.provides.build: CMakeFiles/cou
 
 CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o: CMakeFiles/count-kmers.dir/flags.make
 CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o: ../src/fasta-parser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o -c /Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/repos/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o -c /mnt/nfs/repos/kmer-counter/src/fasta-parser.cpp
 
 CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.cpp > CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/nfs/repos/kmer-counter/src/fasta-parser.cpp > CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.i
 
 CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.cpp -o CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/nfs/repos/kmer-counter/src/fasta-parser.cpp -o CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.s
 
 CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o.requires:
 
@@ -131,16 +131,16 @@ CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o.provides.build: CMakeFiles/cou
 
 CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o: CMakeFiles/count-kmers.dir/flags.make
 CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o: ../src/fasta-iterator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o -c /Users/jonpdeaton/GitHub/kmer-counter/src/fasta-iterator.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/repos/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o -c /mnt/nfs/repos/kmer-counter/src/fasta-iterator.cpp
 
 CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/jonpdeaton/GitHub/kmer-counter/src/fasta-iterator.cpp > CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/nfs/repos/kmer-counter/src/fasta-iterator.cpp > CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.i
 
 CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/jonpdeaton/GitHub/kmer-counter/src/fasta-iterator.cpp -o CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/nfs/repos/kmer-counter/src/fasta-iterator.cpp -o CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.s
 
 CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o.requires:
 
@@ -155,16 +155,16 @@ CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o.provides.build: CMakeFiles/c
 
 CMakeFiles/count-kmers.dir/src/main.cpp.o: CMakeFiles/count-kmers.dir/flags.make
 CMakeFiles/count-kmers.dir/src/main.cpp.o: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/count-kmers.dir/src/main.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/main.cpp.o -c /Users/jonpdeaton/GitHub/kmer-counter/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/nfs/repos/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/count-kmers.dir/src/main.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/count-kmers.dir/src/main.cpp.o -c /mnt/nfs/repos/kmer-counter/src/main.cpp
 
 CMakeFiles/count-kmers.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/count-kmers.dir/src/main.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/jonpdeaton/GitHub/kmer-counter/src/main.cpp > CMakeFiles/count-kmers.dir/src/main.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/nfs/repos/kmer-counter/src/main.cpp > CMakeFiles/count-kmers.dir/src/main.cpp.i
 
 CMakeFiles/count-kmers.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/count-kmers.dir/src/main.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/jonpdeaton/GitHub/kmer-counter/src/main.cpp -o CMakeFiles/count-kmers.dir/src/main.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/nfs/repos/kmer-counter/src/main.cpp -o CMakeFiles/count-kmers.dir/src/main.cpp.s
 
 CMakeFiles/count-kmers.dir/src/main.cpp.o.requires:
 
@@ -195,7 +195,7 @@ count-kmers: CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o
 count-kmers: CMakeFiles/count-kmers.dir/src/main.cpp.o
 count-kmers: CMakeFiles/count-kmers.dir/build.make
 count-kmers: CMakeFiles/count-kmers.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable count-kmers"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/nfs/repos/kmer-counter/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable count-kmers"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/count-kmers.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -216,6 +216,6 @@ CMakeFiles/count-kmers.dir/clean:
 .PHONY : CMakeFiles/count-kmers.dir/clean
 
 CMakeFiles/count-kmers.dir/depend:
-	cd /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/jonpdeaton/GitHub/kmer-counter /Users/jonpdeaton/GitHub/kmer-counter /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug /Users/jonpdeaton/GitHub/kmer-counter/cmake-build-debug/CMakeFiles/count-kmers.dir/DependInfo.cmake --color=$(COLOR)
+	cd /mnt/nfs/repos/kmer-counter/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/nfs/repos/kmer-counter /mnt/nfs/repos/kmer-counter /mnt/nfs/repos/kmer-counter/cmake-build-debug /mnt/nfs/repos/kmer-counter/cmake-build-debug /mnt/nfs/repos/kmer-counter/cmake-build-debug/CMakeFiles/count-kmers.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/count-kmers.dir/depend
 

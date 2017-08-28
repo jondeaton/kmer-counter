@@ -38,23 +38,23 @@ cstdio
 map
 -
 
-/Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.cpp
+/mnt/nfs/repos/kmer-counter/src/async-kmer-counter.cpp
 async-kmer-counter.h
-/Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.h
+/mnt/nfs/repos/kmer-counter/src/async-kmer-counter.h
 
-/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-iterator.cpp
+/mnt/nfs/repos/kmer-counter/src/fasta-iterator.cpp
 fasta-iterator.h
-/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-iterator.h
+/mnt/nfs/repos/kmer-counter/src/fasta-iterator.h
 
-/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.cpp
+/mnt/nfs/repos/kmer-counter/src/fasta-parser.cpp
 fasta-parser.h
-/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.h
+/mnt/nfs/repos/kmer-counter/src/fasta-parser.h
 
-/Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.cpp
+/mnt/nfs/repos/kmer-counter/src/kmer-counter.cpp
 kmer-counter.h
-/Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.h
+/mnt/nfs/repos/kmer-counter/src/kmer-counter.h
 
-/Users/jonpdeaton/GitHub/kmer-counter/src/main.cpp
+/mnt/nfs/repos/kmer-counter/src/main.cpp
 async-kmer-counter.h
-/Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.h
+/mnt/nfs/repos/kmer-counter/src/async-kmer-counter.h
 

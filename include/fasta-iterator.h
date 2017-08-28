@@ -1,5 +1,16 @@
 /*
  * File: fasta-iterator.h
+ * ----------------------
+ * Presents the implementation of the custon FastaIterator class.
+ * Usage example:
+ *
+ * istream is("sequences.fasta");
+ * FastaIterator it(is);
+ *
+ * for (FastaIterator it = parser.begin(); it != parser.end(); it++) {
+ *  string& header = it->first;
+ *  string& sequence = it->second;
+ * }
  *
  */
 
@@ -8,9 +19,21 @@
 
 #include <string>
 #include <fstream>
-class FastaIterator {
 
+template <>
+class FastaIterator {
 public:
+
+  class iterator: public std::iterator<
+   std::input_iterator_tag,
+   std::pair<std::string, std::string>,
+   std::weak_ptr,
+     > {
+
+ };
+
+
+
 
   /**
    * Constructor: FastaIterator
