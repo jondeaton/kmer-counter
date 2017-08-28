@@ -17,24 +17,27 @@ AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmer
 
 }
 
-void AsyncKmerCounter::count(const std::iostream in, const std::iostream out) {
+void AsyncKmerCounter::count(ifstream in, ofstream out) {
 
-  FastaIterator it = fastaParser.parse(in);
-
-  
+  FastaIterator it(in);
+  long* counts = new long[kmerCounter.kmerCountVectorSize];
 
   pair<string, string> record;
   for (record = it.begin(); record != it.end(); record = it.next()) {
-    kmerCounter.count(record.second, )
 
+    counts = {0}; // Set elements of array to zero
+    kmerCounter.count(record->second, counts);
+
+    // Output to file
+    out << fastaParser.parseHeader(record->first);
+    for (int i = 0; i < kmerCounter.kmerCountVectorSize; i++)
+      out << ", " << counts[i];
+    out << endl;
   }
-
 }
 
 
-void AsyncKmerCounter::countAsync(const std::iostream in, const std::iostream out) {
-
-
+void AsyncKmerCounter::countAsync(std::ifstream in, std::ofstream out) {
 
 //  ioService.reset();
 }

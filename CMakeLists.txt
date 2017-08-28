@@ -19,11 +19,13 @@ include_directories(src)
 
 set(SOURCE_FILES
         include/async-kmer-counter.h
-        include/fasta-parser.h
         include/kmer-counter.h
+        include/fasta-parser.h
+        include/fasta-iterator.h
         src/async-kmer-counter.cpp
-        src/fasta-parser.cpp
         src/kmer-counter.cpp
+        src/fasta-parser.cpp
+        src/fasta-iterator.cpp
         src/main.cpp)
 
 add_executable(count-kmers ${SOURCE_FILES})

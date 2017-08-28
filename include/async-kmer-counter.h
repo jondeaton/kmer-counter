@@ -49,10 +49,15 @@ public:
    * @param in
    * @param out
    */
-  void countAsync(const std::iostream in, const std::iostream out);
+  void countAsync(std::ifstream in, std::ofstream out);
 
 
-  void count(const std::iostream in, const std::iostream out);
+  /**
+   *
+   * @param in
+   * @param out
+   */
+  void count(std::ifstream in, std::ofstream out);
 
   /**
    * Destructor: AsyncKmerCounter

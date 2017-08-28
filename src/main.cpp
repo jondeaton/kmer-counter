@@ -22,8 +22,6 @@
  */
 
 #include "async-kmer-counter.h"
-#include "getopt.h"
-#include <iostream>
 
 std::string symbols = "ATGC";
 unsigned int kmerLength = 4;

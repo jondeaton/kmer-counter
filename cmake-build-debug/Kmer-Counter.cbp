@@ -91,6 +91,9 @@
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/include/async-kmer-counter.h">
 			<Option target="count-kmers"/>
 		</Unit>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/include/fasta-iterator.h">
+			<Option target="count-kmers"/>
+		</Unit>
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/include/fasta-parser.h">
 			<Option target="count-kmers"/>
 		</Unit>
@@ -98,6 +101,9 @@
 			<Option target="count-kmers"/>
 		</Unit>
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.cpp">
+			<Option target="count-kmers"/>
+		</Unit>
+		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-iterator.cpp">
 			<Option target="count-kmers"/>
 		</Unit>
 		<Unit filename="/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.cpp">

@@ -8,13 +8,15 @@
 #ifndef _kmer_counter_
 #define _kmer_counter_
 
+#include <string>
 #include <cstdio>
 #include <map>
-#include <cstring>
 
 class KmerCounter {
 
 public:
+
+  unsigned int kmerCountVectorSize;
 
   /**
    * Constructor
@@ -34,11 +36,12 @@ public:
    */
   void count(const std::string& sequence, long kmerCount[]);
 
+
+
 private:
   std::string symbols;
   unsigned int numSymbols;
   unsigned int kmerLength;
-  unsigned int kmerCountVectorSize;
   std::map<char, int> symbolIndexMap;
 
   unsigned int calculateIndex(const char* kmer, const unsigned int* significances, int index);

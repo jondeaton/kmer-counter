@@ -150,6 +150,33 @@ src/async-kmer-counter.cpp.s:
 	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.s
 .PHONY : src/async-kmer-counter.cpp.s
 
+src/fasta-iterator.o: src/fasta-iterator.cpp.o
+
+.PHONY : src/fasta-iterator.o
+
+# target to build an object file
+src/fasta-iterator.cpp.o:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o
+.PHONY : src/fasta-iterator.cpp.o
+
+src/fasta-iterator.i: src/fasta-iterator.cpp.i
+
+.PHONY : src/fasta-iterator.i
+
+# target to preprocess a source file
+src/fasta-iterator.cpp.i:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.i
+.PHONY : src/fasta-iterator.cpp.i
+
+src/fasta-iterator.s: src/fasta-iterator.cpp.s
+
+.PHONY : src/fasta-iterator.s
+
+# target to generate assembly for a file
+src/fasta-iterator.cpp.s:
+	$(MAKE) -f CMakeFiles/count-kmers.dir/build.make CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.s
+.PHONY : src/fasta-iterator.cpp.s
+
 src/fasta-parser.o: src/fasta-parser.cpp.o
 
 .PHONY : src/fasta-parser.o
@@ -243,6 +270,9 @@ help:
 	@echo "... src/async-kmer-counter.o"
 	@echo "... src/async-kmer-counter.i"
 	@echo "... src/async-kmer-counter.s"
+	@echo "... src/fasta-iterator.o"
+	@echo "... src/fasta-iterator.i"
+	@echo "... src/fasta-iterator.s"
 	@echo "... src/fasta-parser.o"
 	@echo "... src/fasta-parser.i"
 	@echo "... src/fasta-parser.s"
