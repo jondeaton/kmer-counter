@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/mnt/nfs/repos/kmer-counter/include -I/mnt/nfs/repos/kmer-counter/src 
+CXX_INCLUDES = -I/Users/jonpdeaton/GitHub/kmer-counter/include -I/Users/jonpdeaton/GitHub/kmer-counter/src 
 

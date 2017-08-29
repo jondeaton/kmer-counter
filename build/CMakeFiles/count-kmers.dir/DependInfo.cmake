@@ -4,13 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/mnt/nfs/repos/kmer-counter/src/async-kmer-counter.cpp" "/mnt/nfs/repos/kmer-counter/build/CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o"
-  "/mnt/nfs/repos/kmer-counter/src/fasta-iterator.cpp" "/mnt/nfs/repos/kmer-counter/build/CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o"
-  "/mnt/nfs/repos/kmer-counter/src/fasta-parser.cpp" "/mnt/nfs/repos/kmer-counter/build/CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o"
-  "/mnt/nfs/repos/kmer-counter/src/kmer-counter.cpp" "/mnt/nfs/repos/kmer-counter/build/CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o"
-  "/mnt/nfs/repos/kmer-counter/src/main.cpp" "/mnt/nfs/repos/kmer-counter/build/CMakeFiles/count-kmers.dir/src/main.cpp.o"
+  "/Users/jonpdeaton/GitHub/kmer-counter/src/async-kmer-counter.cpp" "/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/count-kmers.dir/src/async-kmer-counter.cpp.o"
+  "/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-iterator.cpp" "/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/count-kmers.dir/src/fasta-iterator.cpp.o"
+  "/Users/jonpdeaton/GitHub/kmer-counter/src/fasta-parser.cpp" "/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/count-kmers.dir/src/fasta-parser.cpp.o"
+  "/Users/jonpdeaton/GitHub/kmer-counter/src/kmer-counter.cpp" "/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/count-kmers.dir/src/kmer-counter.cpp.o"
+  "/Users/jonpdeaton/GitHub/kmer-counter/src/main.cpp" "/Users/jonpdeaton/GitHub/kmer-counter/build/CMakeFiles/count-kmers.dir/src/main.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "GNU")
+set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

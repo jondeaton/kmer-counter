@@ -4,14 +4,14 @@
  * Presents the implementation of AsyncKmerCounter
  */
 #include "async-kmer-counter.h"
+#include "fasta-parser.h"
 using namespace std;
 
 #define NUMTHREADS 8
 
 AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
-  sumFiles(sumFiles), kmerCounter(symbols, kmerLength),
-  fastaParser(){
-//
+  sumFiles(sumFiles), kmerCounter(symbols, kmerLength) {
+
 //  for (int i = 0; i < NUMTHREADS; i++)
 //    threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));
 
@@ -19,24 +19,26 @@ AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmer
 
 void AsyncKmerCounter::count(istream& in, ostream& out) {
 
-  FastaIterator it(&in);
-
   // Gotta use heap because variable length array
   long* counts = new long[kmerCounter.kmerCountVectorSize];
 
+  FastaParser parser;
+  parser.parse(in);
+
   pair<string, string> record;
-  for (it.begin(record); !it.end ; it.next(record)) {
+  while(parser.hasNext()) {
+    record = parser.next();
+
     memset(counts, 0, sizeof(long));
     kmerCounter.count(record.second, counts);
 
-    // Output to file
-    out << fastaParser.parseHeader(record.first);
+    out << parser.parseHeader(record.first);
     for (int i = 0; i < kmerCounter.kmerCountVectorSize; i++)
       out << ", " << counts[i];
     out << endl;
   }
 
-  delete(counts);
+  delete[] counts;
 }
 
 void AsyncKmerCounter::countFastaFile(const std::string &fastaFile, const std::string &outfile) {}

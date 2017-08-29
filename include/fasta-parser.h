@@ -6,14 +6,14 @@
  * Usage example:
  *
  * istream is("sequences.fasta");
- * FastaIterator it(is);
+ * FastaParser parser();
+ * parser.parse(is);
  *
- * for (FastaIterator it = parser.begin(); it != parser.end(); it++) {
- *  string& header = it->first;
- *  string& sequence = it->second;
- *  // etc...
+ * while (parser.hasNext()) {
+ *  record = parser.next();
+ *  string& header = record.first;
+ *  string& sequence = record.second;
  * }
- *
  */
 
 #ifndef _fasta_parser_
@@ -22,6 +22,7 @@
 #include "fasta-iterator.h"
 #include <cstring>
 #include <iostream>
+
 
 class FastaParser {
 
@@ -32,26 +33,20 @@ public:
    * --------------------
    * Creates a FastaIterator given a stream of fasta contents
    * @param fastaStream : A stream containing
-   * @return : A FastaIterator object around the stream
    */
-  FastaIterator parse(std::istream& fastaStream);
-
+  void parse(std::istream& fastaStream);
 
   /**
-   * Public Method: begin
-   * --------------------
-   * For use iterating
+   *
    * @return
    */
-  FastaIterator begin();
+  std::pair<std::string, std::string> next();
 
   /**
-   * Public Method: end
-   * ------------------
-   * For use iterating through
+   *
    * @return
    */
-  FastaIterator end();
+  bool hasNext();
 
   /**
    * Public method: parseHeader
@@ -61,6 +56,11 @@ public:
    * @return : The ID contained within the header
    */
   std::string parseHeader(const std::string& header);
-};
 
+private:
+  std::istream* fastaStream = nullptr;
+  std::string nextHeader;
+
+  void readInRecord(std::string& target);
+};
 #endif
