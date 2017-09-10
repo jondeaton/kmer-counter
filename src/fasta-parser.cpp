@@ -33,9 +33,6 @@ pair<string, string> FastaParser::next() {
 };
 
 string FastaParser::parseHeader(const string& header) {
-<<<<<<< HEAD
-  return header;
-=======
   return header; //todo
 };
 
@@ -50,5 +47,4 @@ void FastaParser::readInRecord(string& target) {
 
 static bool startsWith(string& str, char character) {
   return str.c_str()[0] == character;
->>>>>>> 1235aeee275239ce7d26d5e2940fd5630e8eef0c
 }

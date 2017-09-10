@@ -1,14 +1,10 @@
 /*
  * File: fasta-iterator.h
  * ----------------------
-<<<<<<< HEAD
  * Presents the implementation of the FastaIterator class.
  * This class is meant to be used to parse fasta records out
  * of a fasta file or stream by iterating through them easilly
  * in a for loop.
-=======
- * Presents the implementation of the custon FastaIterator class.
->>>>>>> 1235aeee275239ce7d26d5e2940fd5630e8eef0c
  *
  * Usage example:
  *
@@ -30,10 +26,7 @@
 #include <fstream>
 
 class FastaIterator {
-<<<<<<< HEAD
 
-=======
->>>>>>> 1235aeee275239ce7d26d5e2940fd5630e8eef0c
 public:
 
   /**

@@ -8,6 +8,7 @@
 #define _async_kmer_counter_
 
 #include "kmer-counter.h"
+#include "fasta-parser.h"
 #include <iostream>
 #include <cstring>
 
@@ -81,6 +82,7 @@ private:
   std::string directory;
 
   KmerCounter kmerCounter;
+  FastaParser fastaParser;
 
 //  boost::asio::io_service ioService;
 //  boost::asio::io_service::work work;
