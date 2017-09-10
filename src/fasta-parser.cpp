@@ -1,7 +1,7 @@
 /*
  * File: fasta-parser.cpp
  * ----------------------
- * Presents the implementation of the FastaParser class
+ * Presents the implementation of the FastaParser class.
  */
 
 #include "fasta-parser.h"

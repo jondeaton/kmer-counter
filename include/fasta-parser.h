@@ -1,7 +1,10 @@
 /*
  * File: fasta-parser.h
  * --------------------
- * Presents the interface of the FastaParser class
+ * Presents the interface of the FastaParser class. This class is used to parse a fasta-formatted file or stream
+ * by presenting an iterator that iterates through each record in the stream. Construct this parser by passing
+ * a stream or path to a file, and then iterating through records as shown below. One parser should be created
+ * for each stream/file to be created.
  *
  * Usage example:
  *

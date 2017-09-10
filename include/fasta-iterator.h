@@ -1,10 +1,8 @@
 /*
  * File: fasta-iterator.h
  * ----------------------
- * Presents the implementation of the FastaIterator class.
- * This class is meant to be used to parse fasta records out
- * of a fasta file or stream by iterating through them easilly
- * in a for loop.
+ * Presents the implementation of the FastaIterator class. This class is used to parse fasta records out
+ * of a fasta file or stream by iterating through them easily in a for loop.
  *
  * Usage example:
  *
