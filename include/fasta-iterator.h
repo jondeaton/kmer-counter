@@ -1,21 +1,26 @@
 /*
  * File: fasta-iterator.h
  * ----------------------
+<<<<<<< HEAD
  * Presents the implementation of the FastaIterator class.
  * This class is meant to be used to parse fasta records out
  * of a fasta file or stream by iterating through them easilly
  * in a for loop.
+=======
+ * Presents the implementation of the custon FastaIterator class.
+>>>>>>> 1235aeee275239ce7d26d5e2940fd5630e8eef0c
  *
  * Usage example:
  *
  * istream is("sequences.fasta");
- * FastaIterator it(is);
+ * FastaParser parser();
+ * parser.parse(is);
  *
  * for (FastaIterator it = parser.begin(); it != parser.end(); it++) {
  *  string& header = it->first;
  *  string& sequence = it->second;
+ *  // etc...
  * }
- *
  */
 
 #ifndef _fasta_iterator_
@@ -25,7 +30,10 @@
 #include <fstream>
 
 class FastaIterator {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1235aeee275239ce7d26d5e2940fd5630e8eef0c
 public:
 
   /**
