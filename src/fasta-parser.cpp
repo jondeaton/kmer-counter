@@ -14,4 +14,4 @@ FastaIterator FastaParser::parse(istream& fastaStream) {
 
 string FastaParser::parseHeader(const string& header) {
   return header;
-};
+}

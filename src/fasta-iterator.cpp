@@ -7,7 +7,8 @@
 #include "fasta-iterator.h"
 using namespace std;
 
-bool startsWith(string& str, char character);
+// Static function declarations
+static inline bool startsWith(string& str, char character);
 
 FastaIterator::FastaIterator(istream* in) : end(false) {
   this->in = in;
@@ -18,34 +19,53 @@ FastaIterator::FastaIterator(const string &fastaFile) : end(false) {
 }
 
 void FastaIterator::begin(pair<string, string>& record) {
-  string line;
+  if (in->eof()) return;
 
-  bool found = true;
-  // Search for first record
-  while (getline(*in, line) && startsWith(line, '>'))
+  string line; // Each line of the file will be stored here
+
+  // Loop through lines until the first record is found
+  while (getline(*in, line) && !startsWith(line, '>'))
       record.first = line;
 
-  end = in->eof(); // Check if the file was found
-  if (!end) readInRecord(record.second); // Read in sequence until the next record
-};
-
-void FastaIterator::next(pair<string, string>& record) {
-  if (end) return;
-
-  record.first = next_header;
-  record.second = "";
-  readInRecord(record.second);
-};
-
-void FastaIterator::readInRecord(string& target) {
-  string line;
-  while (getline(*in, line) && !startsWith(line, '>'))
-    target += line; // todo: figure out how not to copy
-
-  if (in->eof()) end = true; // end of file
-  else next_header = line; // ran into the next record
+  readInRecord(record.second); // Read in sequence until the next record
 }
 
-bool startsWith(string& str, char character) {
+void FastaIterator::next(pair<string, string>& record) {
+  if (in->eof()) return;
+  record.first = next_header; // Store the header
+  readInRecord(record.second);
+}
+
+/**
+   * Private method: readInRecord
+   * ----------------------------
+   * Parses lines from a file into the provided string,
+   * Reads in lines from the ifstream into the target string provided.
+   * @param sequence : A string to put the sequence into
+   */
+void FastaIterator::readInRecord(std::string& sequence) {
+  if (in->eof()) return;
+
+  sequence.clear();
+  string line;
+  while (getline(*in, line) && !startsWith(line, '>'))
+    sequence += line; // todo: figure out how not to copy
+
+  if (!in->eof()) next_header = line; // Encountered next record
+}
+
+bool FastaIterator::endOfRecords(){
+  return in->eof();
+}
+
+/**
+ * Function: startsWith
+ * --------------------
+ * Determines if a C++ string starts with a certain character
+ * @param str: The string to check the first character of
+ * @param character: The character to check
+ * @return: True if the first character in the passed string starts with the passed character
+ */
+static inline bool startsWith(string& str, char character) {
   return str.c_str()[0] == character;
 }

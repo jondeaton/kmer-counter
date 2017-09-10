@@ -1,0 +1,10 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+build/CMakeFiles/3.8.2/CompilerIdC/tmp/
+build/CMakeFiles/3.8.2/CompilerIdCXX/tmp/
+build/CMakeFiles/CMakeTmp/
+build/CMakeFiles/Progress/
+cmake-build-debug/CMakeFiles/3.8.2/CompilerIdC/tmp/
+cmake-build-debug/CMakeFiles/3.8.2/CompilerIdCXX/tmp/
+cmake-build-debug/CMakeFiles/CMakeTmp/
+cmake-build-debug/CMakeFiles/count-kmers.dir/src/
