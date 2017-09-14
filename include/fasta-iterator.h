@@ -23,9 +23,16 @@
 #include <string>
 #include <fstream>
 
+
 class FastaIterator {
 
 public:
+
+  typedef std::input_iterator_tag iterator_category;
+  typedef std::pair<std::string, std::string> value_type;
+  typedef void difference_type;
+  typedef std::pair<std::string, std::string>* pointer;
+  typedef std::pair<std::string, std::string>& reference;
 
   /**
    * Constructor: FastaIterator
@@ -36,48 +43,28 @@ public:
   explicit FastaIterator(std::istream* in);
 
   /**
-   * Constructor: FastaIterator
-   * --------------------------
-   * Creates a FastaIterator object that is prepared to parse fasta records from the passed file.
-   * @param fastaFile : File from which to read and parse fasta records
+   * Prefix operator
+   * ---------------
+   *
+   * @return
    */
-  explicit FastaIterator(const std::string& fastaFile);
+  FastaIterator& operator++ ();
 
   /**
-   * Public method: begin
-   * --------------------
-   * Begins the reading in of a fasta formatted record from the stream provided by the construction of the iterator.
-   * This method will simply iterate through the beginning of the record until the beginning of a record
-   * is found, indicated by a ">" character at the beginning of the line.
-   * @param record: A pair of strings that will be popualted with the record ID and sequence, respectively.
+   * Postrix operatord
+   * @return
    */
-  void begin(std::pair<std::string, std::string>& record);
+  FastaIterator operator++ (int);
 
-  /**
-   * Public method: next
-   * -------------------
-   * Parses the next record from the stream or file that the iterator was constructed. This method will
-   * iterate until it encounters the next record and then will populate the pair of strings passed
-   * with the ID and sequence of the pared record. This method should be called if endOfRecords returns true.
-   * @param record: A pair of strings that will be populated with the record ID and sequence, respectively.
-   */
-  void next(std::pair<std::string, std::string>& record);
-
-  /**
-   * Public method: endOfRecords
-   * ---------------------------
-   * This method indicates if there are any more records to parse from the stream by subsequent
-   * calls to next.
-   * @return: True if there are no more records to read from the stream or file, false otherwise
-   */
-  bool endOfRecords();
 
 private:
   std::istream* in; // The stream to read fasta records from
   std::string next_header; // The next header from the stream (for internal implementation
   bool end; // Indicates end of file
 
-  void readInRecord(std::string& sequence);
+  std::shared_ptr<std::pair<std::string, std::string>> record;
 };
+
+//typedef FastaIterator<std::pair <std::string, std::string>> fasta_iterator;
 
 #endif

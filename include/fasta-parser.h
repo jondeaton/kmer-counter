@@ -6,17 +6,23 @@
  * a stream or path to a file, and then iterating through records as shown below. One parser should be created
  * for each stream/file to be created.
  *
- * Usage example:
+ * Usage with iterator:
  *
  * istream is("sequences.fasta");
- * FastaParser parser();
- * parser.parse(is);
+ * FastaParser parser(is);
  *
- * while (parser.hasNext()) {
- *  record = parser.next();
+ *
+ * for (auto it = parser.begin(); it != parser.end(); it++) {
+ *  auto record = it*;
  *  string& header = record.first;
  *  string& sequence = record.second;
  * }
+ *
+ *
+ * You can also parser fasta headers like so:
+ *
+ * parser.parseHeader("> Fasta header");
+ *
  */
 
 #ifndef _fasta_parser_
@@ -26,30 +32,42 @@
 #include <cstring>
 #include <iostream>
 
-
 class FastaParser {
 
 public:
 
   /**
-   * Public Method: parse
+   * Constructor: FastaParser
+   * ------------------------
+   * For creating a fasta parser for parsing from a fasta stream
+   * @param in: A stream from which to read fasta formatted records
+   */
+  explicit FastaParser(std::istream* in);
+
+  /**
+   * Constructor: FastaParser
+   * ------------------------
+   * For creating a fasta parser for parsing from a fasta formatted file
+   * @param fastaFile: A path to a fasta formatted file
+   */
+  explicit FastaParser(const std::string& fastaFile);
+
+  /**
+   * Public method: begin
    * --------------------
-   * Creates a FastaIterator given a stream of fasta contents
-   * @param fastaStream : A stream containing
+   * Gives an iterator pointing at a parsed record
+   * @return: A FastaIterator object which points to the first parsed record in the stream
    */
-  void parse(std::istream& fastaStream);
+  FastaIterator begin();
 
   /**
-   *
-   * @return
+   * Public method: end
+   * ------------------
+   * Gives an iterator pointing to the end of the records for testing if you have
+   * iterated through all of the records.
+   * @return: A FastaIterator object representing the end of the records
    */
-  std::pair<std::string, std::string> next();
-
-  /**
-   *
-   * @return
-   */
-  bool hasNext();
+  FastaIterator end();
 
   /**
    * Public method: parseHeader
@@ -62,8 +80,5 @@ public:
 
 private:
   std::istream* fastaStream = nullptr;
-  std::string nextHeader;
-
-  void readInRecord(std::string& target);
 };
 #endif
