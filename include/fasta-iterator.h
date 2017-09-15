@@ -22,7 +22,7 @@
 
 #include <string>
 #include <fstream>
-
+#include <memory>
 
 class FastaIterator {
 

@@ -29,6 +29,7 @@
 #include "fasta-iterator.h"
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 class FastaParser {
 

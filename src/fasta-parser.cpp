@@ -7,7 +7,7 @@
 #include "fasta-parser.h"
 using namespace std;
 
-FastaParser::FastaParser(istream* in) : fastaStream(in), endIterator(nullptr) {};
+FastaParser::FastaParser(istream* in) : fastaStream(in), endIterator(nullptr) {}
 
 FastaParser::FastaParser(const std::string& fastaFile) : endIterator(nullptr) {
   this->fastaStream = new ifstream(fastaFile);
@@ -15,7 +15,7 @@ FastaParser::FastaParser(const std::string& fastaFile) : endIterator(nullptr) {
 
 string FastaParser::parseHeader(const string& header) {
   return header;
-};
+}
 
 FastaIterator FastaParser::begin() {
   return FastaIterator(fastaStream);
