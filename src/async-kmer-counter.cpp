@@ -10,8 +10,7 @@ using namespace std;
 #define NUMTHREADS 8
 
 AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
-  sumFiles(sumFiles), kmerCounter(symbols, kmerLength),
-  fastaParser() {
+  sumFiles(sumFiles), kmerCounter(symbols, kmerLength) {
 
 //  for (int i = 0; i < NUMTHREADS; i++) threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));
 
@@ -22,16 +21,14 @@ void AsyncKmerCounter::count(istream& in, ostream& out) {
   // Gotta use heap because variable length array
   auto counts = new long[kmerCounter.kmerCountVectorSize];
 
-  FastaParser parser;
-  parser.parse(in);
+  FastaParser parser(&in);
+  for (auto it = parser.begin(); it != parser.end(); ++it) {
 
-  pair<string, string> record;
-  for (it.begin(record); !it.endOfRecords(); it.next(record)) {
     memset(counts, 0, sizeof(long));
-    kmerCounter.count(record.second, counts);
+    kmerCounter.count(it->second, counts);
 
     // Output to file
-    out << fastaParser.parseHeader(record.first);
+    out << parser.parseHeader(it->first);
     for (size_t i = 0; i < kmerCounter.kmerCountVectorSize; i++)
       out << ", " << counts[i];
     out << endl;
@@ -48,6 +45,7 @@ void AsyncKmerCounter::countFastaFile(const std::string &fastaFile, const std::s
 void AsyncKmerCounter::countDirectory(const std::string &directory, std::ostream &out) {
   (void) directory; // todo: remove these and implement
   (void) out;
+  (void) sumFiles;
 }
 
 void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
@@ -56,6 +54,6 @@ void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
 //  ioService.reset();
 }
 
-AsyncKmerCounter::~AsyncKmerCounter() {
+ AsyncKmerCounter::~AsyncKmerCounter() {
 //  threadpool.join_all(); // Destructor must destroy all of the threads in the threadpool
 }

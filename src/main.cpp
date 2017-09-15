@@ -23,7 +23,7 @@
 
 #include "async-kmer-counter.h"
 
-std::string symbols = "ATGC";
+const std::string symbols = "ATGC";
 unsigned int kmerLength = 4;
 bool sumFiles = false;
 bool fromstdin = true;
@@ -49,7 +49,6 @@ int main(int argc, char* argv[]) {
  * the --help flag or has specified flags incorrectly.
  */
 static void printUsage(){
-  // todo
   std::cerr << "usage:\n\t./count-kmers < sequences.fasta > kmer_counts.kmer" << std::endl;
 }
 
@@ -63,4 +62,7 @@ static void printUsage(){
  */
 static void parseCommandLineOptions(int argc, char* argv[]) {
   // todo
+  (void) argc;
+  (void) argv;
+  if (false) printUsage();
 }

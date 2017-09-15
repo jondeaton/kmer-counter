@@ -28,12 +28,6 @@ class FastaIterator {
 
 public:
 
-  typedef std::input_iterator_tag iterator_category;
-  typedef std::pair<std::string, std::string> value_type;
-  typedef void difference_type;
-  typedef std::pair<std::string, std::string>* pointer;
-  typedef std::pair<std::string, std::string>& reference;
-
   /**
    * Constructor: FastaIterator
    * --------------------------
@@ -43,19 +37,53 @@ public:
   explicit FastaIterator(std::istream* in);
 
   /**
+   * Dereference operator*
+   * --------------------
+   * For getting the contents that the iterator is pointing to
+   * @return: A reference to the pair that the iteraotor "poitns" to
+   */
+  std::pair<std::string, std::string>& operator* ();
+
+  /**
+   * Dereference operator->
+   * --------------------
+   * For getting the contents that the iterator is pointing to
+   * @return: Returns a raw pointer to the pair that the iterator "points" to
+   */
+  std::pair<std::string, std::string>* operator-> ();
+
+  /**
    * Prefix operator
    * ---------------
-   *
-   * @return
+   * For incrementing the iterator to the next record
+   * @return: Reference to
    */
   FastaIterator& operator++ ();
 
   /**
-   * Postrix operatord
+   * PostFix operator
+   * ----------------
+   *
    * @return
    */
   FastaIterator operator++ (int);
 
+  /**
+   * Equality operator ==
+   * ----------------------
+   *
+   * @param other
+   * @return
+   */
+  bool operator == (const FastaIterator& other);
+
+  /**
+   * Inequality operator !=
+   * ----------------------
+   * @param other
+   * @return
+   */
+  bool operator != (const FastaIterator& other);
 
 private:
   std::istream* in; // The stream to read fasta records from
@@ -64,7 +92,5 @@ private:
 
   std::shared_ptr<std::pair<std::string, std::string>> record;
 };
-
-//typedef FastaIterator<std::pair <std::string, std::string>> fasta_iterator;
 
 #endif

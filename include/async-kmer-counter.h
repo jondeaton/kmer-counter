@@ -82,7 +82,6 @@ private:
   std::string directory;
 
   KmerCounter kmerCounter;
-  FastaParser fastaParser;
 
 //  boost::asio::io_service ioService;
 //  boost::asio::io_service::work work;

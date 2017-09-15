@@ -12,20 +12,28 @@ static inline bool startsWith(string& str, char character);
 
 FastaIterator::FastaIterator(istream* in) : end(false) {
   this->in = in;
+  ++(*this);
 }
 
+pair<string, string>& FastaIterator::operator*() {
+  return *record;
+}
+
+pair<string, string>* FastaIterator::operator-> () {
+  return &(*record);
+}
 
 FastaIterator& FastaIterator::operator++ () {
 
-  record = new pair<string, string>();
+  record = shared_ptr<pair<string, string>>(new pair<string, string>());
 
   string line;
   while (getline(*in, line) && !startsWith(line, '>'))
-    record.first = line;
+    record->first = line;
 
   while (!in->eof()) {
     getline(*in, line);
-    record.second += line;
+    record->second += line;
   }
 
   return *this;
@@ -37,10 +45,14 @@ FastaIterator FastaIterator::operator++ (int) {
   return result; // return the copy (the old) value.
 }
 
-T FastaIterator::operator->() {
 
+bool FastaIterator::operator == (const FastaIterator& other) {
+  return record == other.record;
 }
 
+bool FastaIterator::operator != (const FastaIterator& other) {
+  return !this->operator==(other);
+}
 
 /**
  * Function: startsWith

@@ -12,7 +12,7 @@ SET(CMAKE_CXX_FLAGS  "-g -O0 -Wall -Wextra -pedantic")
 #set(Boost_USE_STATIC_LIBS ON)
 #set(Boost_USE_MULTITHREADED ON)
 #set(Boost_USE_STATIC_RUNTIME OFF)
-#
+
 #find_package(Boost REQUIRED)
 #include_directories(${Boost_INCLUDE_DIR})
 

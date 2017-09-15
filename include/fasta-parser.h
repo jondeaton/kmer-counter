@@ -11,13 +11,11 @@
  * istream is("sequences.fasta");
  * FastaParser parser(is);
  *
- *
  * for (auto it = parser.begin(); it != parser.end(); it++) {
  *  auto record = it*;
  *  string& header = record.first;
  *  string& sequence = record.second;
  * }
- *
  *
  * You can also parser fasta headers like so:
  *
@@ -80,5 +78,6 @@ public:
 
 private:
   std::istream* fastaStream = nullptr;
+  FastaIterator endIterator;
 };
 #endif

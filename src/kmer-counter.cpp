@@ -7,6 +7,7 @@ KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :
   populateMap();
 }
 
+// Here be performance optimizations
 void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
   if (kmerLength == 0) return;
 
@@ -27,7 +28,7 @@ void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
 
   // Slide a window of size kmerLength along the sequence
   size_t maximumIndex = sequenceLength - kmerLength;
-  for (int i = 0; i <= maximumIndex; i++) {
+  for (size_t i = 0; i <= maximumIndex; i++) {
     const char* kmer = sequence.c_str() + i; // slide the window
     index = calculateIndex(kmer, significances, index);
     if (index >= 0) kmerCount[index] += 1; // Valid kmer encountered
