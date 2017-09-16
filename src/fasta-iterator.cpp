@@ -12,6 +12,8 @@ static inline bool startsWith(string& str, char character);
 
 FastaIterator::FastaIterator(istream* in) : end(false) {
   this->in = in;
+  // On construction, the iterator should already have
+  // parsed the first record, which is why we increment here
   ++(*this);
 }
 
@@ -23,19 +25,27 @@ pair<string, string>* FastaIterator::operator-> () {
   return &(*record);
 }
 
+/*
+ * Basically just reads in from the stream until the next record or the
+ * end of the stream is encountered. If the end of the stream is encountered
+ * then the record is set to be a null pointer.
+ */
 FastaIterator& FastaIterator::operator++ () {
+  
+  findNextHeader();
 
   record = shared_ptr<pair<string, string>>(new pair<string, string>());
+  
+  if (in->eof()) record = shared_ptr<pair<string, string>>(nullptr);
+  else {
+    while (!in->eof()) {
+      getline(*in, line);
+      if (starts
 
-  string line;
-  while (getline(*in, line) && !startsWith(line, '>'))
-    record->first = line;
 
-  while (!in->eof()) {
-    getline(*in, line);
-    record->second += line;
+      record->second += line;
+    }
   }
-
   return *this;
 }
 
@@ -53,6 +63,25 @@ bool FastaIterator::operator == (const FastaIterator& other) {
 bool FastaIterator::operator != (const FastaIterator& other) {
   return !this->operator==(other);
 }
+
+/**
+ * Function: findNextHeader
+ * ------------------------
+ *  Finds the next
+ *
+ */
+void FastaIterator::findNextHeader() {
+  if (nextHeader != nullptr) return;
+
+  string line;
+  while (getline(*in, line)) {
+      if (startsWith(line, '>')) {
+          nextHeader = line;
+            break;
+        }
+  }
+}
+
 
 /**
  * Function: startsWith
