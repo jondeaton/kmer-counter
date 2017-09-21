@@ -5,6 +5,7 @@
  */
 
 #include "fasta-iterator.h"
+#include <sstream>
 using namespace std;
 
 // Static function declarations
@@ -40,11 +41,13 @@ FastaIterator& FastaIterator::operator++ () {
     auto pp = new pair<string, string>();
     record = shared_ptr<pair<string, string>>(pp);
     record->first = nextHeader;
-    record->second.clear();
+
+    ostringstream oss;
+
     string line;
     while (!in->eof()) {
       getline(*in, line);
-      if (!startsWith(line, '>')) record->second += line;
+      if (!startsWith(line, '>')) oss << line;
       else {
         haveNextHeader = true;
         nextHeader = line;
@@ -52,6 +55,7 @@ FastaIterator& FastaIterator::operator++ () {
       }
     }
     if (in->eof()) haveNextHeader = false;
+    record->second = oss.str();
   }
   return *this;
 }
