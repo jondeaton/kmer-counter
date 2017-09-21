@@ -8,6 +8,7 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF()
 
 SET(CMAKE_CXX_FLAGS  "-g -O0 -Wall -Wextra -pedantic")
+#SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic")
 
 #set(Boost_USE_STATIC_LIBS ON)
 #set(Boost_USE_MULTITHREADED ON)
