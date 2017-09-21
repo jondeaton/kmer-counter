@@ -34,8 +34,8 @@ pair<string, string>* FastaIterator::operator-> () {
  * then the record is set to be a null pointer.
  */
 FastaIterator& FastaIterator::operator++ () {
-  bool found = findNextHeader();
-  if (!found) record = nullptr;
+  haveNextHeader = findNextHeader();
+  if (!haveNextHeader) record = nullptr;
   else {
     auto pp = new pair<string, string>();
     record = shared_ptr<pair<string, string>>(pp);
@@ -51,6 +51,7 @@ FastaIterator& FastaIterator::operator++ () {
         break;
       }
     }
+    if (in->eof()) haveNextHeader = false;
   }
   return *this;
 }
