@@ -87,10 +87,13 @@ public:
 
 private:
   std::istream* in; // The stream to read fasta records from
-  std::string next_header; // The next header from the stream (for internal implementation
-  bool end; // Indicates end of file
+  bool haveNextHeader; // True is nextHeader contains the next header
+  std::string nextHeader; // The next header in the records
 
   std::shared_ptr<std::pair<std::string, std::string>> record;
+
+  bool findNextHeader();
+
 };
 
 #endif

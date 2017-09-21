@@ -10,11 +10,14 @@ using namespace std;
 // Static function declarations
 static inline bool startsWith(string& str, char character);
 
-FastaIterator::FastaIterator(istream* in) : end(false) {
-  this->in = in;
-  // On construction, the iterator should already have
-  // parsed the first record, which is why we increment here
-  ++(*this);
+FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
+  if (in == nullptr) record = nullptr;
+  else {
+    this->in = in;
+    // On construction, the iterator should already have
+    // parsed the first record, which is why we increment here
+    ++(*this);
+  }
 }
 
 pair<string, string>& FastaIterator::operator*() {
@@ -31,19 +34,22 @@ pair<string, string>* FastaIterator::operator-> () {
  * then the record is set to be a null pointer.
  */
 FastaIterator& FastaIterator::operator++ () {
-  
-  findNextHeader();
-
-  record = shared_ptr<pair<string, string>>(new pair<string, string>());
-  
-  if (in->eof()) record = shared_ptr<pair<string, string>>(nullptr);
+  bool found = findNextHeader();
+  if (!found) record = nullptr;
   else {
+    auto pp = new pair<string, string>();
+    record = shared_ptr<pair<string, string>>(pp);
+    record->first = nextHeader;
+    record->second.clear();
+    string line;
     while (!in->eof()) {
       getline(*in, line);
-      if (starts
-
-
-      record->second += line;
+      if (!startsWith(line, '>')) record->second += line;
+      else {
+        haveNextHeader = true;
+        nextHeader = line;
+        break;
+      }
     }
   }
   return *this;
@@ -55,7 +61,6 @@ FastaIterator FastaIterator::operator++ (int) {
   return result; // return the copy (the old) value.
 }
 
-
 bool FastaIterator::operator == (const FastaIterator& other) {
   return record == other.record;
 }
@@ -64,24 +69,13 @@ bool FastaIterator::operator != (const FastaIterator& other) {
   return !this->operator==(other);
 }
 
-/**
- * Function: findNextHeader
- * ------------------------
- *  Finds the next
- *
- */
-void FastaIterator::findNextHeader() {
-  if (nextHeader != nullptr) return;
-
-  string line;
-  while (getline(*in, line)) {
-      if (startsWith(line, '>')) {
-          nextHeader = line;
-            break;
-        }
-  }
+//Finds the next header in the stream, and stores it in nextHeader
+bool FastaIterator::findNextHeader() {
+  if (haveNextHeader) return true;
+  while (getline(*in, nextHeader))
+    if (startsWith(nextHeader, '>')) return true;
+  return false;
 }
-
 
 /**
  * Function: startsWith
