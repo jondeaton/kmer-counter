@@ -9,6 +9,7 @@
 
 #include "kmer-counter.h"
 #include "fasta-parser.h"
+#include "thread-pool.h"
 #include <iostream>
 #include <cstring>
 
@@ -82,6 +83,7 @@ private:
   std::string directory;
 
   KmerCounter kmerCounter;
+  ThreadPool pool;
 
 //  boost::asio::io_service ioService;
 //  boost::asio::io_service::work work;

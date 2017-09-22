@@ -25,10 +25,16 @@ set(SOURCE_FILES
         include/kmer-counter.h
         include/fasta-parser.h
         include/fasta-iterator.h
+        include/thread-pool.h
+        include/ostreamlock.h
+        include/semaphore.h
         src/async-kmer-counter.cpp
         src/kmer-counter.cpp
         src/fasta-parser.cpp
         src/fasta-iterator.cpp
+        src/thread-pool.cc
+        src/ostreamlock.cc
+        src/semaphore.cc
         src/main.cpp)
 
 add_executable(count-kmers ${SOURCE_FILES})

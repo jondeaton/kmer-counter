@@ -21,12 +21,12 @@ FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
   }
 }
 
-pair<string, string>& FastaIterator::operator*() {
-  return *record;
+shared_ptr<pair<string, string>> FastaIterator::operator*() {
+  return record;
 }
 
-pair<string, string>* FastaIterator::operator-> () {
-  return &(*record);
+shared_ptr<pair<string, string>>& FastaIterator::operator-> () {
+  return &record;
 }
 
 /*

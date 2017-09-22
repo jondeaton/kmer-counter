@@ -5,16 +5,13 @@
  */
 #include "async-kmer-counter.h"
 #include "fasta-parser.h"
+#include "ostreamlock.h"
 using namespace std;
 
 #define NUMTHREADS 8
 
 AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
-  sumFiles(sumFiles), kmerCounter(symbols, kmerLength) {
-
-//  for (int i = 0; i < NUMTHREADS; i++) threadpool.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));
-
-}
+  sumFiles(sumFiles), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
 
 void AsyncKmerCounter::count(istream& in, ostream& out) {
 
@@ -23,18 +20,38 @@ void AsyncKmerCounter::count(istream& in, ostream& out) {
 
   FastaParser parser(&in);
   for (auto it = parser.begin(); it != parser.end(); ++it) {
-
+    auto record = *it;
     memset(counts, 0, sizeof(long));
-    kmerCounter.count(it->second, counts);
+    kmerCounter.count(record->second, counts);
 
     // Output to file
-    out << parser.parseHeader(it->first);
+    out << parser.parseHeader(record->first);
     for (size_t i = 0; i < kmerCounter.kmerCountVectorSize; i++)
       out << ", " << counts[i];
     out << endl;
   }
 
   delete[] counts;
+}
+
+// Asynchronous counting
+void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
+  FastaParser parser(&in);
+  for (auto it = parser.begin(); it != parser.end(); ++it) {
+    auto record = *it;
+
+    pool.schedule([&] () {
+      auto counts = new long[kmerCounter.kmerCountVectorSize];
+      memset(counts, 0, sizeof(long));
+      kmerCounter.count(record->second, counts);
+
+      out << oslock << parser.parseHeader(record->first);
+      for (size_t i = 0; i < kmerCounter.kmerCountVectorSize; i++) out << ", " << counts[i];
+      out << endl << osunlock;
+      delete[] counts;
+    });
+  }
+  pool.wait();
 }
 
 void AsyncKmerCounter::countFastaFile(const std::string &fastaFile, const std::string &outfile) {
@@ -48,12 +65,4 @@ void AsyncKmerCounter::countDirectory(const std::string &directory, std::ostream
   (void) sumFiles;
 }
 
-void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
-  // todo: actually implement this lol
-  count(in, out);
-//  ioService.reset();
-}
-
- AsyncKmerCounter::~AsyncKmerCounter() {
-//  threadpool.join_all(); // Destructor must destroy all of the threads in the threadpool
-}
+AsyncKmerCounter::~AsyncKmerCounter() { }
