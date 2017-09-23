@@ -23,6 +23,7 @@
 #include <string>
 #include <fstream>
 #include <memory>
+#include <sstream>
 
 class FastaIterator {
 
@@ -42,7 +43,7 @@ public:
    * For getting the contents that the iterator is pointing to
    * @return: A reference to the pair that the iteraotor "poitns" to
    */
-  std::shared_ptr<std::pair<std::string, std::string>> operator* ();
+  std::shared_ptr<std::pair<std::string, std::ostringstream>> operator* ();
 
   /**
    * Dereference operator->
@@ -50,7 +51,7 @@ public:
    * For getting the contents that the iterator is pointing to
    * @return: Returns a raw pointer to the pair that the iterator "points" to
    */
-  std::shared_ptr<std::pair<std::string, std::string>> operator-> ();
+  std::shared_ptr<std::pair<std::string, std::ostringstream>> operator-> ();
 
   /**
    * Prefix operator
@@ -90,7 +91,7 @@ private:
   bool haveNextHeader; // True is nextHeader contains the next header
   std::string nextHeader; // The next header in the records
 
-  std::shared_ptr<std::pair<std::string, std::string>> record;
+  std::shared_ptr<std::pair<std::string, std::ostringstream>> record;
 
   bool findNextHeader();
 

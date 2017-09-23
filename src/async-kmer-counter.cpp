@@ -27,7 +27,7 @@ void AsyncKmerCounter::countSequential(istream& in, ostream& out) {
   FastaParser parser(&in);
   for (auto it = parser.begin(); it != parser.end(); ++it) {
     memset(counts, 0, sizeof(long) * kmerCounter.kmerCountVectorSize);
-    kmerCounter.count(it->second, counts);
+    kmerCounter.count(it->second.str(), counts);
 
     // Output to file
     out << parser.parseHeader(it->first);
@@ -42,12 +42,12 @@ void AsyncKmerCounter::countSequential(istream& in, ostream& out) {
 void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
   FastaParser parser(&in);
   for (auto it = parser.begin(); it != parser.end(); ++it) {
-    shared_ptr<pair<string, string>> record = *it;
+    shared_ptr<pair<string, ostringstream>> record = *it;
 
     pool.schedule([&, record] () {
       auto counts = new long[kmerCounter.kmerCountVectorSize];
       memset(counts, 0, sizeof(long) * kmerCounter.kmerCountVectorSize);
-      kmerCounter.count(record->second, counts);
+      kmerCounter.count(record->second.str(), counts);
 
       out << oslock << parser.parseHeader(record->first);
       for (size_t i = 0; i < kmerCounter.kmerCountVectorSize; i++) out << ", " << counts[i];
