@@ -1,7 +1,7 @@
 /*
  * File: async-kmer-counter.h
  * --------------------------
- * Presents the interface of AsyncKmerCounter, an asynchronous kmer counter
+ * Presents the interface of AsyncKmerCounter, an asynchronous k-mer counter
  */
 
 #ifndef _async_kmer_counter_
@@ -9,6 +9,7 @@
 
 #include "kmer-counter.h"
 #include "fasta-parser.h"
+#include "thread-pool.h"
 #include <iostream>
 #include <cstring>
 
@@ -31,22 +32,24 @@ public:
   AsyncKmerCounter(const std::string& symbols, unsigned int kmerLength, bool sumFiles);
 
   /**
-   * Public Method: countFastaFile
-   * -----------------------------
-   * Counts the fasta file and prints the output to the provided outfile
-   * @param fastaFile : Path to fasta file to count k-mers in
-   * @param outfile : Path to file to write k-mer coutns to
+   * Public Method: count
+   * --------------------
+   * Count k-mers either sequentially or in parallel depengin on the sequential parameter
+   * @param in
+   * @param out
+   * @param sequential
    */
-  void countFastaFile(const std::string& fastaFile, const std::string& outfile);
+  void count(std::istream& in, std::ostream& out, bool sequential=false);
 
   /**
-   * Public Method: countDirectory
-   * -----------------------------
-   *
-   * @param directory
-   * @param out
+   * Public Method: countSequential
+   * --------------------
+   * Sequentially counts the k-mers from the in stream and outputs them
+   * to the out stream in their origin all order
+   * @param in : Stream to read fasta records in from
+   * @param out : Stream to outptu k-mer coutns to
    */
-  void countDirectory(const std::string& directory, std::ostream& out);
+  void countSequential(std::istream& in, std::ostream& out);
 
   /**
    * Public Method: countAsync
@@ -58,16 +61,23 @@ public:
    */
   void countAsync(std::istream& in, std::ostream& out);
 
+  /**
+   * Public Method: countFastaFile
+   * -----------------------------
+   * Counts the fasta file and prints the output to the provided outfile
+   * @param fastaFile : Path to fasta file to count k-mers in
+   * @param outfile : Path to file to write k-mer coutns to
+   */
+  void countFastaFile(const std::string& fastaFile, const std::string& outfile, bool sequential=false);
 
   /**
-   * Public Method: count
-   * --------------------
-   * Sequentially counts the k-mers from the in stream and outputs them
-   * to the out stream in their origin all order
-   * @param in : Stream to read fasta records in from
-   * @param out : Stream to outptu k-mer coutns to
+   * Public Method: countDirectory
+   * -----------------------------
+   *
+   * @param directory
+   * @param out
    */
-  void count(std::istream& in, std::ostream& out);
+  void countDirectory(const std::string& directory, std::ostream& out, bool sequential=false);
 
   /**
    * Destructor: AsyncKmerCounter
@@ -82,6 +92,7 @@ private:
   std::string directory;
 
   KmerCounter kmerCounter;
+  ThreadPool pool;
 
 //  boost::asio::io_service ioService;
 //  boost::asio::io_service::work work;

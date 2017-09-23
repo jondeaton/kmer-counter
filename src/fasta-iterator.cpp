@@ -5,7 +5,6 @@
  */
 
 #include "fasta-iterator.h"
-#include <sstream>
 using namespace std;
 
 // Static function declarations
@@ -15,18 +14,8 @@ FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
   if (in == nullptr) record = nullptr;
   else {
     this->in = in;
-    // On construction, the iterator should already have
-    // parsed the first record, which is why we increment here
-    ++(*this);
+    ++(*this); // On construction, the iterator should already have parsed the first record
   }
-}
-
-pair<string, string>& FastaIterator::operator*() {
-  return *record;
-}
-
-pair<string, string>* FastaIterator::operator-> () {
-  return &(*record);
 }
 
 /*
@@ -38,16 +27,13 @@ FastaIterator& FastaIterator::operator++ () {
   haveNextHeader = findNextHeader();
   if (!haveNextHeader) record = nullptr;
   else {
-    auto pp = new pair<string, string>();
-    record = shared_ptr<pair<string, string>>(pp);
+    record = shared_ptr<pair<string, ostringstream>>(new pair<string, ostringstream>());
     record->first = nextHeader;
-
-    ostringstream oss;
 
     string line;
     while (!in->eof()) {
       getline(*in, line);
-      if (!startsWith(line, '>')) oss << line;
+      if (!startsWith(line, '>')) record->second << line;
       else {
         haveNextHeader = true;
         nextHeader = line;
@@ -55,10 +41,18 @@ FastaIterator& FastaIterator::operator++ () {
       }
     }
     if (in->eof()) haveNextHeader = false;
-    record->second = oss.str();
   }
   return *this;
 }
+
+shared_ptr<pair<string, ostringstream>> FastaIterator::operator*() {
+  return record;
+}
+
+shared_ptr<pair<string, ostringstream>> FastaIterator::operator-> () {
+  return record;
+}
+
 
 FastaIterator FastaIterator::operator++ (int) {
   FastaIterator result(*this); // make a copy for result
