@@ -1,8 +1,15 @@
+/**
+ * File: kmer-counter.cpp
+ * ----------------------
+ * Presents the implementation of the k-mer counter class. This file implements the logic
+ * of exact counting of k-mers in a sequence.
+ */
+
 #include "kmer-counter.h"
 using namespace std;
 
 KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :
-  symbols(symbols), numSymbols(symbols.length()), kmerLength(kmerLength) {
+  symbols(symbols), numSymbols((unsigned int) symbols.length()), kmerLength(kmerLength) {
   kmerCountVectorSize = ipow(kmerLength, numSymbols);
   populateMap();
 }
@@ -11,14 +18,14 @@ KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :
 void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
   if (kmerLength == 0) return;
 
-  unsigned int sequenceLength = sequence.length();
+  auto sequenceLength = (unsigned int) sequence.length();
   if (sequenceLength < kmerLength) return;
 
-  unsigned int numSymbols = symbols.length();
+  auto numSymbols = (unsigned int) symbols.length();
   if (numSymbols == 0) return;
 
   // Stores the lexocographic significance of each letter in a kmer
-  unsigned int* significances = new unsigned int[kmerLength + 1];
+  auto significances = new unsigned int[kmerLength + 1];
   for (unsigned int i = 0; i <= kmerLength; i++) significances[i] = ipow(numSymbols, i);
 
   // index is the lexicographic index in the kmerCount array corresponding
@@ -36,19 +43,14 @@ void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
   }
 }
 
-
-unsigned int KmerCounter::calculateIndex(const char *kmer, const unsigned int *significances, int index) {
-
-  if (index < 0) {
-    // Must recalculate
+int KmerCounter::calculateIndex(const char *kmer, const unsigned int *significances, int index) {
+  if (index < 0) { // Must recalculate
     index = 0;
     for (unsigned int j = 0; j < kmerLength; j++) {
-      // char letter = kmer[j];
       if (symbolIndexMap.find(kmer[j]) == symbolIndexMap.end()) return -(j + 1); // invalid next symbol
       index += symbolIndexMap[kmer[j]] * significances[kmerLength - j - 1];
     }
-  } else {
-    // May use previous window's index to make a quicker calculation
+  } else { // May use previous window's index to make a quicker calculation
     if (symbolIndexMap.find(kmer[kmerLength - 1]) == symbolIndexMap.end()) return -kmerLength;
     // index = (index * numSymbols) % significances[kmerLength] + symbolIndexMap[letter];
     index = ((index % significances[kmerLength - 1]) * numSymbols) + symbolIndexMap[kmer[kmerLength - 1]];
@@ -63,6 +65,7 @@ void KmerCounter::populateMap() {
   }
 }
 
+// Integer exponentiation
 unsigned int KmerCounter::ipow(unsigned int base, unsigned int exp) {
   if (base == 0 || base == 1) return base;
 

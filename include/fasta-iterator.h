@@ -50,7 +50,7 @@ public:
    * For getting the contents that the iterator is pointing to
    * @return: Returns a raw pointer to the pair that the iterator "points" to
    */
-  std::shared_ptr<std::pair<std::string, std::string>>& operator-> ();
+  std::shared_ptr<std::pair<std::string, std::string>> operator-> ();
 
   /**
    * Prefix operator

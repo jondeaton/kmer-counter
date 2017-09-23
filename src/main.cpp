@@ -25,6 +25,7 @@
 
 const std::string symbols = "ATGC";
 unsigned int kmerLength = 4;
+bool sequential = false;
 bool sumFiles = false;
 bool fromstdin = true;
 std::string directory;
@@ -37,8 +38,8 @@ int main(int argc, char* argv[]) {
 
   AsyncKmerCounter counter(symbols, kmerLength, sumFiles);
 
-  if (fromstdin) counter.countAsync(std::cin, std::cout);
-  else counter.countDirectory(directory, std::cout);
+  if (fromstdin) counter.count(std::cin, std::cout, sequential);
+  else counter.countDirectory(directory, std::cout, sequential);
 }
 
 /**
@@ -61,8 +62,8 @@ static void printUsage(){
  * @param argv : NULL terminated list of arguments
  */
 static void parseCommandLineOptions(int argc, char* argv[]) {
-  // todo
-  (void) argc;
-  (void) argv;
-  if (false) printUsage();
+  if (argc > 1) {
+    sequential = strcmp(argv[1], "--sequential") == 0;
+    if (strcmp(argv[1], "--help") == 0) printUsage();
+  }
 }

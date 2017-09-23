@@ -15,18 +15,8 @@ FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
   if (in == nullptr) record = nullptr;
   else {
     this->in = in;
-    // On construction, the iterator should already have
-    // parsed the first record, which is why we increment here
-    ++(*this);
+    ++(*this); // On construction, the iterator should already have parsed the first record
   }
-}
-
-shared_ptr<pair<string, string>> FastaIterator::operator*() {
-  return record;
-}
-
-shared_ptr<pair<string, string>>& FastaIterator::operator-> () {
-  return &record;
 }
 
 /*
@@ -38,8 +28,7 @@ FastaIterator& FastaIterator::operator++ () {
   haveNextHeader = findNextHeader();
   if (!haveNextHeader) record = nullptr;
   else {
-    auto pp = new pair<string, string>();
-    record = shared_ptr<pair<string, string>>(pp);
+    record = shared_ptr<pair<string, string>>(new pair<string, string>());
     record->first = nextHeader;
 
     ostringstream oss;
@@ -59,6 +48,15 @@ FastaIterator& FastaIterator::operator++ () {
   }
   return *this;
 }
+
+shared_ptr<pair<string, string>> FastaIterator::operator*() {
+  return record;
+}
+
+shared_ptr<pair<string, string>> FastaIterator::operator-> () {
+  return record;
+}
+
 
 FastaIterator FastaIterator::operator++ (int) {
   FastaIterator result(*this); // make a copy for result
