@@ -3,12 +3,12 @@
  * Author: Jerry Cain
  */
 
-#include <ostream>
+#include "ostreamlock.h"
 #include <iostream>
+#include <map>
 #include <mutex>
 #include <memory>
-#include <map>
-#include "ostreamlock.h"
+#include <ostream>
 using namespace std;
 
 static mutex mapLock;
@@ -19,9 +19,7 @@ ostream& oslock(ostream& os) {
   if (ostreamToLock == &cerr) ostreamToLock = &cout;
   mapLock.lock();
   unique_ptr<mutex>& up = streamLocks[ostreamToLock];
-  if (up == nullptr) {
-    up.reset(new mutex);
-  }
+  if (up == nullptr) up.reset(new mutex);
   mapLock.unlock();
   up->lock();
   return os;
@@ -33,8 +31,7 @@ ostream& osunlock(ostream& os) {
   mapLock.lock();
   auto found = streamLocks.find(ostreamToLock);
   mapLock.unlock();
-  if (found == streamLocks.end())
-    throw "unlock inserted into stream that has never been locked.";
+  if (found == streamLocks.end()) throw "unlock inserted into stream that has never been locked.";
   unique_ptr<mutex>& up = found->second;
   up->unlock();
   return os;

@@ -10,10 +10,10 @@
  * FastaParser parser();
  * parser.parse(is);
  *
- * for (FastaIterator it = parser.begin(); it != parser.end(); it++) {
+ * for (FastaIterator it = parser.begin(); it != parser.end(); ++it) {
  *  string& header = it->first;
  *  string& sequence = it->second;
- *  // etc...
+ *  // analysis, etc...
  * }
  */
 
@@ -41,7 +41,7 @@ public:
    * Dereference operator*
    * --------------------
    * For getting the contents that the iterator is pointing to
-   * @return: A reference to the pair that the iteraotor "poitns" to
+   * @return: A copy of a shared_ptr to a record pair
    */
   std::shared_ptr<std::pair<std::string, std::ostringstream>> operator* ();
 
@@ -49,7 +49,7 @@ public:
    * Dereference operator->
    * --------------------
    * For getting the contents that the iterator is pointing to
-   * @return: Returns a raw pointer to the pair that the iterator "points" to
+   * @return: A copy of a shared_ptr to a record pair
    */
   std::shared_ptr<std::pair<std::string, std::ostringstream>> operator-> ();
 
@@ -57,32 +57,33 @@ public:
    * Prefix operator
    * ---------------
    * For incrementing the iterator to the next record
-   * @return: Reference to
+   * @return: Reference to this FastaIterator
    */
   FastaIterator& operator++ ();
 
   /**
    * PostFix operator
    * ----------------
-   *
-   * @return
+   * For incrementing the iterator to the next record
+   * @return: Reference to this FastaIterator
    */
   FastaIterator operator++ (int);
 
   /**
    * Equality operator ==
    * ----------------------
-   *
-   * @param other
-   * @return
+   * For comparing one FastaIterator with another
+   * @param other: The other FastaIterator to compare to
+   * @return: True if the record they contain are equal, false otherwise
    */
   bool operator == (const FastaIterator& other);
 
   /**
    * Inequality operator !=
    * ----------------------
-   * @param other
-   * @return
+   * For comparing one FastaIterator with another
+   * @param other: The other FastaIterator to compare to
+   * @return: True if the record they contain are inequal, false otherwise
    */
   bool operator != (const FastaIterator& other);
 
@@ -90,11 +91,9 @@ private:
   std::istream* in; // The stream to read fasta records from
   bool haveNextHeader; // True is nextHeader contains the next header
   std::string nextHeader; // The next header in the records
-
-  std::shared_ptr<std::pair<std::string, std::ostringstream>> record;
+  std::shared_ptr<std::pair<std::string, std::ostringstream>> record; // Pointer to the parsed content
 
   bool findNextHeader();
-
 };
 
 #endif
