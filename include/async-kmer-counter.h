@@ -7,15 +7,11 @@
 #ifndef _async_kmer_counter_
 #define _async_kmer_counter_
 
-#include "kmer-counter.h"
-#include "fasta-parser.h"
-#include "thread-pool.h"
+#include <kmer-counter.h>
+#include <fasta-parser.h>
+#include <boost-thread-pool.h>
 #include <iostream>
 #include <cstring>
-
-//#include <boost/asio/io_service.hpp>
-//#include <boost/bind.hpp>
-//#include <boost/thread/thread.hpp>
 
 class AsyncKmerCounter {
 
@@ -24,7 +20,7 @@ public:
   /**
    * Constructor: AsyncKmerCounter
    * -----------------------------
-   * Constructs the asynchronous kmer counter object
+   * Constructs the asynchronous k-mer counter object
    * @param symbols
    * @param kmerLength
    * @param sumFiles
@@ -93,10 +89,5 @@ private:
 
   KmerCounter kmerCounter;
   ThreadPool pool;
-
-//  boost::asio::io_service ioService;
-//  boost::asio::io_service::work work;
-//  boost::thread_group threadpool;
-
 };
 #endif

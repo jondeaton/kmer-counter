@@ -3,16 +3,15 @@
  * ---------------------------
  * Presents the implementation of AsyncKmerCounter
  */
-#include "async-kmer-counter.h"
-#include "fasta-parser.h"
-#include "ostreamlock.h"
+#include <async-kmer-counter.h>
+#include <fasta-parser.h>
+#include <ostreamlock.h>
 using namespace std;
 
 #define NUMTHREADS 8
 
 AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
   sumFiles(sumFiles), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
-
 
 void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential) {
   if (sequential) countSequential(in, out);
