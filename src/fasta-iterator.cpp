@@ -5,10 +5,8 @@
  */
 
 #include "fasta-iterator.h"
+#include <boost/algorithm/string/predicate.hpp>
 using namespace std;
-
-// Static function declarations
-static inline bool startsWith(string& str, char character);
 
 FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
   if (in == nullptr) record = nullptr;
@@ -23,7 +21,8 @@ FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
  * end of the stream is encountered. If the end of the stream is encountered
  * then the record is set to be a null pointer.
  *
- * Check this out: https://stackoverflow.com/questions/24851291/read-huge-text-file-line-by-line-in-c-with-buffering
+ * Check this out for more optimizations:
+ * https://stackoverflow.com/questions/24851291/read-huge-text-file-line-by-line-in-c-with-buffering
  */
 FastaIterator& FastaIterator::operator++ () {
   haveNextHeader = findNextHeader();
@@ -35,7 +34,7 @@ FastaIterator& FastaIterator::operator++ () {
     string line;
     while (!in->eof()) {
       getline(*in, line);
-      if (!startsWith(line, '>')) record->second << line;
+      if (!boost::starts_with(line, ">")) record->second << line;
       else {
         haveNextHeader = true;
         nextHeader = line;
@@ -70,22 +69,10 @@ bool FastaIterator::operator != (const FastaIterator& other) {
   return !this->operator==(other);
 }
 
-//Finds the next header in the stream, and stores it in nextHeader
+// Finds the next header in the stream, and stores it in nextHeader
 bool FastaIterator::findNextHeader() {
   if (haveNextHeader) return true;
   while (getline(*in, nextHeader))
-    if (startsWith(nextHeader, '>')) return true;
+    if (boost::starts_with(nextHeader, ">")) return true;
   return false;
-}
-
-/**
- * Function: startsWith
- * --------------------
- * Determines if a C++ string starts with a certain character
- * @param str: The string to check the first character of
- * @param character: The character to check
- * @return: True if the first character in the passed string starts with the passed character
- */
-static inline bool startsWith(string& str, char character) {
-  return str.c_str()[0] == character;
 }
