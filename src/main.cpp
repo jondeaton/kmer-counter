@@ -22,24 +22,30 @@
  */
 
 #include "async-kmer-counter.h"
+#include <boost/filesystem.hpp>
+#include <cstring>
 
 const std::string symbols = "ATGC";
 unsigned int kmerLength = 4;
 bool sequential = false;
 bool sumFiles = false;
-bool fromstdin = true;
-std::string directory;
 
 static void printUsage();
-static void parseCommandLineOptions(int argc, char* argv[]);
+static int parseCommandLineOptions(int argc, char* argv[]);
 
 int main(int argc, char* argv[]) {
-  parseCommandLineOptions(argc, argv);
+  int numFlags = parseCommandLineOptions(argc, argv);
 
   AsyncKmerCounter counter(symbols, kmerLength, sumFiles);
 
-  if (fromstdin) counter.count(std::cin, std::cout, sequential);
-  else counter.countDirectory(directory, std::cout, sequential);
+  if (argc >= 1 + numFlags) {
+    std::string path(argv[1 + numFlags]);
+    if (boost::filesystem::is_regular_file(path))
+      counter.countFastaFile(path, std::cout, sequential);
+    else if (boost::filesystem::is_directory(path))
+      counter.countDirectory(path, std::cout, sequential);
+  } else
+    counter.count(std::cin, std::cout, sequential);
 }
 
 /**
@@ -49,7 +55,7 @@ int main(int argc, char* argv[]) {
  * utility. For use in the case where the user has specified
  * the --help flag or has specified flags incorrectly.
  */
-static void printUsage(){
+static void printUsage() {
   std::cerr << "usage:\n\t./count-kmers < sequences.fasta > kmer_counts.kmer" << std::endl;
 }
 
@@ -60,10 +66,20 @@ static void printUsage(){
  * and sets global variables to reflect these options
  * @param argc : Number of command line options including script name
  * @param argv : NULL terminated list of arguments
+ * @return: The number of flags
  */
-static void parseCommandLineOptions(int argc, char* argv[]) {
-  if (argc > 1) {
-    sequential = strcmp(argv[1], "--sequential") == 0;
-    if (strcmp(argv[1], "--help") == 0) printUsage();
+static int parseCommandLineOptions(int argc, char* argv[]) {
+  int numFlags = 0;
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--sequential") == 0) {
+      sequential = true;
+      numFlags++;
+    }
+
+    if (strcmp(argv[i], "--help") == 0) {
+      printUsage();
+      exit(0);
+    }
   }
+  return numFlags;
 }

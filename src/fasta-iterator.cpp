@@ -22,6 +22,8 @@ FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
  * Basically just reads in from the stream until the next record or the
  * end of the stream is encountered. If the end of the stream is encountered
  * then the record is set to be a null pointer.
+ *
+ * Check this out: https://stackoverflow.com/questions/24851291/read-huge-text-file-line-by-line-in-c-with-buffering
  */
 FastaIterator& FastaIterator::operator++ () {
   haveNextHeader = findNextHeader();

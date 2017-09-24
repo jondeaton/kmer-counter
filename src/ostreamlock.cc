@@ -6,6 +6,9 @@
 #include "ostreamlock.h"
 #include <iostream>
 #include <map>
+#include <mutex>
+#include <memory>
+#include <ostream>
 using namespace std;
 
 static mutex mapLock;

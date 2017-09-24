@@ -3,12 +3,14 @@
  * ---------------------------
  * Presents the implementation of AsyncKmerCounter
  */
-#include <async-kmer-counter.h>
-#include <fasta-parser.h>
-#include <ostreamlock.h>
+
+#include "async-kmer-counter.h"
+#include "ostreamlock.h"
+#include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 using namespace std;
 
-#define NUMTHREADS 8
+#define NUMTHREADS 4
 
 AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
   sumFiles(sumFiles), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
@@ -57,17 +59,23 @@ void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
   pool.wait();
 }
 
-void AsyncKmerCounter::countFastaFile(const std::string &fastaFile, const std::string &outfile, bool sequential) {
-  (void) fastaFile; // todo: remove these and implement
-  (void) outfile;
-  (void) sequential;
+void AsyncKmerCounter::countFastaFile(const string &fastaFile, ostream &out, bool sequential) {
+  if (!boost::filesystem::exists(fastaFile)) return;
+
+  ifstream is(fastaFile);
+  count(is, out, sequential);
 }
 
-void AsyncKmerCounter::countDirectory(const std::string &directory, std::ostream &out, bool sequential) {
-  (void) directory; // todo: remove these and implement
-  (void) out;
-  (void) sumFiles;
-  (void) sequential;
+void AsyncKmerCounter::countDirectory(const string &directory, ostream &out, bool sequential) {
+  if (!boost::filesystem::exists(directory)) return;
+
+  boost::filesystem::directory_iterator end;
+  for (boost::filesystem::directory_iterator it(directory); it != end; ++it) {
+    if (boost::filesystem::is_regular_file(it->path())) {
+      string fileName = it->path().generic_string();
+      countFastaFile(fileName, out, sequential);
+    }
+  }
 }
 
 AsyncKmerCounter::~AsyncKmerCounter() { }
