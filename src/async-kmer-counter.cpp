@@ -10,14 +10,14 @@
 #include <boost/foreach.hpp>
 using namespace std;
 
-#define NUMTHREADS 4
+#define NUMTHREADS 8
 
 AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
   sumFiles(sumFiles), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
 
-void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential) {
+void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential, bool block) {
   if (sequential) countSequential(in, out);
-  else countAsync(in, out);
+  else countAsync(in, out, block);
 }
 
 void AsyncKmerCounter::countSequential(istream& in, ostream& out) {
@@ -40,7 +40,7 @@ void AsyncKmerCounter::countSequential(istream& in, ostream& out) {
 }
 
 // Asynchronous counting
-void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
+void AsyncKmerCounter::countAsync(istream& in, ostream& out, bool block) {
   FastaParser parser(&in);
   for (auto it = parser.begin(); it != parser.end(); ++it) {
     shared_ptr<pair<string, ostringstream>> record = *it;
@@ -56,26 +56,30 @@ void AsyncKmerCounter::countAsync(istream& in, ostream& out) {
       delete[] counts;
     });
   }
-  pool.wait();
+  if (block) pool.wait();
 }
 
-void AsyncKmerCounter::countFastaFile(const string &fastaFile, ostream &out, bool sequential) {
+void AsyncKmerCounter::countFastaFile(const string &fastaFile, ostream &out, bool sequential, bool block) {
   if (!boost::filesystem::exists(fastaFile)) return;
 
   ifstream is(fastaFile);
-  count(is, out, sequential);
+  count(is, out, sequential, block);
 }
 
-void AsyncKmerCounter::countDirectory(const string &directory, ostream &out, bool sequential) {
+void AsyncKmerCounter::countDirectory(const string &directory, ostream &out, bool sequential, bool block) {
   if (!boost::filesystem::exists(directory)) return;
 
   boost::filesystem::directory_iterator end;
   for (boost::filesystem::directory_iterator it(directory); it != end; ++it) {
     if (boost::filesystem::is_regular_file(it->path())) {
       string fileName = it->path().generic_string();
-      countFastaFile(fileName, out, sequential);
+      if (sequential) countFastaFile(fileName, out, sequential, true);
+      else pool.schedule([&, fileName] () {
+        countFastaFile(fileName, out, true, false);
+      });
     }
   }
+  if (!sequential && block) pool.wait();
 }
 
 AsyncKmerCounter::~AsyncKmerCounter() { }
