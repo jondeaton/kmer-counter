@@ -24,6 +24,7 @@
 #include "async-kmer-counter.h"
 #include <boost/filesystem.hpp>
 #include <cstring>
+#include <iostream>
 
 const std::string symbols = "ATGC";
 unsigned int kmerLength = 4;
@@ -38,14 +39,13 @@ int main(int argc, char* argv[]) {
 
   AsyncKmerCounter counter(symbols, kmerLength, sumFiles);
 
-  if (argc >= 1 + numFlags) {
+  if (argc > 1 + numFlags) {
     std::string path(argv[1 + numFlags]);
     if (boost::filesystem::is_regular_file(path))
       counter.countFastaFile(path, std::cout, sequential, true);
     else if (boost::filesystem::is_directory(path))
       counter.countDirectory(path, std::cout, sequential, true);
-  } else
-    counter.count(std::cin, std::cout, sequential, true);
+  } else counter.count(std::cin, std::cout, sequential, true);
 }
 
 /**

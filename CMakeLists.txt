@@ -2,14 +2,19 @@ cmake_minimum_required(VERSION 3.8)
 project(Kmer-Counter)
 set(CMAKE_CXX_STANDARD 17)
 
-SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic -lpthread -lboost_system -lboost_thread -lboost_filesystem")
+#SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -pedantic")
+SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic")
 
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
+find_package(Boost 1.65 REQUIRED)
+IF (Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+    ADD_DEFINITIONS( "-DHAS_BOOST" )
 
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIR})
+    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_MULTITHREADED ON)
+    set(Boost_USE_STATIC_RUNTIME OFF)
+ENDIF()
+
 
 include_directories(include)
 include_directories(src)
@@ -30,4 +35,10 @@ set(SOURCE_FILES
         src/main.cpp)
 
 add_executable(count-kmers ${SOURCE_FILES})
-target_link_libraries(count-kmers ${Boost_LIBRARIES})
+
+if(APPLE OR WIN32)
+    target_link_libraries(count-kmers pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
+#    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
+else()
+    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
+endif()
