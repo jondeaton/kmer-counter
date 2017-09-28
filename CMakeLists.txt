@@ -35,10 +35,23 @@ set(SOURCE_FILES
         src/main.cpp)
 
 add_executable(count-kmers ${SOURCE_FILES})
-
 if(APPLE OR WIN32)
     target_link_libraries(count-kmers pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
 #    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
 else()
     target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
 endif()
+#target_link_libraries(count-kmers ${Boost_LIBRARIES})
+
+
+set(TEST_SOURCE
+        include/batch-processor.h
+        src/batch-processor.cpp
+        test/test-mpi.cpp)
+
+set(CMAKE_CXX_COMPILER "/opt/openmpi-3.0.0/bin/mpic++")
+find_package ( MPI )
+if ( MPI_FOUND )
+    include_directories( ${MPI_INCLUDE_PATH} )
+endif( MPI_FOUND )
+add_executable(test-mpi ${TEST_SOURCE})
