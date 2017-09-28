@@ -31,3 +31,16 @@ set(SOURCE_FILES
 
 add_executable(count-kmers ${SOURCE_FILES})
 target_link_libraries(count-kmers ${Boost_LIBRARIES})
+
+
+set(TEST_SOURCE
+        include/batch-processor.h
+        src/batch-processor.cpp
+        test/test-mpi.cpp)
+
+set(CMAKE_CXX_COMPILER "/opt/openmpi-3.0.0/bin/mpic++")
+find_package ( MPI )
+if ( MPI_FOUND )
+    include_directories( ${MPI_INCLUDE_PATH} )
+endif( MPI_FOUND )
+add_executable(test-mpi ${TEST_SOURCE})

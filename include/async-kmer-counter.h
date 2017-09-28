@@ -85,7 +85,6 @@ public:
 
 private:
   bool sumFiles;
-  std::string directory;
 
   KmerCounter kmerCounter;
   ThreadPool pool;
