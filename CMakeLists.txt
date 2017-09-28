@@ -43,7 +43,6 @@ else()
 endif()
 #target_link_libraries(count-kmers ${Boost_LIBRARIES})
 
-
 set(TEST_SOURCE
         include/batch-processor.h
         src/batch-processor.cpp
@@ -54,4 +53,3 @@ find_package ( MPI )
 if ( MPI_FOUND )
     include_directories( ${MPI_INCLUDE_PATH} )
 endif( MPI_FOUND )
-add_executable(test-mpi ${TEST_SOURCE})
