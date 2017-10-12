@@ -7,13 +7,14 @@ This repository contains code for multi-threaded and distributed counting of k-m
 2. `cmake`
 3. `boost`
 
-### Build
+### Build Executables
 In the top level directory run:
 
 `cmake .`
+
 `make`
 
-### Use
+### Usage (Unix)
 Once build, to count k-mers in a fasta file run 
 
 `./count-kmers path/to/file.fasta`
@@ -23,7 +24,7 @@ The results of this calculation will be writen to standard output. If you want t
 `./count-kmers path/to/file.fasta > result.kmer`
 
 ## Distributed k-mer counting
-Currently under development.
+Distributed implementation of k-mer counting using OpenMPI is currently under development.
 
 ## Python bindings for Python3.6 
 Currently under development.
