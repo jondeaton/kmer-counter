@@ -45,8 +45,8 @@ if (MPI_FOUND)
     include_directories(${MPI_INCLUDE_PATH})
 
     set(MPI_TEST_SOURCE
-            include/batch-processor.h
-            src/batch-processor.tpp
+            include/batch-processor.h src/batch-processor.tpp
+            include/distributed-kmer-counter.h src/distributed-kmer-counter.cpp
             test/test-mpi.cpp)
 
     add_executable(test-mpi ${MPI_TEST_SOURCE})
