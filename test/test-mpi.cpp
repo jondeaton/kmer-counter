@@ -1,8 +1,12 @@
-//
-// Created by Jonathan Deaton on 9/27/17.
-//
+/*
+ * File: test-mpi.cpp
+ * ------------------
+ * For testing the batch processor
+ */
+
+#include "batch-processor.h"
 
 int main(int argc, char* argv[]) {
-  BatchProcessor bp(NULL, NULL);
+  BatchProcessor bp(&argc, &argv);
   bp.SayHello();
 }
