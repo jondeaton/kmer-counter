@@ -1,8 +1,11 @@
-//
-// Created by Jonathan Deaton on 9/27/17.
-//
+
+#include "batch-processor.h"
 
 int main(int argc, char* argv[]) {
-  BatchProcessor bp(NULL, NULL);
-  bp.SayHello();
+  BatchProcessor bp(&argc, &argv);
+
+
+  bp.process();
+
+
 }
