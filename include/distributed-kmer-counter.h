@@ -11,7 +11,6 @@ class DistributedKmerCounter {
 
 public:
 
-
 private:
 
 };
