@@ -46,9 +46,6 @@ public:
 
 private:
 
-  std::queue<std::string> keys; // queue of keys to be processed
-  size_t numProcessed; // Worker keeps track of how many it's processed
-
   // Basic MPI data
   int worldSize;
   int worldRank;
