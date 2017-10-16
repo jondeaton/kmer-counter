@@ -29,7 +29,7 @@ This will attempt to count k-mers in all of the regular files located in the dir
 `./count-kmers --sequential path/to/file.kmer > counts.kmer`
 
 ## Distributed k-mer counting
-Distributed implementation of k-mer counting using OpenMPI is currently under development.
+Distributed implementation with OpenMPI is currently under development. Check the "distributed" branch.
 
 ## Python bindings for Python3.6 
 Currently under development.
