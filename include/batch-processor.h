@@ -11,8 +11,7 @@
 #include <string>
 #include <queue>
 
-template <class keyT, class dataT>
-class BatchProcessor<keyT, dataT> {
+class BatchProcessor {
 
 public:
 
@@ -35,27 +34,8 @@ public:
    * @param getData: A function that gets raw data to be processed from a key
    * @param processData: A function that does the data processing
    */
-  void process(std::function<void(std::queue<keyT>&)> getKeys,
-               std::function<dataT (keyT)> getData,
-               std::function<void (dataT)> processData);
-
-  /**
-   * Public method: coordinateWorkers
-   * --------------------------------
-   * Method used by the "head" node to coordinate work on all of the worker nodes.
-   * This method will first call the get keys method which was passed, and fill the queue
-   * of keys in the batch processor with
-   * @param getKeys
-   */
-  void coordinateWorkers(std::function<void(std::queue<keyT>&)> getKeys);
-  void doWork(std::function<dataT (keyT)> getData, std::function<void (dataT)> processData);
-
-  /**
-   * Public method: SayHello
-   * -----------------------
-   * Debugging method. Prints information about this process to stdout.
-   */
-  void SayHello();
+  void process(std::function<void (std::queue<std::string>&)> getKeys,
+               std::function<void (std::string&)> processData);
 
   /**
    * Deconstructor: BatchProcessor
@@ -66,14 +46,19 @@ public:
 
 private:
 
-  std::queue<keyT> keys; // queue of keys to be processed
+  std::queue<std::string> keys; // queue of keys to be processed
+  size_t numProcessed; // Worker keeps track of how many it's processed
 
   // Basic MPI data
   int worldSize;
   int worldRank;
   int nameLength;
   std::string processorName;
+
+
+  void coordinateWorkers(std::function<void(std::queue<std::string>&)> getKeys);
+  void doWork(std::function<void (std::string&)> processData);
+  void sendExitSignal(int worker);
 };
 
-#include "batch-processor.tpp"
 #endif

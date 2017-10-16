@@ -5,8 +5,6 @@
  */
 
 #include "distributed-kmer-counter.h"
-using namesapce std;
-
 
 
 

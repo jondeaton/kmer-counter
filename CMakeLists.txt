@@ -22,13 +22,13 @@ if (Boost_FOUND)
 endif()
 
 set(SOURCE_FILES
-        include/async-kmer-counter.h        include/kmer-counter.h
-        include/fasta-parser.h              include/fasta-iterator.h
-        include/boost-thread-pool.h         include/ostreamlock.h
-        src/async-kmer-counter.cpp          src/kmer-counter.cpp
-        src/fasta-parser.cpp                src/fasta-iterator.cpp
-        src/boost-thread-pool.cpp           src/ostreamlock.cc
-        src/main.cpp)
+        include/async-kmer-counter.h        src/async-kmer-counter.cpp
+        include/kmer-counter.h              src/kmer-counter.cpp
+        include/fasta-parser.h              src/fasta-parser.cpp
+        include/fasta-iterator.h            src/fasta-iterator.cpp
+        include/boost-thread-pool.h         src/boost-thread-pool.cpp
+        include/ostreamlock.h               src/ostreamlock.cc
+        src/main-local.cpp)
 
 add_executable(count-kmers ${SOURCE_FILES})
 if(APPLE OR WIN32)
@@ -36,18 +36,18 @@ if(APPLE OR WIN32)
 else()
     target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
 endif()
-#target_link_libraries(count-kmers ${Boost_LIBRARIES})
 
 
+# Distributed Target
 find_package(MPI REQUIRED)
 if (MPI_FOUND)
     set(CMAKE_CXX_COMPILER "/opt/openmpi-3.0.0/bin/mpic++")
-    include_directories(${MPI_INCLUDE_PATH})
+        include_directories(${MPI_INCLUDE_PATH})
 
     set(MPI_TEST_SOURCE
-            include/batch-processor.h src/batch-processor.tpp
-            include/distributed-kmer-counter.h src/distributed-kmer-counter.cpp
-            test/test-mpi.cpp)
+            include/batch-processor.h               src/batch-processor.cpp
+            include/distributed-kmer-counter.h      src/distributed-kmer-counter.cpp
+            src/main-distributed.cpp)
 
     add_executable(test-mpi ${MPI_TEST_SOURCE})
     target_link_libraries(test-mpi ${MPI_LIBRARIES})
@@ -61,5 +61,5 @@ if (MPI_FOUND)
     endif()
 
 else ()
-    message(WARNING "Couldn't find MPI, not building distributed k-mer counter")
+    message(WARNING "Couldn't find MPI. Not building distributed k-mer counter.")
 endif ()

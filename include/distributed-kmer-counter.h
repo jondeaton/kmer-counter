@@ -7,12 +7,15 @@
 #ifndef _dist_kmer_counter_
 #define _dist_kmer_counter_
 
+#include "batch-processor.h"
+
 class DistributedKmerCounter {
 
 public:
 
 private:
 
+  BatchProcessor processor;
 };
 
 #endif
