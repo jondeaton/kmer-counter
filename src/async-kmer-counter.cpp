@@ -82,4 +82,6 @@ void AsyncKmerCounter::countDirectory(const string &directory, ostream &out, boo
   if (!sequential && block) pool.wait();
 }
 
-AsyncKmerCounter::~AsyncKmerCounter() { }
+AsyncKmerCounter::~AsyncKmerCounter() {
+  (void) sumFiles; // just to get the compiler to chill
+}

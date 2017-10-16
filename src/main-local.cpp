@@ -1,5 +1,8 @@
 /*
- * Command line tool for counting k-mers
+ * File: main-local.cpp
+ * --------------------
+ * Program entry point for regualr k-mer counter command line tool.
+ *
  *
  * Usage:
  *

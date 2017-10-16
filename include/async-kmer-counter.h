@@ -1,7 +1,7 @@
 /*
  * File: async-kmer-counter.h
  * --------------------------
- * Presents the interface of AsyncKmerCounter, an asynchronous k-mer counter
+ * Presents the interface of the AsyncKmerCounter class, an asynchronous k-mer counter.
  */
 
 #ifndef _async_kmer_counter_
