@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.7)
 project(Kmer-Counter)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 
 #SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -pedantic")
 SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic")
 
-find_package(Boost 1.65 REQUIRED)
+find_package(Boost 1.62 REQUIRED)
 IF (Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
     ADD_DEFINITIONS( "-DHAS_BOOST" )
