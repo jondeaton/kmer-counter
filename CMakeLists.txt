@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.7)
 project(Kmer-Counter)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 
 include_directories(src)
 include_directories(include)
@@ -20,7 +20,7 @@ else()
     SET(DIST_EXECUTABLE "count-kmer-dist")
 endif()
 
-find_package(Boost 1.65 REQUIRED)
+find_package(Boost 1.60 REQUIRED)
 if (Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
     ADD_DEFINITIONS( "-DHAS_BOOST" )
@@ -60,7 +60,7 @@ endif()
 # Distributed Target
 find_package(MPI REQUIRED)
 if (MPI_FOUND)
-    set(CMAKE_CXX_COMPILER "/opt/openmpi-3.0.0/bin/mpic++")
+    set(CMAKE_CXX_COMPILER "mpic++")
         include_directories(${MPI_INCLUDE_PATH})
 
     set(MPI_SOURCES
