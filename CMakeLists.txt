@@ -5,10 +5,19 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(src)
 include_directories(include)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
     SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -pedantic")
 else()
     SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic")
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "DEBUG" AND APPLE)
+    # LLDB needs files to end with .o extension...
+    SET(LOC_EXECUTABLE "count-kmers.o")
+    SET(DIST_EXECUTABLE "count-kmer-dist.o")
+else()
+    SET(LOC_EXECUTABLE "count-kmers")
+    SET(DIST_EXECUTABLE "count-kmer-dist")
 endif()
 
 find_package(Boost 1.65 REQUIRED)
@@ -30,11 +39,21 @@ set(SOURCE_FILES
         include/ostreamlock.h               src/ostreamlock.cc
         src/main-local.cpp)
 
-add_executable(count-kmers ${SOURCE_FILES})
+add_executable(${LOC_EXECUTABLE} ${SOURCE_FILES})
 if(APPLE OR WIN32)
-    target_link_libraries(count-kmers pthread boost_thread-mt boost_system-mt boost_filesystem-mt boost_program_options-mt)
+    target_link_libraries(${LOC_EXECUTABLE}
+            pthread
+            boost_thread-mt
+            boost_system-mt
+            boost_filesystem-mt
+            boost_program_options-mt)
 else()
-    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem boost_program_options)
+    target_link_libraries(${LOC_EXECUTABLE}
+            pthread
+            boost_thread
+            boost_system
+            boost_filesystem
+            boost_program_options)
 endif()
 
 
@@ -55,27 +74,37 @@ if (MPI_FOUND)
             include/ostreamlock.h                   src/ostreamlock.cc
             src/main-distributed.cpp)
 
-    add_executable(count-kmer-dist ${MPI_SOURCES})
-    target_link_libraries(count-kmer-dist ${MPI_LIBRARIES})
+    add_executable(${DIST_EXECUTABLE} ${MPI_SOURCES})
+    target_link_libraries(${DIST_EXECUTABLE} ${MPI_LIBRARIES})
 
     if(MPI_COMPILE_FLAGS)
-        set_target_properties(count-kmer-dist PROPERTIES COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+        set_target_properties(${DIST_EXECUTABLE} PROPERTIES COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
     endif()
 
     if(MPI_LINK_FLAGS)
-        set_target_properties(count-kmer-dist PROPERTIES LINK_FLAGS "${MPI_LINK_FLAGS}")
+        set_target_properties(${DIST_EXECUTABLE} PROPERTIES LINK_FLAGS "${MPI_LINK_FLAGS}")
     endif()
 
     if(APPLE OR WIN32)
-        target_link_libraries(count-kmer-dist pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
+        target_link_libraries(${DIST_EXECUTABLE} pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
     else()
-        target_link_libraries(count-kmer-dist pthread boost_thread boost_system boost_filesystem)
+        target_link_libraries(${DIST_EXECUTABLE} pthread boost_thread boost_system boost_filesystem)
     endif()
 
     if(APPLE OR WIN32)
-        target_link_libraries(count-kmer-dist pthread boost_thread-mt boost_system-mt boost_filesystem-mt boost_program_options-mt)
+        target_link_libraries(${DIST_EXECUTABLE}
+                pthread boost_thread-mt
+                boost_system-mt
+                boost_filesystem-mt
+                boost_program_options-mt
+                boost_regex-mt)
     else()
-        target_link_libraries(count-kmer-dist pthread boost_thread boost_system boost_filesystem boost_program_options)
+        target_link_libraries(${DIST_EXECUTABLE}
+                pthread boost_thread
+                boost_system
+                boost_filesystem
+                boost_program_options
+                boost_regex)
     endif()
 
 else ()

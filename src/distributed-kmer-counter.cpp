@@ -8,9 +8,10 @@
 
 DistributedKmerCounter::DistributedKmerCounter(int *argcp, char ***argvp) : processor(argcp, argvp) {}
 
-void DistributedKmerCounter::process(std::string directory, boost::regex pattern) {
+void DistributedKmerCounter::process(std::string directory, boost::regex pattern, std::string output) {
   (void) directory;
   (void) pattern;
+  (void) output;
 }
 
 void DistributedKmerCounter::process(std::string &file) {
