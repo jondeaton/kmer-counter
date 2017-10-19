@@ -62,9 +62,8 @@ void parse_command_line_options(int argc, const char* const* argv) {
 
   po::options_description config("Config");
   config.add_options()
-    ("regex,r", po::value<string>()->default_value("*"),      "file pattern regular expression")
+    ("regex,r", po::value<string>(&file_regex)->default_value("*"),      "file pattern regular expression")
     ("k,k",     po::value<int>(&k)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")");
-
 
   po::options_description hidden("Hidden");
   hidden.add_options()
@@ -94,22 +93,6 @@ void parse_command_line_options(int argc, const char* const* argv) {
 
   if (vm.count("version")) {
     cout << "Distributed k-mer counter version 1.0" << endl;
-    exit(1);
-  }
-
-  // Set globals
-  try {
-    file_regex = vm["regex"].as<string>();
-
-    cout << "trying things" << endl;
-
-
-    cout << input_directory << endl;
-    cout << output_file << endl;
-
-    cout << "MADE IT THIS FAR @@@@@@@" << endl; exit(69);
-  } catch (int e) {
-    cout << desc << endl;
     exit(1);
   }
 }
