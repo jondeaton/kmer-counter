@@ -22,7 +22,12 @@ using namespace std;
 
 // Constructor
 BatchProcessor::BatchProcessor(int* argcp, char*** argvp) {
-  MPI_Init(argcp, argvp);
+  int error = MPI_Init(argcp, argvp);
+  if (error) {
+    cerr << "Error: " << error << " initalizing MPI." << endl;
+    exit(error);
+  }
+
   MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
   MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
 

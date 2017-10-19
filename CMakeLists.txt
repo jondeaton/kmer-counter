@@ -32,9 +32,9 @@ set(SOURCE_FILES
 
 add_executable(count-kmers ${SOURCE_FILES})
 if(APPLE OR WIN32)
-    target_link_libraries(count-kmers pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
+    target_link_libraries(count-kmers pthread boost_thread-mt boost_system-mt boost_filesystem-mt boost_program_options-mt)
 else()
-    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
+    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem boost_program_options)
 endif()
 
 
@@ -70,6 +70,12 @@ if (MPI_FOUND)
         target_link_libraries(count-kmer-dist pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
     else()
         target_link_libraries(count-kmer-dist pthread boost_thread boost_system boost_filesystem)
+    endif()
+
+    if(APPLE OR WIN32)
+        target_link_libraries(count-kmer-dist pthread boost_thread-mt boost_system-mt boost_filesystem-mt boost_program_options-mt)
+    else()
+        target_link_libraries(count-kmer-dist pthread boost_thread boost_system boost_filesystem boost_program_options)
     endif()
 
 else ()
