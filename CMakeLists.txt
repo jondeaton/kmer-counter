@@ -60,8 +60,8 @@ endif()
 # Distributed Target
 find_package(MPI REQUIRED)
 if (MPI_FOUND)
-    set(CMAKE_CXX_COMPILER "mpic++")
-        include_directories(${MPI_INCLUDE_PATH})
+#    set(CMAKE_CXX_COMPILER "mpic++")
+    include_directories(${MPI_INCLUDE_PATH})
 
     set(MPI_SOURCES
             include/batch-processor.h               src/batch-processor.cpp

@@ -16,12 +16,12 @@ class DistributedKmerCounter {
 public:
 
   DistributedKmerCounter(int* argcp, char*** argvp);
-  void process(std::string directory, boost::regex pattern, std::string output);
+  void run();
 
 private:
 
   BatchProcessor processor;
-  AsyncKmerCounter counter;
+  AsyncKmerCounter counter; // not every node needs one of these... move this...
 
   bool verbose;
   bool debug;
@@ -30,14 +30,13 @@ private:
   std::string symbols;
   bool sumFiles;
 
-  std::string input_directory;
-  std::string file_regex;
+  std::string inputDirectory;
   boost::regex fileRegex;
-  std::string output_file;
+  std::string outputFile;
 
-  void process(std::string& file);
+  void process(const std::string& file);
   void getFiles(std::string directory, boost::regex pattern, std::queue<std::string> &fileQueue);
-  void parse_command_line_options(int argc, const char* const* argv);
+  void parseCommandLineOptions(int argc, const char* const* argv);
 };
 
 #endif

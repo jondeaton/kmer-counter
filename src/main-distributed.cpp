@@ -13,5 +13,5 @@
 
 int main(int argc, char* argv[]) {
   DistributedKmerCounter counter(&argc, &argv);
-  counter.process();
+  counter.run();
 }

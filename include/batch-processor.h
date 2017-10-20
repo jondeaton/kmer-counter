@@ -52,7 +52,6 @@ private:
   int nameLength;
   std::string processorName;
 
-
   void coordinateWorkers(std::function<void(std::queue<std::string>&)> getKeys);
   void doWork(std::function<void (std::string&)> processData);
   void sendExitSignal(int worker);
