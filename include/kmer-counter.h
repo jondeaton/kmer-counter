@@ -17,7 +17,13 @@ class KmerCounter {
 
 public:
 
-  unsigned int kmerCountVectorSize; // The number of unique k-mers of the given symbols and k-mer length
+  /**
+   * Constructor
+   * -----------
+   * Creates a KmerCounter object. Calls to count after using this consructor without first
+   * setting symbols and  k-mer length results in undefined behavior.
+   */
+  KmerCounter() = default;
 
   /**
    * Constructor
@@ -37,10 +43,36 @@ public:
    */
   void count(const std::string& sequence, long kmerCount[]);
 
+  /**
+   * Public Method: setSymbols
+   * -------------------------
+   * Sets the symbols that the k-mer counter uses in future calls to count
+   * @param symbols: The symbols which are recognized. Order determined lexicographic ordering
+   */
+  void setSymbols(const std::string& symbols);
+
+  /**
+   * Public Method: setKmerLength
+   * ----------------------------
+   * Sets the k-mer length that will be used for future calls to count
+   * @param kmerLength: The length of the window/word length to count in sequences
+   */
+  void setKmerLength(unsigned int kmerLength);
+
+  /**
+   * Public Method: GetVectorSize
+   * ----------------------------
+   * Returns the size of the vector in which k-mer counts will be stored which is equal
+   * to the number of unique k-mers of the given symbols and k-mer length
+   */
+  unsigned int GetVectorSize() { return kmerCountVectorSize; }
+
 private:
   std::string symbols;
-  unsigned int numSymbols;
-  unsigned int kmerLength;
+  unsigned int numSymbols = 0;
+  unsigned int kmerLength = 0;
+  unsigned int kmerCountVectorSize = 0; // The number of unique k-mers of the given symbols and k-mer length
+
   std::map<char, int> symbolIndexMap;
 
   void populateMap();

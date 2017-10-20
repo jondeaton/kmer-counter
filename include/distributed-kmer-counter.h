@@ -8,8 +8,8 @@
 #define _dist_kmer_counter_
 
 #include "batch-processor.h"
+#include "async-kmer-counter.h"
 #include <boost/regex.hpp>
-
 
 class DistributedKmerCounter {
 
@@ -22,11 +22,11 @@ public:
 
 private:
 
-
-  void getKeys(std::queue<std::string>& fileQueue);
   void process(std::string& file);
+  void getFiles(std::string directory, boost::regex pattern, std::queue<std::string> &fileQueue);
 
-  BatchProcessor processor;
+  BatchProcessor& processor;
+  AsyncKmerCounter counter;
 };
 
 #endif

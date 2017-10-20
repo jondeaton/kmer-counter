@@ -19,10 +19,15 @@ namespace po = boost::program_options;
 using namespace std;
 
 #define K_DEFAULT 4
+#define DNA_SYMBOLS "ATGC"
 
 bool verbose;
 bool debug;
+
 int k;
+string symbols;
+bool sumFiles;
+
 string input_directory;
 string file_regex;
 string output_file;
@@ -33,7 +38,6 @@ void parse_command_line_options(int argc, const char* const* argv);
 int main(int argc, char* argv[]) {
 
   DistributedKmerCounter counter(&argc, &argv);
-
   parse_command_line_options(argc, argv);
 
   counter.k = k;
@@ -62,8 +66,10 @@ void parse_command_line_options(int argc, const char* const* argv) {
 
   po::options_description config("Config");
   config.add_options()
-    ("regex,r", po::value<string>(&file_regex)->default_value("*"),      "file pattern regular expression")
-    ("k,k",     po::value<int>(&k)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")");
+    ("regex,r",   po::value<string>(&file_regex)->default_value(".*"),      "file pattern regular expression")
+    ("k,k",       po::value<int>(&k)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
+    ("symbols,s", po::value<string>(&symbols)->default_value(DNA_SYMBOLS), "symbols to use for counting")
+    ("sum,sum",   po::bool_switch(&sumFiles), "sum all k-mer counts per file");
 
   po::options_description hidden("Hidden");
   hidden.add_options()

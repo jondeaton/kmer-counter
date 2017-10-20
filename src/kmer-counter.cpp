@@ -24,12 +24,12 @@ void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
   auto numSymbols = (unsigned int) symbols.length();
   if (numSymbols == 0) return;
 
-  // Stores the lexocographic significance of each letter in a kmer
+  // Stores the lexicographic significance of each letter in a kmer
   auto significances = new unsigned int[kmerLength + 1];
   for (unsigned int i = 0; i <= kmerLength; i++) significances[i] = ipow(numSymbols, i);
 
   // index is the lexicographic index in the kmerCount array corresponding
-  // to the kmer under the sliding window. -1 indicates that there is no index
+  // to the k-mer under the sliding window. -1 indicates that there is no index
   // stored in this variable from the kmer under the previous window
   int index = -1;
 
@@ -38,7 +38,7 @@ void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
   for (size_t i = 0; i <= maximumIndex; i++) {
     const char* kmer = sequence.c_str() + i; // slide the window
     index = calculateIndex(kmer, significances, index);
-    if (index >= 0) kmerCount[index] += 1; // Valid kmer encountered
+    if (index >= 0) kmerCount[index] += 1; // Valid k-mer encountered
     // else i -= (index + 1); // Invalid character encountered. Advance window past it.
   }
 }
@@ -58,7 +58,20 @@ int KmerCounter::calculateIndex(const char *kmer, const unsigned int *significan
   return index;
 }
 
+void KmerCounter::setSymbols(const std::string &symbols) {
+  this->symbols = symbols;
+  numSymbols = (unsigned int) symbols.length();
+  populateMap();
+}
+
+void KmerCounter::setKmerLength(unsigned int kmerLength) {
+  this->kmerLength = kmerLength;
+  kmerCountVectorSize = ipow(kmerLength, numSymbols);
+  populateMap();
+}
+
 void KmerCounter::populateMap() {
+  symbolIndexMap.clear();
   for (unsigned int i = 0; i < numSymbols; i++) {
     symbolIndexMap[symbols[i]] = i;
     symbolIndexMap[tolower(symbols[i])] = i;

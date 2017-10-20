@@ -18,14 +18,16 @@ class AsyncKmerCounter {
 public:
 
   /**
-   * Constructor: AsyncKmerCounter
-   * -----------------------------
+   * Constructor
+   * -----------
    * Constructs an asynchronous k-mer counting object for counting k-mers in sequences with
    * the specified k-mer length and symbol set.
    * @param symbols: A string with the lexicographic ordering of the symbols in the sequences
    * @param kmerLength: The length of the sliding window ("k" in "k-mer")
-   * @param sumFiles: True if all k-mer counts in each file should be summed together
+   * @param sumFiles:True if all k-mer counts in each file should be summed together
    */
+  AsyncKmerCounter();
+  AsyncKmerCounter(const std::string& symbols, unsigned int kmerLength);
   AsyncKmerCounter(const std::string& symbols, unsigned int kmerLength, bool sumFiles);
 
   /**
@@ -76,16 +78,20 @@ public:
    */
   void countDirectory(const std::string& directory, std::ostream& out, bool sequential, bool block);
 
+  void setSumFiles() { this->sumFiles = sumFiles; }
+  void setSymbols(const std::string& symbols) { kmerCounter.setSymbols(symbols); }
+  void setSetKmerLength(unsigned int kmerLength) { kmerCounter.setKmerLength(kmerLength); }
+
   /**
-   * Destructor: AsyncKmerCounter
-   * ----------------------------
+   * Destructor
+   * ----------
    * For disposal of the asynchronous k-mer counter. This will dispose of the threads in the thread pool
    */
   ~AsyncKmerCounter();
 
 private:
-  bool sumFiles;
 
+  bool sumFiles; // True if all k-mer counts in each file should be summed together
   KmerCounter kmerCounter;
   ThreadPool pool;
 };

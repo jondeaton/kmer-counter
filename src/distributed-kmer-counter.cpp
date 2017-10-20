@@ -6,18 +6,41 @@
 
 #include "distributed-kmer-counter.h"
 
-DistributedKmerCounter::DistributedKmerCounter(int *argcp, char ***argvp) : processor(argcp, argvp) {}
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
 
-void DistributedKmerCounter::process(std::string directory, boost::regex pattern, std::string output) {
+using namespace std;
+
+DistributedKmerCounter::DistributedKmerCounter(int *argcp, char ***argvp) :
+  processor(argcp, argvp) { }
+
+void DistributedKmerCounter::process(string directory, boost::regex pattern, string output) {
+
+  processor.process([this, directory, pattern](queue<string> &fileQueue){
+    this->getFiles(directory, pattern, fileQueue);
+  },[this](string& file){
+    this->process(file);
+  });
+
   (void) directory;
   (void) pattern;
   (void) output;
 }
 
-void DistributedKmerCounter::process(std::string &file) {
-  (void) file;
+void DistributedKmerCounter::process(string &file) {
+  ostream os();
+  counter.countFastaFile(file, os, true, true);
+  os.c_str();
 }
 
-void DistributedKmerCounter::getKeys(std::queue<std::string> &fileQueue) {
-  (void) fileQueue;
+// Gets all file matching a name in a directry
+void DistributedKmerCounter::getFiles(string directory, boost::regex pattern, queue<string> &fileQueue) {
+
+  fs::directory_iterator it(directory);
+  fs::directory_iterator endit;
+
+  while( it != endit) {
+    string filename = it->path().filename().generic_string();
+    if(fs::is_regular_file(*it) && regex_match(filename, pattern) fileQueue.push(filename);
+  }
 }

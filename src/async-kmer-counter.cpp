@@ -12,6 +12,11 @@ using namespace std;
 
 #define NUMTHREADS 8
 
+AsyncKmerCounter::AsyncKmerCounter() : sumFiles(false), pool(NUMTHREADS) { }
+
+AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength) :
+  sumFiles(false), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
+
 AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
   sumFiles(sumFiles), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
 
@@ -23,16 +28,16 @@ void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential, bool bl
 void AsyncKmerCounter::countSequential(istream& in, ostream& out) {
 
   // Gotta use heap because variable length array
-  auto counts = new long[kmerCounter.kmerCountVectorSize];
+  auto counts = new long[kmerCounter.GetVectorSize()];
 
   FastaParser parser(&in);
   for (auto it = parser.begin(); it != parser.end(); ++it) {
-    memset(counts, 0, sizeof(long) * kmerCounter.kmerCountVectorSize);
+    memset(counts, 0, sizeof(long) * kmerCounter.GetVectorSize());
     kmerCounter.count(it->second.str(), counts);
 
     // Output to file
     out << parser.parseHeader(it->first);
-    for (size_t i = 0; i < kmerCounter.kmerCountVectorSize; i++)
+    for (size_t i = 0; i < kmerCounter.GetVectorSize(); i++)
       out << ", " << counts[i];
     out << endl;
   }
@@ -60,8 +65,7 @@ void AsyncKmerCounter::countAsync(istream& in, ostream& out, bool block) {
 }
 
 void AsyncKmerCounter::countFastaFile(const string &fastaFile, ostream &out, bool sequential, bool block) {
-  if (!boost::filesystem::exists(fastaFile)) return;
-
+  if (!boost::filesystem::exists(fastaFile)) return; // File not found
   ifstream is(fastaFile);
   count(is, out, sequential, block);
 }
