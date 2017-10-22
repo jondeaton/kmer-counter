@@ -93,6 +93,6 @@ private:
 
   bool sumFiles; // True if all k-mer counts in each file should be summed together
   KmerCounter kmerCounter;
-  ThreadPool pool;
+  ThreadPool& pool;
 };
 #endif

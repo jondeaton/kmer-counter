@@ -21,7 +21,9 @@ public:
 private:
 
   BatchProcessor processor;
-  AsyncKmerCounter counter; // not every node needs one of these... move this...
+  AsyncKmerCounter counter;
+
+  ThreadPool pool;
 
   bool verbose;
   bool debug;

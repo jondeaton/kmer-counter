@@ -31,13 +31,12 @@ void DistributedKmerCounter::run() {
 }
 
 void DistributedKmerCounter::process(const string &file) {
-  ostream os(outputFile);
-  counter.countFastaFile(file, os, true, true);
+  ofstream ofs(outputFile);
+  counter.countFastaFile(file, ofs, true, true);
 }
 
-// Gets all file matching a name in a directry
+// Gets all file matching a name in a directory
 void DistributedKmerCounter::getFiles(string directory, boost::regex pattern, queue<string> &fileQueue) {
-
   fs::directory_iterator it(directory);
   fs::directory_iterator endit;
 

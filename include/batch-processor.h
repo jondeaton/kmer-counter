@@ -7,9 +7,11 @@
 #ifndef _BatchProcessor_H
 #define _BatchProcessor_H
 
+#include "boost-thread-pool.h"
 #include <functional>
 #include <string>
 #include <queue>
+#include <fstream>
 
 class BatchProcessor {
 
@@ -23,6 +25,9 @@ public:
    * @param argvp: Pointer to argv from program entry point
    */
   BatchProcessor(int* argcp, char*** argvp);
+
+  void schedule(const std::function<void(void)>& task, );
+  void wait();
 
   /**
    * Public method: process
@@ -52,7 +57,13 @@ private:
   int nameLength;
   std::string processorName;
 
+
+  std::ofstream outputStream; // stream to write answers to
+
+  ThreadPool& pool;
+
   void coordinateWorkers(std::function<void(std::queue<std::string>&)> getKeys);
+  void receiveAndProcessResult(int worker);
   void doWork(std::function<void (std::string&)> processData);
   void sendExitSignal(int worker);
 };

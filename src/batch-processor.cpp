@@ -5,6 +5,7 @@
  */
 
 #include "batch-processor.h"
+#include "ostreamlock.h"
 
 #include <mpi.h>
 #include <iostream>
@@ -12,16 +13,15 @@
 
 using namespace std;
 
-#define BP_WORKER_READY_TAG 0
 #define BP_HEAD_NODE 0
-
 #define BP_WORKER_READY 1
 
 #define BP_WORK_TAG 1
+#define BP_WORKER_READY_TAG 0
+#define BP_RESULT_TAG 1337
 #define BP_WORKER_EXIT_TAG 42
 
-// Constructor
-BatchProcessor::BatchProcessor(int* argcp, char*** argvp) {
+BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) : pool(pool) {
   int error = MPI_Init(argcp, argvp);
   if (error) {
     cerr << "Error: " << error << " initalizing MPI." << endl;
@@ -52,23 +52,33 @@ void BatchProcessor::process(function<void(queue<string>&)> getKeys, function<vo
  */
 void BatchProcessor::coordinateWorkers(function<void(queue<string>&)> getKeys) {
 
-  std::queue<std::string> keys; // Allocate queue of keys to be processed
-  getKeys(keys); // Fill the queue with keys
+  // Make a queue of keys to be processed
+  std::queue<std::string> keys;
+  getKeys(keys);
 
   MPI_Status status;
   char workerReady;
 
   // Dequeue keys until the work is all done
-  while(!keys.empty()) {
+  while (true) {
 
-    // Wait for worker to become available
-    MPI_Recv(&workerReady, sizeof(int), MPI_BYTE, MPI_ANY_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
+    // Find out what a worker wants to do next
+    MPI_Probe(BP_HEAD_NODE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+
+    if (status.MPI_TAG == BP_RESULT_TAG) { // Worker is returning result
+      receiveAndProcessResult(status.MPI_SOURCE);
+      continue;
+    } else if (status.MPI_TAG == BP_WORKER_READY_TAG) {
+      MPI_Recv(&workerReady, sizeof(int), MPI_BYTE, status.MPI_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
+      if (keys.empty()) sendExitSignal(status.MPI_SOURCE);
+
+    } else continue; // Something weird happened
 
     if (!workerReady || status.MPI_ERROR) continue; // Worker didn't send correct signal
 
     // Send the next work to the worker
     string nextKey = keys.front();
-    MPI_Send(nextKey.c_str(), nextKey.size(), MPI_CHAR, status.MPI_SOURCE, BP_WORK_TAG, MPI_COMM_WORLD);
+    MPI_Send(nextKey.c_str(), (int) nextKey.size(), MPI_CHAR, status.MPI_SOURCE, BP_WORK_TAG, MPI_COMM_WORLD);
     keys.pop(); // Remove the key
   }
 
@@ -78,6 +88,27 @@ void BatchProcessor::coordinateWorkers(function<void(queue<string>&)> getKeys) {
   }
   cout << "Head \"" << processorName << "\" exiting.";
 };
+
+
+/**
+ * Private method: receiveAndProcessResult
+ * ---------------------------------------
+ * Receives an answer from a worker node and write it to the output stream asynchronously
+ */
+void BatchProcessor::receiveAndProcessResult(int worker) {
+
+  MPI_Status status;
+  size_t messageSize;
+  MPI_Get_count(&status, MPI_CHAR, (int*) &messageSize);
+  auto answer = (char*) malloc(messageSize);
+  MPI_Recv(answer, (int) messageSize, MPI_CHAR, worker, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
+
+  // Write answer to output file
+  pool.schedule([](){
+    outputStream << oslock << answer << endl << osunlock;
+    free(answer);
+  });
+}
 
 /**
  * Private method: doWork
@@ -89,14 +120,14 @@ void BatchProcessor::doWork(function<void (std::string&)> processData) {
   size_t numProcessed = 0; // Worker keeps track of how many it's processed
 
   MPI_Status status;
-  int ready = 1;
+  int ready = BP_WORKER_READY;
 
   size_t messageSize;
   std::string nextKey; // Stores the next key
 
   while (true) {
 
-    // Tell the head node we are ready
+    // Tell the head node we are ready to process something
     MPI_Send(&ready, sizeof(int), MPI_BYTE, BP_HEAD_NODE, BP_WORKER_READY_TAG, MPI_COMM_WORLD);
 
     // Get information about the next key to come
