@@ -43,7 +43,9 @@ private:
   boost::regex fileRegex;
   std::string outputFile;
 
-  std::string process(const std::string& file);
+  std::string countKmers(const std::string& file);
+  void scheduleFiles();
+
   void parseCommandLineOptions(int argc, const char* const* argv);
 };
 

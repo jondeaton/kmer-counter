@@ -11,8 +11,6 @@
 #include <iostream>
 #include <boost/regex.hpp>
 
-using namespace std;
-
 #define BP_HEAD_NODE 0
 #define BP_WORKER_READY 1
 
@@ -21,7 +19,10 @@ using namespace std;
 #define BP_RESULT_TAG 1337
 #define BP_WORKER_EXIT_TAG 42
 
-BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) : pool(pool) {
+using namespace std;
+
+BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) :
+  pool(pool), schedulingComplete(false) {
   int error = MPI_Init(argcp, argvp);
   if (error) {
     cerr << "Error: " << error << " initalizing MPI." << endl;
@@ -34,19 +35,17 @@ BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) : po
   char procName[MPI_MAX_PROCESSOR_NAME];
   MPI_Get_processor_name(procName, &nameLength);
   processorName.assign(procName); // store processor name for later
-  if (worldRank == BP_HEAD_NODE) masterRoutine();
-  else workerRoutine();
 }
 
+void BatchProcessor::processKeys(function<void()> scheduleKeys,
+                                 function<string(const string &)> processKey,
+                                 function<shared_ptr<ostream>()> getOstream) {
 
-void BatchProcessor::scheduleTasks(function<void ()> scheduleKeys, function<string (const string&)> processKey) {
-  pool.schedule([&](){
-    scheduleKeys();
-  });
-  if ()
+  if (worldRank == BP_HEAD_NODE) masterRoutine(scheduleKeys, getOstream);
+  else workerRoutine(processKeys);
 }
 
-void BatchProcessor::scheduleKey(const std::string &key) {
+void BatchProcessor::scheduleKey(const string &key) {
   if (worldRank != BP_HEAD_NODE) return;
 
   lock_guard<mutex> guard(queue_mutex);
@@ -60,12 +59,17 @@ void BatchProcessor::scheduleKey(const std::string &key) {
  * This method will first call the get keys method which was passed, and fill the queue
  * of keys in the batch processor with
  */
-void BatchProcessor::masterRoutine() {
+void BatchProcessor::masterRoutine(function<void()> scheduleKeys,
+                                   function<shared_ptr<ostream>()> getOstream) {
+
+  pool.schedule([&](){
+    scheduleKeys(); // Schedule keys asynchronously
+    schedulingComplete = true;
+  });
 
   MPI_Status status;
   char workerReady;
 
-  // Dequeue keys until the work is all done
   while (true) {
 
     // Find out what a worker wants to do next
@@ -76,7 +80,15 @@ void BatchProcessor::masterRoutine() {
       continue;
     } else if (status.MPI_TAG == BP_WORKER_READY_TAG) {
       MPI_Recv(&workerReady, sizeof(int), MPI_BYTE, status.MPI_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
-      if (keys.empty()) sendExitSignal(status.MPI_SOURCE);
+      if (keys.empty()) {
+        if (schedulingComplete) sendExitSignal(status.MPI_SOURCE);
+        else {
+          // block ...
+          cv.wait();
+          continue;
+        }
+      }
+
 
     } else continue; // Something weird happened
 
@@ -88,7 +100,6 @@ void BatchProcessor::masterRoutine() {
     MPI_Send(nextKey.c_str(), (int) nextKey.size(), MPI_CHAR, status.MPI_SOURCE, BP_WORK_TAG, MPI_COMM_WORLD);
     keys.pop(); // Remove the key
     queue_mutex.unlock();
-
   }
 
   cout << "Signaling workers to exit..." << endl;
@@ -98,27 +109,6 @@ void BatchProcessor::masterRoutine() {
   cout << "Head \"" << processorName << "\" exiting.";
 };
 
-
-/**
- * Private method: receiveAndProcessResult
- * ---------------------------------------
- * Receives an answer from a worker node and write it to the output stream asynchronously
- */
-void BatchProcessor::receiveAndProcessResult(int worker) {
-
-  MPI_Status status;
-  size_t messageSize;
-  MPI_Get_count(&status, MPI_CHAR, (int*) &messageSize);
-  auto answer = (char*) malloc(messageSize);
-  MPI_Recv(answer, (int) messageSize, MPI_CHAR, worker, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
-
-  // Write answer to output file
-  pool.schedule([](){
-    outputStream << oslock << answer << endl << osunlock;
-    free(answer);
-  });
-}
-
 /**
  * Private method: workerRoutine
  * -----------------------------
@@ -127,8 +117,8 @@ void BatchProcessor::receiveAndProcessResult(int worker) {
  * as a parameter the key that will be sent over the network and return the result which will be
  * send back over the network to the master node.
  */
-void BatchProcessor::workerRoutine(function<string (string&)> processKey) {
-  size_t numProcessed = 0; // Worker keeps track of how many it's processed
+void BatchProcessor::workerRoutine(function<string(const string &)> processKey) {
+  size_t numProcessed = 0; // Worker keeps track of how many it has processed
 
   MPI_Status status;
   int ready = BP_WORKER_READY;
@@ -166,6 +156,28 @@ void BatchProcessor::workerRoutine(function<string (string&)> processKey) {
     numProcessed++;
   }
 };
+
+
+
+/**
+ * Private method: receiveAndProcessResult
+ * ---------------------------------------
+ * Receives an answer from a worker node and write it to the output stream asynchronously
+ */
+void BatchProcessor::receiveAndProcessResult(int worker) {
+
+  MPI_Status status;
+  size_t messageSize;
+  MPI_Get_count(&status, MPI_CHAR, (int*) &messageSize);
+  auto answer = (char*) malloc(messageSize);
+  MPI_Recv(answer, (int) messageSize, MPI_CHAR, worker, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
+
+  // Write answer to output file
+  pool.schedule([](){
+    outputStream << oslock << answer << endl << osunlock;
+    free(answer);
+  });
+}
 
 // Sends the exit signal to a specified worker
 void BatchProcessor::sendExitSignal(int worker) {

@@ -12,6 +12,7 @@
 #include <string>
 #include <queue>
 #include <fstream>
+#include <iostream>
 
 class BatchProcessor {
 
@@ -28,16 +29,18 @@ public:
   BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool);
 
   /**
-   * Public Method: scheduleTasks
+   * Public Method: processKeys
    * ----------------------------
    * Coordinates tasks between workers. Head
    * @param scheduleKeys: Task executed only on the head node to get and schedule the processing of keys for the rest
    * of the workers to process. Note that this task will be executed asynchronously and calls to wait will block until
    * at least after this function returns. Keys should be scheduled in the body of this task using this processor's
    * scheduleKey method.
-   * @param processKey:
+   * @param processKey: Routine used to process a single key by a worker
    */
-  void scheduleTasks(std::function<void (void)> scheduleKeys, std::function<std::string (const std::string&)> processKey);
+  void processKeys(std::function<void (void)> scheduleKeys,
+                   std::function<std::string (const std::string &)> processKey,
+                   std::function<std::shared_ptr<std::ostream>()> getOstream);
 
   /**
    * Public Method: schedule
@@ -63,10 +66,15 @@ public:
 
 private:
 
+  std::condition_variable cv;
+
   std::queue<std::string> keys;
   std::mutex queue_mutex;
-
   ThreadPool& pool;
+
+  std::shared_ptr<std::ostream> outputStream;
+
+  bool schedulingComplete;
 
   // Basic MPI data
   int worldSize;
@@ -74,8 +82,8 @@ private:
   int nameLength;
   std::string processorName;
 
-  void masterRoutine();
-  void workerRoutine();
+  void masterRoutine(std::function<void ()> scheduleKeys, std::function<std::shared_ptr<std::ostream>()> getOstream);
+  void workerRoutine(std::function<std::string (const std::string &)> processKey);
 
   void receiveAndProcessResult(int worker);
 

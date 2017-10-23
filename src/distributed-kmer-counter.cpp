@@ -23,32 +23,31 @@ using namespace std;
 DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : pool(NUM_THREADS),
   processor(argcp, argvp, pool), counter(pool) {
   parseCommandLineOptions(*argcp, *argvp);
-
 }
 
 void DistributedKmerCounter::run() {
-  processor.scheduleTasks([&](){
-    ofstream outStream(outputFile);
-    fs::directory_iterator it(inputDirectory);
-    fs::directory_iterator endit;
+  processor.processKeys([this]() {
+    scheduleFiles();
+  }, [this](const string &file) -> string {
+    return countKmers(file);
+  }, [this](){
+    return shared_ptr<ostream> = new ofstream(output)
 
-    while (it != endit) {
-      string filename = it->path().filename().generic_string();
-      if (fs::is_regular_file(*it) && regex_match(filename, fileRegex))
-        processor.scheduleKey(filename);
-    }
-
-  }, [this](const string& key){
-    return process(key);
   });
-
   processor.wait();
 }
 
-void DistributedKmerCounter::getFiles() {
+void DistributedKmerCounter::scheduleFiles() {
+  ofstream outStream(outputFile);
+  fs::directory_iterator it(inputDirectory);
+  fs::directory_iterator endit;
 
+  while (it != endit) {
+    string filename = it->path().filename().generic_string();
+    if (fs::is_regular_file(*it) && regex_match(filename, fileRegex))
+      processor.scheduleKey(filename);
+  }
 }
-
 
 /**
  * Private method: process
@@ -57,7 +56,7 @@ void DistributedKmerCounter::getFiles() {
  * @param file: The file to process
  * @return: The result of counting the file
  */
-string DistributedKmerCounter::process(const string &file) {
+string DistributedKmerCounter::countKmers(const string &file) {
   ostringstream ss;
   counter.countFastaFile(file, ss, true, true);
   return ss.str();
