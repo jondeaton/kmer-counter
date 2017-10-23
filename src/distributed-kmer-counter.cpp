@@ -17,38 +17,43 @@ using namespace std;
 #define K_DEFAULT 4
 #define DNA_SYMBOLS "ATGC"
 
-DistributedKmerCounter::DistributedKmerCounter(int *argcp, char ***argvp) :
-  processor(argcp, argvp) {
+#define NUM_THREADS 8
+
+DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : pool(NUM_THREADS),
+  processor(argcp, argvp, pool, this->process), counter(pool) {
   parseCommandLineOptions(*argcp, *argvp);
+
 }
 
 void DistributedKmerCounter::run() {
-  processor.process([this, inputDirectory, fileRegex](queue<string> &fileQueue) {
-    this->getFiles(inputDirectory, fileRegex, fileQueue);
-  },[this](string& file){
-    this->process(file);
-  });
-}
+  ofstream outStream(outputFile);
 
-void DistributedKmerCounter::process(const string &file) {
-  ofstream ofs(outputFile);
-  counter.countFastaFile(file, ofs, true, true);
-}
-
-// Gets all file matching a name in a directory
-void DistributedKmerCounter::getFiles(string directory, boost::regex pattern, queue<string> &fileQueue) {
-  fs::directory_iterator it(directory);
+  fs::directory_iterator it(inputDirectory);
   fs::directory_iterator endit;
 
-  while( it != endit) {
+  while (it != endit) {
     string filename = it->path().filename().generic_string();
-    if(fs::is_regular_file(*it) && regex_match(filename, pattern))
-      fileQueue.push(filename);
+    if (fs::is_regular_file(*it) && regex_match(filename, fileRegex))
+      processor.schedule(filename);
   }
+  processor.wait();
 }
 
 /**
- * Function: parse_command_line_options
+ * Private method: process
+ * -----------------------
+ * Key-processing function for the distributed k-mer counter
+ * @param file: The file to process
+ * @return: The result of counting the file
+ */
+string DistributedKmerCounter::process(const string &file) {
+  ostringstream ss;
+  counter.countFastaFile(file, ss, true, true);
+  return ss.str();
+}
+
+/**
+ * Private method: parseCommandLineOptions
  * ------------------------------------
  * Parses command line options
  * @param argc: From main argc

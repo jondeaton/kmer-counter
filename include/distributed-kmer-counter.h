@@ -16,14 +16,20 @@ class DistributedKmerCounter {
 public:
 
   DistributedKmerCounter(int* argcp, char*** argvp);
+
+  /**
+   * Public method: run
+   * ------------------
+   * This method runs the distributed k-mer counter using the files
+   * that
+   */
   void run();
 
 private:
 
-  BatchProcessor processor;
-  AsyncKmerCounter counter;
-
   ThreadPool pool;
+  AsyncKmerCounter counter;
+  BatchProcessor processor;
 
   bool verbose;
   bool debug;
@@ -36,8 +42,7 @@ private:
   boost::regex fileRegex;
   std::string outputFile;
 
-  void process(const std::string& file);
-  void getFiles(std::string directory, boost::regex pattern, std::queue<std::string> &fileQueue);
+  std::string process(const std::string& file);
   void parseCommandLineOptions(int argc, const char* const* argv);
 };
 

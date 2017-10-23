@@ -26,9 +26,9 @@ public:
    * @param kmerLength: The length of the sliding window ("k" in "k-mer")
    * @param sumFiles:True if all k-mer counts in each file should be summed together
    */
-  AsyncKmerCounter();
-  AsyncKmerCounter(const std::string& symbols, unsigned int kmerLength);
-  AsyncKmerCounter(const std::string& symbols, unsigned int kmerLength, bool sumFiles);
+  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmerLength);
+  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmerLength, bool sumFiles);
+  explicit AsyncKmerCounter(ThreadPool& pool);
 
   /**
    * Public Method: count

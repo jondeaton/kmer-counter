@@ -10,15 +10,13 @@
 #include <boost/foreach.hpp>
 using namespace std;
 
-#define NUMTHREADS 8
+AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool) : sumFiles(false), pool(pool) { }
 
-AsyncKmerCounter::AsyncKmerCounter() : sumFiles(false), pool(NUMTHREADS) { }
+AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const std::string &symbols, unsigned int kmerLength) :
+  sumFiles(false), kmerCounter(symbols, kmerLength), pool(pool) { }
 
-AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength) :
-  sumFiles(false), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
-
-AsyncKmerCounter::AsyncKmerCounter(const std::string &symbols, unsigned int kmerLength, bool sumFiles):
-  sumFiles(sumFiles), kmerCounter(symbols, kmerLength), pool(NUMTHREADS) { }
+AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const std::string &symbols, unsigned int kmerLength, bool sumFiles):
+  sumFiles(sumFiles), kmerCounter(symbols, kmerLength), pool(pool) { }
 
 void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential, bool block) {
   if (sequential) countSequential(in, out);

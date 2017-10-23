@@ -33,28 +33,24 @@ BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) : po
 
   char procName[MPI_MAX_PROCESSOR_NAME];
   MPI_Get_processor_name(procName, &nameLength);
-  processorName.assign(procName);
+  processorName.assign(procName); // store processor name for later
+  if (worldRank == BP_HEAD_NODE) masterRoutine();
+  else workerRoutine();
 }
 
-// Process function
-void BatchProcessor::process(function<void(queue<string>&)> getKeys, function<void (string&)> processData) {
-  if (worldRank == BP_HEAD_NODE) coordinateWorkers(getKeys);
-  else doWork(processData);
+void BatchProcessor::schedule(std::string key) {
+  if (worldRank != BP_HEAD_NODE) return;
+  keys.push(key);
 }
 
 /**
- * Private method: coordinateWorkers
- * --------------------------------
+ * Private method: masterRoutine
+ * -----------------------------
  * Method used by the "head" node to coordinate work on all of the worker nodes.
  * This method will first call the get keys method which was passed, and fill the queue
  * of keys in the batch processor with
- * @param getKeys: Function for the head node to get all of the keys to be processed
  */
-void BatchProcessor::coordinateWorkers(function<void(queue<string>&)> getKeys) {
-
-  // Make a queue of keys to be processed
-  std::queue<std::string> keys;
-  getKeys(keys);
+void BatchProcessor::masterRoutine() {
 
   MPI_Status status;
   char workerReady;
@@ -111,19 +107,21 @@ void BatchProcessor::receiveAndProcessResult(int worker) {
 }
 
 /**
- * Private method: doWork
- * ----------------------
- *
- * @param processData
+ * Private method: workerRoutine
+ * -----------------------------
+ * Routine for workers to process keys sent from the master and return the result
+ * @param processData: The function that the worker should use to process a key. It should take
+ * as a parameter the key that will be sent over the network and return the result which will be
+ * send back over the network to the master node.
  */
-void BatchProcessor::doWork(function<void (std::string&)> processData) {
+void BatchProcessor::workerRoutine(function<string (string&)> processKey) {
   size_t numProcessed = 0; // Worker keeps track of how many it's processed
 
   MPI_Status status;
   int ready = BP_WORKER_READY;
 
   size_t messageSize;
-  std::string nextKey; // Stores the next key
+  string nextKey; // Stores the next key
 
   while (true) {
 
@@ -148,7 +146,10 @@ void BatchProcessor::doWork(function<void (std::string&)> processData) {
 
     if (status.MPI_ERROR) continue;
 
-    processData(nextKey);
+    // Process the key and send it back
+    string result = processKey(nextKey);
+    MPI_Send(result.c_str(), result.size(), MPI_CHAR, BP_HEAD_NODE, BP_RESULT_TAG, MPI_COMM_WORLD);
+
     numProcessed++;
   }
 };
