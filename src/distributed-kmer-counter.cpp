@@ -9,6 +9,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 #include <boost/program_options.hpp>
+#include <functional>
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -20,24 +21,34 @@ using namespace std;
 #define NUM_THREADS 8
 
 DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : pool(NUM_THREADS),
-  processor(argcp, argvp, pool, this->process), counter(pool) {
+  processor(argcp, argvp, pool), counter(pool) {
   parseCommandLineOptions(*argcp, *argvp);
 
 }
 
 void DistributedKmerCounter::run() {
-  ofstream outStream(outputFile);
+  processor.scheduleTasks([&](){
+    ofstream outStream(outputFile);
+    fs::directory_iterator it(inputDirectory);
+    fs::directory_iterator endit;
 
-  fs::directory_iterator it(inputDirectory);
-  fs::directory_iterator endit;
+    while (it != endit) {
+      string filename = it->path().filename().generic_string();
+      if (fs::is_regular_file(*it) && regex_match(filename, fileRegex))
+        processor.scheduleKey(filename);
+    }
 
-  while (it != endit) {
-    string filename = it->path().filename().generic_string();
-    if (fs::is_regular_file(*it) && regex_match(filename, fileRegex))
-      processor.schedule(filename);
-  }
+  }, [this](const string& key){
+    return process(key);
+  });
+
   processor.wait();
 }
+
+void DistributedKmerCounter::getFiles() {
+
+}
+
 
 /**
  * Private method: process

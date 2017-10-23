@@ -20,8 +20,9 @@ public:
   /**
    * Public method: run
    * ------------------
-   * This method runs the distributed k-mer counter using the files
-   * that
+   * Runs the distributed k-mer counter for processing the files specified in the command line arguments.
+   * This method will read all files matching the regular expression from the specified input directory,
+   * count k-mers in them, and write the resulting counts to the output file.
    */
   void run();
 

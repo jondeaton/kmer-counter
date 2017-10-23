@@ -20,18 +20,38 @@ public:
   /**
    * Constructor: BatchProcessor
    * ---------------------------
-   * Constructs the batch processor from "mpirun" command line options
+   * Constructs the batch processor using "mpirun" command line options
    * @param argcp: Pointer to argc from program entry point
    * @param argvp: Pointer to argv from program entry point
+   * @param pool: A thread pool to schedule asynchronous tasks on
    */
-  BatchProcessor(int* argcp, char*** argvp,
-                 ThreadPool& pool,
-                 std::function<std::string (const std::string&)> processKey);
+  BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool);
 
-  void
+  /**
+   * Public Method: scheduleTasks
+   * ----------------------------
+   * Coordinates tasks between workers. Head
+   * @param scheduleKeys: Task executed only on the head node to get and schedule the processing of keys for the rest
+   * of the workers to process. Note that this task will be executed asynchronously and calls to wait will block until
+   * at least after this function returns. Keys should be scheduled in the body of this task using this processor's
+   * scheduleKey method.
+   * @param processKey:
+   */
+  void scheduleTasks(std::function<void (void)> scheduleKeys, std::function<std::string (const std::string&)> processKey);
 
-  void schedule(std::string key);
+  /**
+   * Public Method: schedule
+   * -----------------------
+   * Schedules a key for processing on the batch processor
+   * @param key: A reference to a key that should be processed. (Will be coppied)
+   */
+  void scheduleKey(const std::string &key);
 
+  /**
+   * Public Method: wait
+   * -------------------
+   * Wait
+   */
   void wait();
 
   /**
@@ -43,8 +63,10 @@ public:
 
 private:
 
-  ThreadPool& pool;
   std::queue<std::string> keys;
+  std::mutex queue_mutex;
+
+  ThreadPool& pool;
 
   // Basic MPI data
   int worldSize;

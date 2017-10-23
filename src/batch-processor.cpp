@@ -38,8 +38,18 @@ BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) : po
   else workerRoutine();
 }
 
-void BatchProcessor::schedule(std::string key) {
+
+void BatchProcessor::scheduleTasks(function<void ()> scheduleKeys, function<string (const string&)> processKey) {
+  pool.schedule([&](){
+    scheduleKeys();
+  });
+  if ()
+}
+
+void BatchProcessor::scheduleKey(const std::string &key) {
   if (worldRank != BP_HEAD_NODE) return;
+
+  lock_guard<mutex> guard(queue_mutex);
   keys.push(key);
 }
 
@@ -73,9 +83,12 @@ void BatchProcessor::masterRoutine() {
     if (!workerReady || status.MPI_ERROR) continue; // Worker didn't send correct signal
 
     // Send the next work to the worker
+    queue_mutex.lock();
     string nextKey = keys.front();
     MPI_Send(nextKey.c_str(), (int) nextKey.size(), MPI_CHAR, status.MPI_SOURCE, BP_WORK_TAG, MPI_COMM_WORLD);
     keys.pop(); // Remove the key
+    queue_mutex.unlock();
+
   }
 
   cout << "Signaling workers to exit..." << endl;
