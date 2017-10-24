@@ -14,6 +14,8 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <mutex>
+#include <condition_variable>
 
 class BatchProcessor {
 

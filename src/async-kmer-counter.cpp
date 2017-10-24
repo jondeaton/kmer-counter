@@ -7,16 +7,17 @@
 #include "async-kmer-counter.h"
 #include "ostreamlock.h"
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
 using namespace std;
 
-AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool) : sumFiles(false), pool(pool) { }
+
+AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool) : kmer_counter(), pool(pool) { }
 
 AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const std::string &symbols, unsigned int kmerLength) :
-  sumFiles(false), kmer_counter(symbols, kmerLength), pool(pool) { }
+        kmer_counter(symbols, kmerLength), AsyncKmerCounter(pool) { }
 
 AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const std::string &symbols, unsigned int kmerLength, bool sumFiles):
-  sumFiles(sumFiles), kmer_counter(symbols, kmerLength), pool(pool) { }
+        sumFiles(sumFiles), AsyncKmerCounter(pool, symbols, kmerLength) { }
+
 
 void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential, bool block) {
   if (sequential) count_sequential(in, out);

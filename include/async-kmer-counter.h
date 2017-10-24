@@ -13,6 +13,8 @@
 #include <iostream>
 #include <cstring>
 
+#define POOL_SIZE
+
 class AsyncKmerCounter {
 
 public:
@@ -91,7 +93,7 @@ public:
 
 private:
 
-  bool sumFiles; // True if all k-mer counts in each file should be summed together
+  bool sumFiles = false; // True if all k-mer counts in each file should be summed together
   KmerCounter kmer_counter;
   ThreadPool& pool;
 };
