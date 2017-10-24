@@ -17,7 +17,13 @@ class KmerCounter {
 
 public:
 
-  unsigned int kmerCountVectorSize; // The number of unique k-mers of the given symbols and k-mer length
+  /**
+   * Constructor
+   * -----------
+   * Creates a KmerCounter object. Calls to count after using this consructor without first
+   * setting symbols and  k-mer length results in undefined behavior.
+   */
+  KmerCounter() = default;
 
   /**
    * Constructor
@@ -37,14 +43,40 @@ public:
    */
   void count(const std::string& sequence, long kmerCount[]);
 
+  /**
+   * Public Method: setSymbols
+   * -------------------------
+   * Sets the symbols that the k-mer counter uses in future calls to count
+   * @param symbols: The symbols which are recognized. Order determined lexicographic ordering
+   */
+  void set_symbols(const std::string &symbols);
+
+  /**
+   * Public Method: setKmerLength
+   * ----------------------------
+   * Sets the k-mer length that will be used for future calls to count
+   * @param kmerLength: The length of the window/word length to count in sequences
+   */
+  void set_kmer_length(unsigned int kmerLength);
+
+  /**
+   * Public Method: GetVectorSize
+   * ----------------------------
+   * Returns the size of the vector in which k-mer counts will be stored which is equal
+   * to the number of unique k-mers of the given symbols and k-mer length
+   */
+  unsigned int get_vector_size() { return kmer_count_vector_size; }
+
 private:
   std::string symbols;
-  unsigned int numSymbols;
-  unsigned int kmerLength;
-  std::map<char, int> symbolIndexMap;
+  unsigned int num_symbols = 0;
+  unsigned int kmer_length = 0;
+  unsigned int kmer_count_vector_size = 0; // The number of unique k-mers of the given symbols and k-mer length
 
-  void populateMap();
-  int calculateIndex(const char* kmer, const unsigned int* significances, int index);
+  std::map<char, int> symbol_index_map;
+
+  void populate_map();
+  int calculate_index(const char *kmer, const unsigned int *significances, int index);
   unsigned int ipow(unsigned int base, unsigned int exp);
 };
 

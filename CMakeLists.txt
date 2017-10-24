@@ -2,43 +2,111 @@ cmake_minimum_required(VERSION 3.7)
 project(Kmer-Counter)
 set(CMAKE_CXX_STANDARD 11)
 
-#SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -pedantic")
-SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic")
+include_directories(src)
+include_directories(include)
 
-find_package(Boost 1.62 REQUIRED)
-IF (Boost_FOUND)
+if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+    SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -pedantic")
+else()
+    SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic")
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "DEBUG" AND APPLE)
+    # LLDB needs files to end with .o extension...
+    SET(LOC_EXECUTABLE "count-kmers.o")
+    SET(DIST_EXECUTABLE "count-kmer-dist.o")
+else()
+    SET(LOC_EXECUTABLE "count-kmers")
+    SET(DIST_EXECUTABLE "count-kmer-dist")
+endif()
+
+find_package(Boost 1.60 REQUIRED)
+if (Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
     ADD_DEFINITIONS( "-DHAS_BOOST" )
 
     set(Boost_USE_STATIC_LIBS ON)
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_RUNTIME OFF)
-ENDIF()
-
-
-include_directories(include)
-include_directories(src)
+endif()
 
 set(SOURCE_FILES
-        include/async-kmer-counter.h
-        include/kmer-counter.h
-        include/fasta-parser.h
-        include/fasta-iterator.h
-        include/boost-thread-pool.h
-        include/ostreamlock.h
-        src/async-kmer-counter.cpp
-        src/kmer-counter.cpp
-        src/fasta-parser.cpp
-        src/fasta-iterator.cpp
-        src/boost-thread-pool.cpp
-        src/ostreamlock.cc
-        src/main.cpp)
+        include/async-kmer-counter.h        src/async-kmer-counter.cpp
+        include/kmer-counter.h              src/kmer-counter.cpp
+        include/fasta-parser.h              src/fasta-parser.cpp
+        include/fasta-iterator.h            src/fasta-iterator.cpp
+        include/boost-thread-pool.h         src/boost-thread-pool.cpp
+        include/ostreamlock.h               src/ostreamlock.cc
+        src/main-local.cpp)
 
-add_executable(count-kmers ${SOURCE_FILES})
-
+add_executable(${LOC_EXECUTABLE} ${SOURCE_FILES})
 if(APPLE OR WIN32)
-    target_link_libraries(count-kmers pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
-#    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
+    target_link_libraries(${LOC_EXECUTABLE}
+            pthread
+            boost_thread-mt
+            boost_system-mt
+            boost_filesystem-mt
+            boost_program_options-mt)
 else()
-    target_link_libraries(count-kmers pthread boost_thread boost_system boost_filesystem)
+    target_link_libraries(${LOC_EXECUTABLE}
+            pthread
+            boost_thread
+            boost_system
+            boost_filesystem
+            boost_program_options)
 endif()
+
+
+# Distributed Target
+find_package(MPI REQUIRED)
+if (MPI_FOUND)
+#    set(CMAKE_CXX_COMPILER "mpic++")
+    include_directories(${MPI_INCLUDE_PATH})
+
+    set(MPI_SOURCES
+            include/batch-processor.h               src/batch-processor.cpp
+            include/distributed-kmer-counter.h      src/distributed-kmer-counter.cpp
+            include/async-kmer-counter.h            src/async-kmer-counter.cpp
+            include/kmer-counter.h                  src/kmer-counter.cpp
+            include/fasta-parser.h                  src/fasta-parser.cpp
+            include/fasta-iterator.h                src/fasta-iterator.cpp
+            include/boost-thread-pool.h             src/boost-thread-pool.cpp
+            include/ostreamlock.h                   src/ostreamlock.cc
+            src/main-distributed.cpp)
+
+    add_executable(${DIST_EXECUTABLE} ${MPI_SOURCES})
+    target_link_libraries(${DIST_EXECUTABLE} ${MPI_LIBRARIES})
+
+    if(MPI_COMPILE_FLAGS)
+        set_target_properties(${DIST_EXECUTABLE} PROPERTIES COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+    endif()
+
+    if(MPI_LINK_FLAGS)
+        set_target_properties(${DIST_EXECUTABLE} PROPERTIES LINK_FLAGS "${MPI_LINK_FLAGS}")
+    endif()
+
+    if(APPLE OR WIN32)
+        target_link_libraries(${DIST_EXECUTABLE} pthread boost_thread-mt boost_system-mt boost_filesystem-mt)
+    else()
+        target_link_libraries(${DIST_EXECUTABLE} pthread boost_thread boost_system boost_filesystem)
+    endif()
+
+    if(APPLE OR WIN32)
+        target_link_libraries(${DIST_EXECUTABLE}
+                pthread boost_thread-mt
+                boost_system-mt
+                boost_filesystem-mt
+                boost_program_options-mt
+                boost_regex-mt)
+    else()
+        target_link_libraries(${DIST_EXECUTABLE}
+                pthread boost_thread
+                boost_system
+                boost_filesystem
+                boost_program_options
+                boost_regex)
+    endif()
+
+else ()
+    message(WARNING "Couldn't find MPI. Not building distributed k-mer counter.")
+endif ()

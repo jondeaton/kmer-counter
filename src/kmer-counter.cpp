@@ -9,59 +9,72 @@
 using namespace std;
 
 KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :
-  symbols(symbols), numSymbols((unsigned int) symbols.length()), kmerLength(kmerLength) {
-  kmerCountVectorSize = ipow(kmerLength, numSymbols);
-  populateMap();
+  symbols(symbols), num_symbols((unsigned int) symbols.length()), kmer_length(kmerLength) {
+  kmer_count_vector_size = ipow(kmerLength, num_symbols);
+  populate_map();
 }
 
 // Here be performance optimizations
 void KmerCounter::count(const std::string& sequence, long kmerCount[]) {
-  if (kmerLength == 0) return;
+  if (kmer_length == 0) return;
 
   auto sequenceLength = (unsigned int) sequence.length();
-  if (sequenceLength < kmerLength) return;
+  if (sequenceLength < kmer_length) return;
 
   auto numSymbols = (unsigned int) symbols.length();
   if (numSymbols == 0) return;
 
-  // Stores the lexocographic significance of each letter in a kmer
-  auto significances = new unsigned int[kmerLength + 1];
-  for (unsigned int i = 0; i <= kmerLength; i++) significances[i] = ipow(numSymbols, i);
+  // Stores the lexicographic significance of each letter in a kmer
+  auto significances = new unsigned int[kmer_length + 1];
+  for (unsigned int i = 0; i <= kmer_length; i++) significances[i] = ipow(numSymbols, i);
 
   // index is the lexicographic index in the kmerCount array corresponding
-  // to the kmer under the sliding window. -1 indicates that there is no index
+  // to the k-mer under the sliding window. -1 indicates that there is no index
   // stored in this variable from the kmer under the previous window
   int index = -1;
 
-  // Slide a window of size kmerLength along the sequence
-  size_t maximumIndex = sequenceLength - kmerLength;
+  // Slide a window of size kmer_length along the sequence
+  size_t maximumIndex = sequenceLength - kmer_length;
   for (size_t i = 0; i <= maximumIndex; i++) {
     const char* kmer = sequence.c_str() + i; // slide the window
-    index = calculateIndex(kmer, significances, index);
-    if (index >= 0) kmerCount[index] += 1; // Valid kmer encountered
+    index = calculate_index(kmer, significances, index);
+    if (index >= 0) kmerCount[index] += 1; // Valid k-mer encountered
     // else i -= (index + 1); // Invalid character encountered. Advance window past it.
   }
 }
 
-int KmerCounter::calculateIndex(const char *kmer, const unsigned int *significances, int index) {
+int KmerCounter::calculate_index(const char *kmer, const unsigned int *significances, int index) {
   if (index < 0) { // Must recalculate
     index = 0;
-    for (unsigned int j = 0; j < kmerLength; j++) {
-      if (symbolIndexMap.find(kmer[j]) == symbolIndexMap.end()) return -(j + 1); // invalid next symbol
-      index += symbolIndexMap[kmer[j]] * significances[kmerLength - j - 1];
+    for (unsigned int j = 0; j < kmer_length; j++) {
+      if (symbol_index_map.find(kmer[j]) == symbol_index_map.end()) return -(j + 1); // invalid next symbol
+      index += symbol_index_map[kmer[j]] * significances[kmer_length - j - 1];
     }
   } else { // May use previous window's index to make a quicker calculation
-    if (symbolIndexMap.find(kmer[kmerLength - 1]) == symbolIndexMap.end()) return -kmerLength;
-    // index = (index * numSymbols) % significances[kmerLength] + symbolIndexMap[letter];
-    index = ((index % significances[kmerLength - 1]) * numSymbols) + symbolIndexMap[kmer[kmerLength - 1]];
+    if (symbol_index_map.find(kmer[kmer_length - 1]) == symbol_index_map.end()) return -kmer_length;
+    // index = (index * num_symbols) % significances[kmer_length] + symbol_index_map[letter];
+    index = ((index % significances[kmer_length - 1]) * num_symbols) + symbol_index_map[kmer[kmer_length - 1]];
   }
   return index;
 }
 
-void KmerCounter::populateMap() {
-  for (unsigned int i = 0; i < numSymbols; i++) {
-    symbolIndexMap[symbols[i]] = i;
-    symbolIndexMap[tolower(symbols[i])] = i;
+void KmerCounter::set_symbols(const std::string &symbols) {
+  this->symbols = symbols;
+  num_symbols = (unsigned int) symbols.length();
+  populate_map();
+}
+
+void KmerCounter::set_kmer_length(unsigned int kmerLength) {
+  this->kmer_length = kmerLength;
+  kmer_count_vector_size = ipow(kmerLength, num_symbols);
+  populate_map();
+}
+
+void KmerCounter::populate_map() {
+  symbol_index_map.clear();
+  for (unsigned int i = 0; i < num_symbols; i++) {
+    symbol_index_map[symbols[i]] = i;
+    symbol_index_map[tolower(symbols[i])] = i;
   }
 }
 

@@ -1,7 +1,7 @@
 /*
  * File: async-kmer-counter.h
  * --------------------------
- * Presents the interface of AsyncKmerCounter, an asynchronous k-mer counter
+ * Presents the interface of the AsyncKmerCounter class, an asynchronous k-mer counter.
  */
 
 #ifndef _async_kmer_counter_
@@ -13,20 +13,24 @@
 #include <iostream>
 #include <cstring>
 
+#define POOL_SIZE
+
 class AsyncKmerCounter {
 
 public:
 
   /**
-   * Constructor: AsyncKmerCounter
-   * -----------------------------
+   * Constructor
+   * -----------
    * Constructs an asynchronous k-mer counting object for counting k-mers in sequences with
    * the specified k-mer length and symbol set.
    * @param symbols: A string with the lexicographic ordering of the symbols in the sequences
    * @param kmerLength: The length of the sliding window ("k" in "k-mer")
-   * @param sumFiles: True if all k-mer counts in each file should be summed together
+   * @param sumFiles:True if all k-mer counts in each file should be summed together
    */
-  AsyncKmerCounter(const std::string& symbols, unsigned int kmerLength, bool sumFiles);
+  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmerLength);
+  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmerLength, bool sumFiles);
+  explicit AsyncKmerCounter(ThreadPool& pool);
 
   /**
    * Public Method: count
@@ -46,7 +50,7 @@ public:
    * @param in: Stream to read fasta records in from
    * @param out: Stream to output k-mer counts to
    */
-  void countSequential(std::istream& in, std::ostream& out);
+  void count_sequential(std::istream &in, std::ostream &out);
 
   /**
    * Public Method: countAsync
@@ -56,7 +60,7 @@ public:
    * @param in: Stream to read fasta records in from
    * @param out: Stream to output k-mer counts to
    */
-  void countAsync(std::istream& in, std::ostream& out, bool block);
+  void count_async(std::istream &in, std::ostream &out, bool block);
 
   /**
    * Public Method: countFastaFile
@@ -65,7 +69,7 @@ public:
    * @param fastaFile : Path to fasta file to count k-mers in
    * @param out: Output stream to output k-mer counts to
    */
-  void countFastaFile(const std::string& fastaFile, std::ostream& out, bool sequential, bool block);
+  void count_fasta_file(const std::string &fastaFile, std::ostream &out, bool sequential, bool block);
 
   /**
    * Public Method: countDirectory
@@ -74,20 +78,23 @@ public:
    * @param directory: Directory to read fasta files from
    * @param out: Output stream to output k-mer counts to
    */
-  void countDirectory(const std::string& directory, std::ostream& out, bool sequential, bool block);
+  void count_directory(const std::string &directory, std::ostream &out, bool sequential, bool block);
+
+  void setSumFiles(bool sumFiles) { this->sumFiles = sumFiles; }
+  void setSymbols(const std::string& symbols) { kmer_counter.set_symbols(symbols); }
+  void setSetKmerLength(unsigned int kmerLength) { kmer_counter.set_kmer_length(kmerLength); }
 
   /**
-   * Destructor: AsyncKmerCounter
-   * ----------------------------
+   * Destructor
+   * ----------
    * For disposal of the asynchronous k-mer counter. This will dispose of the threads in the thread pool
    */
   ~AsyncKmerCounter();
 
 private:
-  bool sumFiles;
-  std::string directory;
 
-  KmerCounter kmerCounter;
-  ThreadPool pool;
+  bool sumFiles = false; // True if all k-mer counts in each file should be summed together
+  KmerCounter kmer_counter;
+  ThreadPool& pool;
 };
 #endif

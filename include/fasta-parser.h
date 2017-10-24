@@ -47,9 +47,9 @@ public:
    * Constructor: FastaParser
    * ------------------------
    * For creating a fasta parser for parsing from a fasta formatted file
-   * @param fastaFile: A path to a fasta formatted file
+   * @param fasta_file: A path to a fasta formatted file
    */
-  explicit FastaParser(const std::string& fastaFile);
+  explicit FastaParser(const std::string& fasta_file);
 
   /**
    * Public method: begin
@@ -69,16 +69,16 @@ public:
   FastaIterator end();
 
   /**
-   * Public method: parseHeader
+   * Public method: parse_header
    * --------------------------
    * Returns the ID contained in the fasta record header
    * @param header : A fasta record header
    * @return : The ID contained within the header
    */
-  std::string parseHeader(const std::string& header);
+  std::string parse_header(const std::string &header);
 
 private:
-  std::istream* fastaStream = nullptr;
-  FastaIterator endIterator;
+  std::istream* fasta_stream = nullptr;
+  FastaIterator endit;
 };
 #endif
