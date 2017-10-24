@@ -79,8 +79,8 @@ public:
   void count_directory(const std::string &directory, std::ostream &out, bool sequential, bool block);
 
   void setSumFiles(bool sumFiles) { this->sumFiles = sumFiles; }
-  void setSymbols(const std::string& symbols) { kmer_counter.setSymbols(symbols); }
-  void setSetKmerLength(unsigned int kmerLength) { kmer_counter.setKmerLength(kmerLength); }
+  void setSymbols(const std::string& symbols) { kmer_counter.set_symbols(symbols); }
+  void setSetKmerLength(unsigned int kmerLength) { kmer_counter.set_kmer_length(kmerLength); }
 
   /**
    * Destructor

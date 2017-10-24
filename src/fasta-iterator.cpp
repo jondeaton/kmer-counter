@@ -8,7 +8,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 using namespace std;
 
-FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
+FastaIterator::FastaIterator(istream* in) : have_next_header(false) {
   if (in == nullptr) record = nullptr;
   else {
     this->in = in;
@@ -25,8 +25,8 @@ FastaIterator::FastaIterator(istream* in) : haveNextHeader(false) {
  * https://stackoverflow.com/questions/24851291/read-huge-text-file-line-by-line-in-c-with-buffering
  */
 FastaIterator& FastaIterator::operator++ () {
-  haveNextHeader = findNextHeader();
-  if (!haveNextHeader) record = nullptr;
+  have_next_header = find_next_header();
+  if (!have_next_header) record = nullptr;
   else {
     record = shared_ptr<pair<string, ostringstream>>(new pair<string, ostringstream>());
     record->first = nextHeader;
@@ -36,12 +36,12 @@ FastaIterator& FastaIterator::operator++ () {
       getline(*in, line);
       if (!boost::starts_with(line, ">")) record->second << line;
       else {
-        haveNextHeader = true;
+        have_next_header = true;
         nextHeader = line;
         break;
       }
     }
-    if (in->eof()) haveNextHeader = false;
+    if (in->eof()) have_next_header = false;
   }
   return *this;
 }
@@ -70,8 +70,8 @@ bool FastaIterator::operator != (const FastaIterator& other) {
 }
 
 // Finds the next header in the stream, and stores it in nextHeader
-bool FastaIterator::findNextHeader() {
-  if (haveNextHeader) return true;
+bool FastaIterator::find_next_header() {
+  if (have_next_header) return true;
   while (getline(*in, nextHeader))
     if (boost::starts_with(nextHeader, ">")) return true;
   return false;
