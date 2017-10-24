@@ -9,6 +9,9 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/thread/thread.hpp>
 
+#ifndef _boost_thread_pool_h
+#define _boost_thread_pool_h
+
 class ThreadPool {
 public:
   explicit ThreadPool(size_t numThreads);
@@ -38,3 +41,5 @@ private:
   ThreadPool(const ThreadPool& original) = delete;
   ThreadPool& operator=(const ThreadPool& rhs) = delete;
 };
+
+#endif

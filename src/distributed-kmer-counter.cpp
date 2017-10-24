@@ -10,6 +10,7 @@
 #include <boost/regex.hpp>
 #include <boost/program_options.hpp>
 #include <functional>
+#include <memory>
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -21,31 +22,33 @@ using namespace std;
 #define NUM_THREADS 8
 
 DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : pool(NUM_THREADS),
-  processor(argcp, argvp, pool), counter(pool) {
-  parseCommandLineOptions(*argcp, *argvp);
+                                                                            counter(pool),
+                                                                            processor(argcp, argvp, pool) {
+  parse_CLI_options(*argcp, *argvp);
 }
 
 void DistributedKmerCounter::run() {
-  processor.processKeys([this]() {
-    scheduleFiles();
-  }, [this](const string &file) -> string {
-    return countKmers(file);
-  }, [this](){
-    return shared_ptr<ostream> = new ofstream(output)
-
+  processor.process_keys([this]() {
+    schedule_files();
+  }, [this](const string &file) {
+    return count_kmers(file);
+  }, [this]() {
+    shared_ptr<ostream> osp(new ofstream(output_file));
+    return osp;
   });
+
   processor.wait();
 }
 
-void DistributedKmerCounter::scheduleFiles() {
-  ofstream outStream(outputFile);
-  fs::directory_iterator it(inputDirectory);
+void DistributedKmerCounter::schedule_files() {
+
+  fs::directory_iterator it(input_directory);
   fs::directory_iterator endit;
 
   while (it != endit) {
-    string filename = it->path().filename().generic_string();
-    if (fs::is_regular_file(*it) && regex_match(filename, fileRegex))
-      processor.scheduleKey(filename);
+    string file_name = it->path().filename().generic_string();
+    if (fs::is_regular_file(*it) && regex_match(file_name, file_regex))
+      processor.schedule_key(file_name);
   }
 }
 
@@ -56,7 +59,7 @@ void DistributedKmerCounter::scheduleFiles() {
  * @param file: The file to process
  * @return: The result of counting the file
  */
-string DistributedKmerCounter::countKmers(const string &file) {
+string DistributedKmerCounter::count_kmers(const string &file) {
   ostringstream ss;
   counter.countFastaFile(file, ss, true, true);
   return ss.str();
@@ -69,7 +72,7 @@ string DistributedKmerCounter::countKmers(const string &file) {
  * @param argc: From main argc
  * @param argv: From main argv
  */
-void DistributedKmerCounter::parseCommandLineOptions(int argc, const char* const* argv) {
+void DistributedKmerCounter::parse_CLI_options(int argc, const char *const *argv) {
 
   string file_regex;
 
@@ -86,14 +89,14 @@ void DistributedKmerCounter::parseCommandLineOptions(int argc, const char* const
   po::options_description config("Config");
   config.add_options()
     ("regex,r",   po::value<string>(&file_regex)->default_value(".*"),      "file pattern regular expression")
-    ("k,k",       po::value<int>(&kmerLength)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
+    ("k,k",       po::value<int>(&kmer_length)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
     ("symbols,s", po::value<string>(&symbols)->default_value(DNA_SYMBOLS), "symbols to use for counting")
-    ("sum,sum",   po::bool_switch(&sumFiles), "sum all k-mer counts per file");
+    ("sum,sum",   po::bool_switch(&sum_files), "sum all k-mer counts per file");
 
   po::options_description hidden("Hidden");
   hidden.add_options()
-    ("input-directory", po::value<string>(&inputDirectory), "directory to process from")
-    ("output-file", po::value<string>(&outputFile));
+    ("input-directory", po::value<string>(&input_directory), "directory to process from")
+    ("output-file", po::value<string>(&output_file));
 
   po::positional_options_description p;
   p.add("input-directory", 1).add("output-file", 1);

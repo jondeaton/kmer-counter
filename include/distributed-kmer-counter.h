@@ -35,18 +35,18 @@ private:
   bool verbose;
   bool debug;
 
-  int kmerLength;
+  int kmer_length;
   std::string symbols;
-  bool sumFiles;
+  bool sum_files;
 
-  std::string inputDirectory;
-  boost::regex fileRegex;
-  std::string outputFile;
+  std::string input_directory;
+  boost::regex file_regex;
+  std::string output_file;
 
-  std::string countKmers(const std::string& file);
-  void scheduleFiles();
+  std::string count_kmers(const std::string &file);
+  void schedule_files();
 
-  void parseCommandLineOptions(int argc, const char* const* argv);
+  void parse_CLI_options(int argc, const char *const *argv);
 };
 
 #endif
