@@ -13,7 +13,7 @@ FastaParser::FastaParser(const std::string& fastaFile) : endIterator(nullptr) {
   this->fastaStream = new ifstream(fastaFile);
 }
 
-string FastaParser::parseHeader(const string& header) {
+string FastaParser::parse_header(const string &header) {
   return header;
 }
 

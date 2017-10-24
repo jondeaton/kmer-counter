@@ -45,9 +45,9 @@ int main(int argc, char* argv[]) {
   if (argc > 1 + numFlags) {
     std::string path(argv[1 + numFlags]);
     if (boost::filesystem::is_regular_file(path))
-      counter.countFastaFile(path, std::cout, sequential, true);
+      counter.count_fasta_file(path, std::cout, sequential, true);
     else if (boost::filesystem::is_directory(path))
-      counter.countDirectory(path, std::cout, sequential, true);
+      counter.count_directory(path, std::cout, sequential, true);
   } else counter.count(std::cin, std::cout, sequential, true);
 }
 

@@ -44,9 +44,9 @@ BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) :
   processor_name.assign(tmp_proc_name); // store processor name for later
 }
 
-void BatchProcessor::process_keys(function<void()> &schedule_keys,
-                                  function<string(const string &)> &process_key,
-                                  function<shared_ptr<ostream>()> &get_ostream) {
+void BatchProcessor::process_keys(function<void()> schedule_keys,
+                                  function<string(const string &)> process_key,
+                                  function<shared_ptr<ostream>()> get_ostream) {
 
   if (world_rank == BP_HEAD_NODE) master_routine(schedule_keys, get_ostream);
   else worker_routine(process_key);
@@ -64,9 +64,10 @@ void BatchProcessor::wait() {
  * This method will first call the get keys method which was passed, and fill the queue
  * of keys in the batch processor with
  */
-void BatchProcessor::master_routine(function<void()> &schedule_keys,
-                                    function<shared_ptr<ostream>()> &get_ostream) {
+void BatchProcessor::master_routine(function<void()> schedule_keys,
+                                    function<shared_ptr<ostream>()> get_ostream) {
 
+  output_stream = get_ostream(); // Get the output stream ready to write to
   // Mark all workers as unavailable. (no need to lock, no threads yet)
   for (int i = 0; i < world_size; i++) worker_ready_list[i] = false;
 
@@ -80,7 +81,6 @@ void BatchProcessor::master_routine(function<void()> &schedule_keys,
   // Schedule thread to write answers to disk
   pool.schedule([&](){
     MPI_Status status;
-    output_stream = get_ostream(); // Get the output stream ready to write to
     while (true) {
       MPI_Probe(MPI_ANY_SOURCE, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
       if (status.MPI_ERROR) continue;
@@ -132,7 +132,7 @@ void BatchProcessor::master_routine(function<void()> &schedule_keys,
  * as a parameter the key that will be sent over the network and return the result which will be
  * send back over the network to the master node.
  */
-void BatchProcessor::worker_routine(function<string(const string &)> &processKey) {
+void BatchProcessor::worker_routine(function<string(const string &)> processKey) {
   size_t numProcessed = 0; // Worker keeps track of how many it has processed
 
   MPI_Status status;
@@ -187,10 +187,10 @@ void BatchProcessor::schedule_key(const string &key) {
  */
 void BatchProcessor::receive_and_process_result(int worker) {
   MPI_Status status;
-  size_t messageSize;
-  MPI_Get_count(&status, MPI_CHAR, (int*) &messageSize);
-  auto answer = (char*) malloc(messageSize);
-  MPI_Recv(answer, (int) messageSize, MPI_CHAR, worker, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
+  size_t message_size;
+  MPI_Get_count(&status, MPI_CHAR, (int*) &message_size);
+  auto answer = (char*) malloc(message_size);
+  MPI_Recv(answer, (int) message_size, MPI_CHAR, worker, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
 
   // Write answer to output file
   pool.schedule([this, answer](){
@@ -212,6 +212,11 @@ bool BatchProcessor::queue_empty() {
 // Sends the exit signal to a specified worker
 void BatchProcessor::send_exit_signal(int worker) {
   MPI_Send(&worker, 1, MPI_BYTE, worker, BP_WORKER_EXIT_TAG, MPI_COMM_WORLD);
+}
+
+bool BatchProcessor::work_completed() {
+  // todo: check that scheduling is completed, queue is empty and every worker is finished
+  return false;
 }
 
 // Destructor

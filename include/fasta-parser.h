@@ -75,7 +75,7 @@ public:
    * @param header : A fasta record header
    * @return : The ID contained within the header
    */
-  std::string parseHeader(const std::string& header);
+  std::string parse_header(const std::string &header);
 
 private:
   std::istream* fastaStream = nullptr;

@@ -28,7 +28,7 @@ DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : pool
 }
 
 void DistributedKmerCounter::run() {
-  processor.process_keys([this]() {
+  processor.process_keys([this](){
     schedule_files();
   }, [this](const string &file) {
     return count_kmers(file);
@@ -61,7 +61,7 @@ void DistributedKmerCounter::schedule_files() {
  */
 string DistributedKmerCounter::count_kmers(const string &file) {
   ostringstream ss;
-  counter.countFastaFile(file, ss, true, true);
+  counter.count_fasta_file(file, ss, true, true);
   return ss.str();
 }
 

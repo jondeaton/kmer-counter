@@ -48,7 +48,7 @@ public:
    * @param in: Stream to read fasta records in from
    * @param out: Stream to output k-mer counts to
    */
-  void countSequential(std::istream& in, std::ostream& out);
+  void count_sequential(std::istream &in, std::ostream &out);
 
   /**
    * Public Method: countAsync
@@ -58,7 +58,7 @@ public:
    * @param in: Stream to read fasta records in from
    * @param out: Stream to output k-mer counts to
    */
-  void countAsync(std::istream& in, std::ostream& out, bool block);
+  void count_async(std::istream &in, std::ostream &out, bool block);
 
   /**
    * Public Method: countFastaFile
@@ -67,7 +67,7 @@ public:
    * @param fastaFile : Path to fasta file to count k-mers in
    * @param out: Output stream to output k-mer counts to
    */
-  void countFastaFile(const std::string& fastaFile, std::ostream& out, bool sequential, bool block);
+  void count_fasta_file(const std::string &fastaFile, std::ostream &out, bool sequential, bool block);
 
   /**
    * Public Method: countDirectory
@@ -76,11 +76,11 @@ public:
    * @param directory: Directory to read fasta files from
    * @param out: Output stream to output k-mer counts to
    */
-  void countDirectory(const std::string& directory, std::ostream& out, bool sequential, bool block);
+  void count_directory(const std::string &directory, std::ostream &out, bool sequential, bool block);
 
   void setSumFiles(bool sumFiles) { this->sumFiles = sumFiles; }
-  void setSymbols(const std::string& symbols) { kmerCounter.setSymbols(symbols); }
-  void setSetKmerLength(unsigned int kmerLength) { kmerCounter.setKmerLength(kmerLength); }
+  void setSymbols(const std::string& symbols) { kmer_counter.setSymbols(symbols); }
+  void setSetKmerLength(unsigned int kmerLength) { kmer_counter.setKmerLength(kmerLength); }
 
   /**
    * Destructor
@@ -92,7 +92,7 @@ public:
 private:
 
   bool sumFiles; // True if all k-mer counts in each file should be summed together
-  KmerCounter kmerCounter;
+  KmerCounter kmer_counter;
   ThreadPool& pool;
 };
 #endif

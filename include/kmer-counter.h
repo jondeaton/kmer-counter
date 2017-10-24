@@ -65,7 +65,7 @@ public:
    * Returns the size of the vector in which k-mer counts will be stored which is equal
    * to the number of unique k-mers of the given symbols and k-mer length
    */
-  unsigned int GetVectorSize() { return kmerCountVectorSize; }
+  unsigned int get_vector_size() { return kmerCountVectorSize; }
 
 private:
   std::string symbols;
