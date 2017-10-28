@@ -14,9 +14,10 @@
 
 class ThreadPool {
 public:
+  ThreadPool();
   explicit ThreadPool(size_t numThreads);
 
-  /**
+/**
    * Public Method: schedule
    * -----------------------
    * Used to schedule a task to be performed by the thread pool

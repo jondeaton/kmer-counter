@@ -5,19 +5,22 @@ set(CMAKE_CXX_STANDARD 11)
 include_directories(src)
 include_directories(include)
 
-if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+# cmake -DCMAKE_BUILD_TYPE=Debug ..
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -pedantic")
+    if (APPLE)
+        # LLDB needs executables to end with .o I guess...?
+        SET(LOC_EXECUTABLE  "count-kmers.o")
+        SET(DIST_EXECUTABLE "count-kmers-dist.o")
+    else()
+        SET(LOC_EXECUTABLE "count-kmers")
+        SET(DIST_EXECUTABLE "count-kmers-dist")
+    endif()
 else()
-    SET(CMAKE_CXX_FLAGS "-O3 -Wall -Wextra -pedantic")
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "DEBUG" AND APPLE)
-    # LLDB needs files to end with .o extension...
-    SET(LOC_EXECUTABLE "count-kmers.o")
-    SET(DIST_EXECUTABLE "count-kmer-dist.o")
-else()
-    SET(LOC_EXECUTABLE "count-kmers")
-    SET(DIST_EXECUTABLE "count-kmer-dist")
+    # Release mode
+    SET(CMAKE_CXX_FLAGS "-Ofast")
+    SET(LOC_EXECUTABLE  "count-kmers")
+    SET(DIST_EXECUTABLE "count-kmers-dist")
 endif()
 
 find_package(Boost 1.60 REQUIRED)
@@ -55,7 +58,6 @@ else()
             boost_filesystem
             boost_program_options)
 endif()
-
 
 # Distributed Target
 find_package(MPI REQUIRED)

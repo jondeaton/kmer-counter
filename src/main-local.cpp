@@ -25,6 +25,7 @@
  */
 
 #include "async-kmer-counter.h"
+#include "boost-thread-pool.h"
 #include <boost/filesystem.hpp>
 #include <cstring>
 #include <iostream>
@@ -40,7 +41,8 @@ static int parseCommandLineOptions(int argc, char* argv[]);
 int main(int argc, char* argv[]) {
   int numFlags = parseCommandLineOptions(argc, argv);
 
-  AsyncKmerCounter counter(symbols, kmerLength, sumFiles);
+  ThreadPool pool;
+  AsyncKmerCounter counter(pool, symbols, kmerLength, sumFiles);
 
   if (argc > 1 + numFlags) {
     std::string path(argv[1 + numFlags]);

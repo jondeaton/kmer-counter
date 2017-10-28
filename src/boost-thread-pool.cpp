@@ -9,6 +9,10 @@
 #include <boost-thread-pool.h>
 using namespace std;
 
+#define NUM_THREADS_DEFAULT 8
+
+ThreadPool::ThreadPool() : ThreadPool(NUM_THREADS_DEFAULT) {}
+
 ThreadPool::ThreadPool(size_t numThreads) {
   for (size_t i = 0; i < numThreads; i++)
     thread_group.create_thread(boost::bind(&boost::asio::io_service::run, &ioService));

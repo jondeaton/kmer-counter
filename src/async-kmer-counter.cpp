@@ -10,13 +10,10 @@
 #include <boost/foreach.hpp>
 using namespace std;
 
-AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool) : sumFiles(false), pool(pool) { }
+AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool) : sum_files(false), pool(pool) { }
 
-AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const std::string &symbols, unsigned int kmerLength) :
-  sumFiles(false), kmer_counter(symbols, kmerLength), pool(pool) { }
-
-AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const std::string &symbols, unsigned int kmerLength, bool sumFiles):
-  sumFiles(sumFiles), kmer_counter(symbols, kmerLength), pool(pool) { }
+AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const std::string &symbols, unsigned int kmer_length, bool sumFiles):
+  sum_files(sumFiles), kmer_counter(symbols, kmer_length), pool(pool) { }
 
 void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential, bool block) {
   if (sequential) count_sequential(in, out);
@@ -85,5 +82,5 @@ void AsyncKmerCounter::count_directory(const string &directory, ostream &out, bo
 }
 
 AsyncKmerCounter::~AsyncKmerCounter() {
-  (void) sumFiles; // just to get the compiler to chill tf out
+  (void) sum_files; // just to get the compiler to chill tf out
 }
