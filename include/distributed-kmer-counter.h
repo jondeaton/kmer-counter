@@ -9,6 +9,7 @@
 
 #include "batch-processor.h"
 #include "async-kmer-counter.h"
+#include <threadpool.hpp>
 #include <boost/regex.hpp>
 
 class DistributedKmerCounter {
@@ -28,7 +29,7 @@ public:
 
 private:
 
-  ThreadPool pool;
+  boost::threadpool::pool pool;
   BatchProcessor processor;
   AsyncKmerCounter counter;
 

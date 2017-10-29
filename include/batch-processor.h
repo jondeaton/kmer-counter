@@ -7,7 +7,7 @@
 #ifndef _BatchProcessor_H
 #define _BatchProcessor_H
 
-#include "boost-thread-pool.h"
+#include <threadpool.hpp>
 #include <functional>
 #include <string>
 #include <fstream>
@@ -27,7 +27,7 @@ public:
    * @param argvp: Pointer to argv from program entry point
    * @param pool: A thread pool to schedule asynchronous tasks on
    */
-  BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool);
+  BatchProcessor(int* argcp, char*** argvp, boost::threadpool::pool& pool);
 
   /**
    * Public Method: processKeys
@@ -74,7 +74,7 @@ private:
   std::string processor_name;
 
   std::shared_ptr<std::ostream> output_stream; // stream for master node to write answers to
-  ThreadPool& pool;                           // For processing work asynchronously
+  boost::threadpool::pool& pool;                           // For processing work asynchronously
 
   // Synchronization primitives
   std::mutex schedule_mutex;

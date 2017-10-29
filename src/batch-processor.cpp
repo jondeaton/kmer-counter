@@ -21,7 +21,7 @@
 
 using namespace std;
 
-BatchProcessor::BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool) :
+BatchProcessor::BatchProcessor(int* argcp, char*** argvp, boost::threadpool::pool& pool) :
   output_stream(nullptr), pool(pool), schedulingComplete(false) {
 
   int provided;

@@ -9,7 +9,7 @@
 
 #include "kmer-counter.h"
 #include "fasta-parser.h"
-#include "boost-thread-pool.h"
+#include <threadpool.hpp>
 #include <iostream>
 #include <cstring>
 
@@ -28,9 +28,9 @@ public:
    * @param kmer_length: The length of the sliding window ("k" in "k-mer")
    * @param sumFiles:True if all k-mer counts in each file should be summed together
    */
-  explicit AsyncKmerCounter(ThreadPool& pool);
-  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmer_length);
-  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmer_length, bool sum_files);
+  explicit AsyncKmerCounter(boost::threadpool::pool& pool);
+  AsyncKmerCounter(boost::threadpool::pool& pool, const std::string& symbols, unsigned int kmer_length);
+  AsyncKmerCounter(boost::threadpool::pool& pool, const std::string& symbols, unsigned int kmer_length, bool sum_files);
 
   /**
    * Public Method: count
@@ -115,7 +115,7 @@ public:
 
 private:
   KmerCounter kmer_counter;
-  ThreadPool& pool;
+  boost::threadpool::pool& pool;
   bool sum_files; // True if all k-mer counts in each file are be summed together
 };
 #endif

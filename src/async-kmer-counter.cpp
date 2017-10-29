@@ -9,13 +9,12 @@
 #include <boost/filesystem.hpp>
 using namespace std;
 
+AsyncKmerCounter::AsyncKmerCounter(boost::threadpool::pool& pool) : pool(pool), sum_files(false) { }
 
-AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool) : pool(pool), sum_files(false) { }
-
-AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const string &symbols, unsigned int kmer_length) :
+AsyncKmerCounter::AsyncKmerCounter(boost::threadpool::pool& pool, const string &symbols, unsigned int kmer_length) :
   kmer_counter(symbols, kmer_length), pool(pool), sum_files(false) { }
 
-AsyncKmerCounter::AsyncKmerCounter(ThreadPool& pool, const string &symbols, unsigned int kmer_length, bool sum_files) :
+AsyncKmerCounter::AsyncKmerCounter(boost::threadpool::pool& pool, const string &symbols, unsigned int kmer_length, bool sum_files) :
   kmer_counter(symbols, kmer_length), pool(pool), sum_files(sum_files) { }
 
 void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential, bool block) {

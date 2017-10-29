@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(Kmer-Counter)
 set(CMAKE_CXX_STANDARD 11)
 
-include_directories(src)
-include_directories(include)
+include_directories(src include boost)
 
 # cmake -DCMAKE_BUILD_TYPE=Debug ..
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -34,11 +33,11 @@ if (Boost_FOUND)
 endif()
 
 set(SOURCE_FILES
+        boost/threadpool.hpp
         include/async-kmer-counter.h        src/async-kmer-counter.cpp
         include/kmer-counter.h              src/kmer-counter.cpp
         include/fasta-parser.h              src/fasta-parser.cpp
         include/fasta-iterator.h            src/fasta-iterator.cpp
-        include/boost-thread-pool.h         src/boost-thread-pool.cpp
         include/ostreamlock.h               src/ostreamlock.cc
         src/main-local.cpp)
 
@@ -66,13 +65,13 @@ if (MPI_FOUND)
     include_directories(${MPI_INCLUDE_PATH})
 
     set(MPI_SOURCES
+            boost/threadpool.hpp
             include/batch-processor.h               src/batch-processor.cpp
             include/distributed-kmer-counter.h      src/distributed-kmer-counter.cpp
             include/async-kmer-counter.h            src/async-kmer-counter.cpp
             include/kmer-counter.h                  src/kmer-counter.cpp
             include/fasta-parser.h                  src/fasta-parser.cpp
             include/fasta-iterator.h                src/fasta-iterator.cpp
-            include/boost-thread-pool.h             src/boost-thread-pool.cpp
             include/ostreamlock.h                   src/ostreamlock.cc
             src/main-distributed.cpp)
 
