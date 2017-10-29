@@ -1,0 +1,4 @@
+
+1. Fix batch processor
+2. Include logging
+3. Fix command line arguments on both
