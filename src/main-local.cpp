@@ -31,9 +31,9 @@
 #include <iostream>
 
 const std::string symbols = "ATGC";
-unsigned int kmerLength = 4;
+unsigned int kmer_length = 4;
 bool sequential = false;
-bool sumFiles = false;
+bool sum_files = false;
 
 static void printUsage();
 static int parseCommandLineOptions(int argc, char* argv[]);
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
   int numFlags = parseCommandLineOptions(argc, argv);
 
   ThreadPool pool;
-  AsyncKmerCounter counter(pool, symbols, kmerLength, sumFiles);
+  AsyncKmerCounter counter(pool, symbols, kmer_length, sum_files);
 
   if (argc > 1 + numFlags) {
     std::string path(argv[1 + numFlags]);

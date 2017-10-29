@@ -29,7 +29,8 @@ public:
    * @param sumFiles:True if all k-mer counts in each file should be summed together
    */
   explicit AsyncKmerCounter(ThreadPool& pool);
-  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmer_length, bool sumFiles=false);
+  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmer_length);
+  AsyncKmerCounter(ThreadPool& pool, const std::string& symbols, unsigned int kmer_length, bool sum_files);
 
   /**
    * Public Method: count
@@ -44,7 +45,7 @@ public:
   /**
    * Public Method: count_sequential
    * -------------------------------
-   * Sequentially counts the k-mers from the in stream and outputs them
+   * Sequentially counts the k-mers from the in stream and outputs them to the output stream
    * to the out stream in their origin all order
    * @param in: Stream to read fasta records in from
    * @param out: Stream to output k-mer counts to
@@ -87,7 +88,7 @@ public:
    * located in a single files will be summed together. If false, then the k-mer will output a seperate
    * count entry for each sequence in the input file(s)
    */
-  void set_fum_files(bool sum_files) { this->sum_files = sum_files; }
+  void set_sum_files(bool sum_files) { this->sum_files = sum_files; }
 
   /**
    * Public method: set_symbols
@@ -113,9 +114,8 @@ public:
   ~AsyncKmerCounter();
 
 private:
-
-  bool sum_files; // True if all k-mer counts in each file are be summed together
   KmerCounter kmer_counter;
   ThreadPool& pool;
+  bool sum_files; // True if all k-mer counts in each file are be summed together
 };
 #endif

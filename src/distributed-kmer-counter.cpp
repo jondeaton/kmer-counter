@@ -19,12 +19,11 @@ using namespace std;
 #define K_DEFAULT 4
 #define DNA_SYMBOLS "ATGC"
 
-#define NUM_THREADS 8
-
-DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : pool(NUM_THREADS),
-                                                                            counter(pool),
-                                                                            processor(argcp, argvp, pool) {
+DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : processor(argcp, argvp, pool), counter(pool) {
   parse_CLI_options(*argcp, *argvp);
+  counter.set_kmer_length(kmer_length);
+  counter.set_symbols(symbols);
+  counter.set_sum_files(sum_files);
 }
 
 void DistributedKmerCounter::run() {
@@ -89,7 +88,7 @@ void DistributedKmerCounter::parse_CLI_options(int argc, const char *const *argv
   po::options_description config("Config");
   config.add_options()
     ("regex,r",   po::value<string>(&file_regex)->default_value(".*"),      "file pattern regular expression")
-    ("k,k",       po::value<int>(&kmer_length)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
+    ("k,k",       po::value<size_t>(&kmer_length)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
     ("symbols,s", po::value<string>(&symbols)->default_value(DNA_SYMBOLS), "symbols to use for counting")
     ("sum,sum",   po::bool_switch(&sum_files), "sum all k-mer counts per file");
 
