@@ -6,7 +6,7 @@ include_directories(src include boost)
 
 # cmake -DCMAKE_BUILD_TYPE=Debug ..
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -Wextra -pedantic")
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -Wall -Wextra -pedantic")
     if (APPLE)
         # LLDB needs executables to end with .o I guess...?
         SET(LOC_EXECUTABLE  "count-kmers.o")
@@ -17,7 +17,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif()
 else()
     # Release mode
-    SET(CMAKE_CXX_FLAGS "-Ofast")
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast")
     SET(LOC_EXECUTABLE  "count-kmers")
     SET(DIST_EXECUTABLE "count-kmers-dist")
 endif()
