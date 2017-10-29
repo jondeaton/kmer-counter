@@ -22,7 +22,7 @@
 using namespace std;
 
 BatchProcessor::BatchProcessor(int* argcp, char*** argvp, boost::threadpool::pool& pool) :
-  output_stream(nullptr), pool(pool), schedulingComplete(false) {
+  output_stream(nullptr), pool(pool), scheduling_complete(false) {
 
   int provided;
   int error = MPI_Init_thread(argcp, argvp, MPI_THREAD_MULTIPLE, &provided);
@@ -55,11 +55,16 @@ void BatchProcessor::process_keys(function<void()> schedule_keys,
 void BatchProcessor::wait() {
   if (world_rank != BP_HEAD_NODE) return;
   pool.wait();
+  unique_lock<mutex> lock(worker_done_mutex);
+  worker_done_cv.wait(lock, [this](){
+    return work_completed();
+  });
+  lock.unlock();
 }
 
 /**
- * Private method: masterRoutine
- * -----------------------------
+ * Private method: master_routine
+ * ------------------------------
  * Method used by the "head" node to coordinate work on all of the worker nodes.
  * This method will first call the get keys method which was passed, and fill the queue
  * of keys in the batch processor with
@@ -75,22 +80,26 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
   pool.schedule([&](){
     schedule_keys(); // Schedule keys asynchronously
     lock_guard<mutex> lg(scheduling_complete_mutex);
-    schedulingComplete = true; // Indicate done signaling
+    scheduling_complete = true; // Indicate done signaling
   });
 
-  // Schedule thread to write answers to disk
+  // I/O thread task
   pool.schedule([&](){
     MPI_Status status;
     while (true) {
       MPI_Probe(MPI_ANY_SOURCE, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
       if (status.MPI_ERROR) continue;
+      unique_lock<mutex> lock(worker_mutex_list[status.MPI_SOURCE]);
       receive_and_process_result(status.MPI_SOURCE);
+      worker_ready_list[status.MPI_SOURCE] = true;
+      lock.unlock();
     }
   });
 
   pool.schedule([&](){
     MPI_Status status;
     char worker_ready;
+
     while (!work_completed()) {
 
       // Find out what a worker wants to do next
@@ -107,12 +116,15 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
           schedule_cv.wait(lock, [this]() {
             return !queue_empty();
           });
+          lock.unlock();
         }
       }
 
-      worker_ready_list[status.MPI_SOURCE] = false;
-
       // There is some work to do in the queue
+
+      unique_lock<mutex> lock(worker_mutex_list[status.MPI_SOURCE]);
+      worker_ready_list[status.MPI_SOURCE] = false; // Mark worker as busy
+      lock.unlock();
 
       // Send the next work to the worker
       queue_mutex.lock();
@@ -125,8 +137,8 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
 }
 
 /**
- * Private method: workerRoutine
- * -----------------------------
+ * Private method: worker_routine
+ * ------------------------------
  * Routine for workers to process keys sent from the master and return the result
  * @param processData: The function that the worker should use to process a key. It should take
  * as a parameter the key that will be sent over the network and return the result which will be
@@ -175,33 +187,39 @@ void BatchProcessor::worker_routine(function<string(const string &)> processKey)
 void BatchProcessor::schedule_key(const string &key) {
   if (world_rank != BP_HEAD_NODE) return;
 
-  lock_guard<mutex> lg1(queue_mutex);
+  lock_guard<mutex> lg1(queue_mutex); // Lock the queue
   keys.push(key);
-  schedule_cv.notify_one(); // Notify potentially waiting node that something has been scheduled
+  schedule_cv.notify_one(); // Notify potentially waiting thread of scheduling
 }
 
 /**
- * Private method: receiveAndProcessResult
- * ---------------------------------------
- * Receives an answer from a worker node and write it to the output stream asynchronously
+ * Private method: receive_and_process_result
+ * ------------------------------------------
+ * Receives a single answer from a specified worker node and writes it to the output stream asynchronously
  */
 void BatchProcessor::receive_and_process_result(int worker) {
   MPI_Status status;
   size_t message_size;
   MPI_Get_count(&status, MPI_CHAR, (int*) &message_size);
-  auto answer = (char*) malloc(message_size);
+
+  auto answer = new char[message_size];
   MPI_Recv(answer, (int) message_size, MPI_CHAR, worker, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
+
+  if (status.MPI_ERROR) {
+    delete[] answer;
+    return;
+  }
 
   // Write answer to output file
   pool.schedule([this, answer](){
     *output_stream << oslock << answer << endl << osunlock;
-    free(answer);
+    delete[] answer;
   });
 }
 
 bool BatchProcessor::scheduling_completed() {
   lock_guard<mutex> lg(scheduling_complete_mutex);
-  return schedulingComplete;
+  return scheduling_complete;
 }
 
 bool BatchProcessor::queue_empty() {
@@ -215,7 +233,14 @@ void BatchProcessor::send_exit_signal(int worker) {
 }
 
 bool BatchProcessor::work_completed() {
-  // todo: check that scheduling is completed, queue is empty and every worker is finished
+  if (!scheduling_completed() || !queue_empty()) return false;
+
+
+  for (int i = 0; i < world_size; i++) {
+    if (i == BP_HEAD_NODE) continue;
+
+  }
+
   return false;
 }
 

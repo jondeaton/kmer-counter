@@ -83,12 +83,15 @@ private:
   std::queue<std::string> keys;               // Queue of keys to process
   std::mutex queue_mutex;                     // Lock on the queue since it is modified in multiple threads
 
-  bool schedulingComplete;                    // Indicates when scheduling has been completed
+  bool scheduling_complete;                    // Indicates when scheduling has been completed
   std::mutex scheduling_complete_mutex;
 
   // Vector indicating which workers are ready
   std::vector<bool> worker_ready_list;
   std::vector<std::mutex> worker_mutex_list;
+
+  std::mutex worker_done_mutex;
+  std::condition_variable worker_done_cv;
 
   /**
    * Private method: master_routine

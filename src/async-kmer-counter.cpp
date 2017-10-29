@@ -24,7 +24,8 @@ void AsyncKmerCounter::count(istream& in, ostream& out, bool sequential, bool bl
 
 void AsyncKmerCounter::count_sequential(istream &in, ostream &out) {
 
-  // Gotta use heap because variable length array
+  // Must use heap because variable length array
+  // sequential counting means that we can reuse the same array though
   auto counts = new long[kmer_counter.get_vector_size()];
 
   FastaParser parser(&in);
@@ -48,7 +49,7 @@ void AsyncKmerCounter::count_async(istream &in, ostream &out, bool block) {
     shared_ptr<pair<string, ostringstream>> record = *it;
 
     pool.schedule([&, record] () {
-      auto counts = new long[kmer_counter.get_vector_size()];
+      auto counts = new long[kmer_counter.get_vector_size()]; // Need to allocate a new array each time
       memset(counts, 0, sizeof(long) * kmer_counter.get_vector_size());
       kmer_counter.count(record->second.str(), counts);
 
