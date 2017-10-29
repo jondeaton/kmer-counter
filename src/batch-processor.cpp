@@ -10,8 +10,6 @@
 #include <mpi.h>
 #include <iostream>
 #include <boost/regex.hpp>
-#include <memory>
-#include <mutex>
 
 #define BP_HEAD_NODE 0
 #define BP_WORKER_READY 1
