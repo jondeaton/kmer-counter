@@ -10,6 +10,8 @@
 #include <mpi.h>
 #include <iostream>
 #include <boost/regex.hpp>
+#include <memory>
+#include <mutex>
 
 #define BP_HEAD_NODE 0
 #define BP_WORKER_READY 1
@@ -89,7 +91,7 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
     while (true) {
       MPI_Probe(MPI_ANY_SOURCE, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
       if (status.MPI_ERROR) continue;
-      unique_lock<mutex> lock(worker_mutex_list[status.MPI_SOURCE]);
+      unique_lock<mutex> lock(*worker_mutex_list[status.MPI_SOURCE]);
       receive_and_process_result(status.MPI_SOURCE);
       worker_ready_list[status.MPI_SOURCE] = true;
       lock.unlock();
@@ -122,7 +124,7 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
 
       // There is some work to do in the queue
 
-      unique_lock<mutex> lock(worker_mutex_list[status.MPI_SOURCE]);
+      unique_lock<mutex> lock(*worker_mutex_list[status.MPI_SOURCE]);
       worker_ready_list[status.MPI_SOURCE] = false; // Mark worker as busy
       lock.unlock();
 

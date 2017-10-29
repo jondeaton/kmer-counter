@@ -88,7 +88,7 @@ private:
 
   // Vector indicating which workers are ready
   std::vector<bool> worker_ready_list;
-  std::vector<std::mutex> worker_mutex_list;
+  std::vector<std::shared_ptr<std::mutex>> worker_mutex_list;
 
   std::mutex worker_done_mutex;
   std::condition_variable worker_done_cv;
