@@ -34,6 +34,7 @@ endif()
 
 set(SOURCE_FILES
         boost/threadpool.hpp
+        include/local-kmer-counter.h        src/local-kmer-counter.cpp
         include/async-kmer-counter.h        src/async-kmer-counter.cpp
         include/kmer-counter.h              src/kmer-counter.cpp
         include/fasta-parser.h              src/fasta-parser.cpp

@@ -40,7 +40,7 @@ public:
    * @param out: Stream to output k-mer counts to
    * @param sequential: If true, k-mers will be counted in order, if false, multi-threading will be used
    */
-  void count(std::istream& in, std::ostream& out, bool sequential, bool block);
+  void count(std::istream& in, std::ostream& out, bool sequential, bool block=true);
 
   /**
    * Public Method: count_sequential
@@ -60,7 +60,7 @@ public:
    * @param in: Stream to read fasta records in from
    * @param out: Stream to output k-mer counts to
    */
-  void count_async(std::istream &in, std::ostream &out, bool block);
+  void count_async(std::istream &in, std::ostream &out, bool block=true);
 
   /**
    * Public Method: count_fasta_file
@@ -69,7 +69,7 @@ public:
    * @param fastaFile : Path to fasta file to count k-mers in
    * @param out: Output stream to output k-mer counts to
    */
-  void count_fasta_file(const std::string &fastaFile, std::ostream &out, bool sequential, bool block);
+  void count_fasta_file(const std::string &fastaFile, std::ostream &out, bool sequential, bool block=true);
 
   /**
    * Public Method: count_directory
@@ -78,7 +78,7 @@ public:
    * @param directory: Directory to read fasta files from
    * @param out: Output stream to output k-mer counts to
    */
-  void count_directory(const std::string &directory, std::ostream &out, bool sequential, bool block);
+  void count_directory(const std::string &directory, std::ostream &out, bool sequential, bool block=true);
 
   /**
    * Public method: set_fum_files

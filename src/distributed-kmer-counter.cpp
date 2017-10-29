@@ -82,8 +82,8 @@ void DistributedKmerCounter::parse_CLI_options(int argc, const char *const *argv
 
   po::options_description log_options("Logging");
   log_options.add_options()
-    ("verbose,v",   po::bool_switch(&verbose), "Verbose output")
-    ("debug,debug", po::bool_switch(&debug), "Debug output");
+    ("verbose,v",   po::bool_switch(&verbose), "verbose output")
+    ("debug,debug", po::bool_switch(&debug), "debuging output");
 
   po::options_description config("Config");
   config.add_options()
