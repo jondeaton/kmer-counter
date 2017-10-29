@@ -22,7 +22,7 @@ else()
     SET(DIST_EXECUTABLE "count-kmers-dist")
 endif()
 
-find_package(Boost 1.60 REQUIRED)
+find_package(Boost 1.54 REQUIRED)
 if (Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
     ADD_DEFINITIONS( "-DHAS_BOOST" )
