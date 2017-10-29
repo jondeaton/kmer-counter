@@ -77,7 +77,7 @@ void AsyncKmerCounter::count_directory(const string &directory, ostream &out, bo
       string file_name = it->path().generic_string();
       if (sequential) count_fasta_file(file_name, out, sequential, true);
       else pool.schedule([&, file_name] () {
-          count_fasta_file(file_name, out, true, false);
+          count_fasta_file(file_name, out, true, true);
       });
     }
   }
