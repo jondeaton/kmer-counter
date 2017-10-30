@@ -26,7 +26,7 @@
 
 #include "local-kmer-counter.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, const char* argv[]) {
   LocalKmerCounter counter(argc, argv);
   counter.run();
 }

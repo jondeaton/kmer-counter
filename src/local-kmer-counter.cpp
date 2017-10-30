@@ -27,7 +27,7 @@ namespace fs = boost::filesystem;
 
 using namespace std;
 
-LocalKmerCounter::LocalKmerCounter(int argc, const char* argv[]) : pool(NUM_THREADS), counter(pool) {
+LocalKmerCounter::LocalKmerCounter(int argc, const char** argv) : pool(NUM_THREADS), counter(pool) {
   parse_CLI_options(argc, argv);
 
   setup_streams();
@@ -39,11 +39,11 @@ LocalKmerCounter::LocalKmerCounter(int argc, const char* argv[]) : pool(NUM_THRE
 }
 
 void LocalKmerCounter::run() {
-  if (from_stdin) counter.count(cin, *out_stream, sequential);
-  else {
-    if (directory_count) counter.count_directory(input_source, *out_stream, sequential);
-    else counter.count_fasta_file(input_source, *out_stream, sequential);
-  }
+//  if (from_stdin) counter.count(cin, *out_stream, sequential);
+//  else {
+//    if (directory_count) counter.count_directory(input_source, *out_stream, sequential);
+//    else counter.count_fasta_file(input_source, *out_stream, sequential);
+//  }
 }
 
 /**
@@ -66,8 +66,8 @@ void LocalKmerCounter::setup_streams() {
   }
   directory_count = !fs::is_regular_file(input_source);
 
-  if (from_stdin) out_stream = make_shared<ostream>(cout);
-  else out_stream = make_shared<ostream>(new ofstream(output_file));
+//  if (from_stdin) out_stream = make_shared<ostream>(cout);
+//  else out_stream = make_shared<ofstream>(new ofstream(output_file));
 }
 
 /**

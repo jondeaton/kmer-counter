@@ -49,7 +49,6 @@ if(APPLE OR WIN32)
             boost_thread-mt
             boost_system-mt
             boost_filesystem-mt
-            boost_smart_ptr-mt
             boost_log-mt
             boost_program_options-mt
             boost_regex-mt)
@@ -59,7 +58,6 @@ else()
             boost_thread
             boost_system
             boost_filesystem
-            boost_smart_ptr
             boost_log
             boost_program_options
             boost_regex)

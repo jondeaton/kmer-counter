@@ -10,12 +10,15 @@
 #include "async-kmer-counter.h"
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
+
 #include <ostream>
+#include <string>
+#include <memory>
 
 class LocalKmerCounter {
 
 public:
-  LocalKmerCounter(int argc, const char* argv[]);
+  LocalKmerCounter(int argc, const char** argv);
   void run();
 
 private:
@@ -38,7 +41,7 @@ private:
   boost::regex file_regex;
   std::string output_file;
 
-  std::shared_ptr<std::ostream> out_stream;
+  //std::shared_ptr<std::ostream> out_stream;
 
   void setup_streams();
 
