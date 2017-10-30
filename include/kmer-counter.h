@@ -10,8 +10,6 @@
 #define _kmer_counter_
 
 #include <string>
-#include <cstring>
-#include <cstdio>
 #include <map>
 
 class KmerCounter {

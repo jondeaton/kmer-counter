@@ -11,7 +11,7 @@
 #include "fasta-parser.h"
 #include <threadpool.hpp>
 #include <iostream>
-#include <cstring>
+#include <string>
 
 class AsyncKmerCounter {
 

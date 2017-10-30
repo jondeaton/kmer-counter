@@ -10,7 +10,7 @@
 #include "async-kmer-counter.h"
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
-#include <iostream>
+#include <ostream>
 
 class LocalKmerCounter {
 
