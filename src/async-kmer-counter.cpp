@@ -4,8 +4,8 @@
  * Presents the implementation of AsyncKmerCounter
  */
 
-#include "async-kmer-counter.h"
-#include "ostreamlock.h"
+#include "async-kmer-counter.hpp"
+#include "ostreamlock.hpp"
 #include <boost/filesystem.hpp>
 using namespace std;
 
@@ -63,6 +63,7 @@ void AsyncKmerCounter::count_async(istream &in, ostream &out, bool block) {
 }
 
 void AsyncKmerCounter::count_fasta_file(const string &fastaFile, ostream &out, bool sequential, bool block) {
+  BOOST_LOG_TRIVIAL(info) << "Counting file: " << fastaFile;
   if (!boost::filesystem::exists(fastaFile)) return; // File not found
   ifstream is(fastaFile);
   count(is, out, sequential, block);

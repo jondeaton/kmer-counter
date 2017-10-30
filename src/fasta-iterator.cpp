@@ -4,7 +4,7 @@
  * Defines the implementation of the FastaIterator class
  */
 
-#include "fasta-iterator.h"
+#include "fasta-iterator.hpp"
 #include <boost/algorithm/string/predicate.hpp>
 using namespace std;
 

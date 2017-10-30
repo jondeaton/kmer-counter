@@ -7,7 +7,7 @@
 #ifndef _LOCAL_KMER_COUNTER_H_INCLUDED
 #define _LOCAL_KMER_COUNTER_H_INCLUDED
 
-#include "async-kmer-counter.h"
+#include "async-kmer-counter.hpp"
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
 
@@ -45,7 +45,7 @@ private:
 
   void setup_streams();
 
-  void setup_logging();
+  void init_logging();
   void parse_CLI_options(int argc, const char *argv[]);
 };
 

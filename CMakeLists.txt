@@ -35,12 +35,13 @@ endif()
 
 set(SOURCE_FILES
         boost/threadpool.hpp
-        include/local-kmer-counter.h        src/local-kmer-counter.cpp
-        include/async-kmer-counter.h        src/async-kmer-counter.cpp
-        include/kmer-counter.h              src/kmer-counter.cpp
-        include/fasta-parser.h              src/fasta-parser.cpp
-        include/fasta-iterator.h            src/fasta-iterator.cpp
-        include/ostreamlock.h               src/ostreamlock.cc
+        include/local-kmer-counter.hpp          src/local-kmer-counter.cpp
+        include/async-kmer-counter.hpp          src/async-kmer-counter.cpp
+        include/kmer-counter.hpp                src/kmer-counter.cpp
+        include/fasta-parser.hpp                src/fasta-parser.cpp
+        include/fasta-iterator.hpp              src/fasta-iterator.cpp
+        include/ostreamlock.hpp                 src/ostreamlock.cc
+        include/Logger.hpp                      src/Logger.cpp
         src/main-local.cpp)
 
 add_executable(${LOC_EXECUTABLE} ${SOURCE_FILES})
@@ -79,13 +80,14 @@ if (MPI_FOUND)
 
     set(MPI_SOURCES
             boost/threadpool.hpp
-            include/batch-processor.h               src/batch-processor.cpp
-            include/distributed-kmer-counter.h      src/distributed-kmer-counter.cpp
-            include/async-kmer-counter.h            src/async-kmer-counter.cpp
-            include/kmer-counter.h                  src/kmer-counter.cpp
-            include/fasta-parser.h                  src/fasta-parser.cpp
-            include/fasta-iterator.h                src/fasta-iterator.cpp
-            include/ostreamlock.h                   src/ostreamlock.cc
+            include/batch-processor.hpp             src/batch-processor.cpp
+            include/distributed-kmer-counter.hpp    src/distributed-kmer-counter.cpp
+            include/async-kmer-counter.hpp          src/async-kmer-counter.cpp
+            include/kmer-counter.hpp                src/kmer-counter.cpp
+            include/fasta-parser.hpp                src/fasta-parser.cpp
+            include/fasta-iterator.hpp              src/fasta-iterator.cpp
+            include/ostreamlock.hpp                 src/ostreamlock.cc
+            include/Logger.hpp                      src/Logger.cpp
             src/main-distributed.cpp)
 
     add_executable(${DIST_EXECUTABLE} ${MPI_SOURCES})

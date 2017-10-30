@@ -26,7 +26,7 @@
 #ifndef _fasta_parser_
 #define _fasta_parser_
 
-#include "fasta-iterator.h"
+#include "fasta-iterator.hpp"
 #include <cstring>
 #include <iostream>
 #include <memory>

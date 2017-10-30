@@ -4,7 +4,7 @@
  * Implementation of distributed k-mer counter
  */
 
-#include "distributed-kmer-counter.h"
+#include "distributed-kmer-counter.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>

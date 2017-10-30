@@ -7,8 +7,8 @@
 #ifndef _dist_kmer_counter_
 #define _dist_kmer_counter_
 
-#include "batch-processor.h"
-#include "async-kmer-counter.h"
+#include "batch-processor.hpp"
+#include "async-kmer-counter.hpp"
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
 
@@ -32,7 +32,6 @@ private:
   boost::threadpool::pool pool;
   BatchProcessor processor;
   AsyncKmerCounter counter;
-
 
   bool verbose;
   bool debug;

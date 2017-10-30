@@ -3,7 +3,7 @@
  * Author: Jerry Cain
  */
 
-#include "ostreamlock.h"
+#include "ostreamlock.hpp"
 #include <iostream>
 #include <map>
 #include <mutex>

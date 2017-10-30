@@ -5,7 +5,7 @@
  * of exact counting of k-mers in a sequence.
  */
 
-#include "kmer-counter.h"
+#include "kmer-counter.hpp"
 using namespace std;
 
 KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :

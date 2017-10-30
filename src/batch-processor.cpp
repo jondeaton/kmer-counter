@@ -4,8 +4,8 @@
  * Presents the implementation of the batch processor
  */
 
-#include "batch-processor.h"
-#include "ostreamlock.h"
+#include "batch-processor.hpp"
+#include "ostreamlock.hpp"
 
 #include <mpi.h>
 #include <iostream>

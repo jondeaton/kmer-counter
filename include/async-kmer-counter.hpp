@@ -7,8 +7,8 @@
 #ifndef _async_kmer_counter_
 #define _async_kmer_counter_
 
-#include "kmer-counter.h"
-#include "fasta-parser.h"
+#include "kmer-counter.hpp"
+#include "fasta-parser.hpp"
 #include <threadpool.hpp>
 #include <iostream>
 #include <string>
