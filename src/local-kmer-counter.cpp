@@ -5,17 +5,10 @@
  */
 
 #include "local-kmer-counter.hpp"
+#include "Logger.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/log/sinks.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/console.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/support/date_time.hpp>
 
 #define NUM_THREADS 8
 #define K_DEFAULT 4
@@ -23,10 +16,6 @@
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
-
-namespace logging = boost::log;
-namespace sinks = boost::log::sinks;
-namespace expr = boost::log::expressions;
 
 using namespace std;
 
@@ -52,15 +41,23 @@ void LocalKmerCounter::run() {
 /**
  * Private method: setup_streams
  * -----------------------------
- *
+ * Sets up the input and output streams for the k-mer counter
  */
 void LocalKmerCounter::setup_streams() {
 
+  // Check to make sure that the file exists
   if (!fs::exists(input_source)) {
     BOOST_LOG_TRIVIAL(error) << "File not found: " << input_source;
     exit(1);
   }
 
+  fs::path p(input_source);
+  fs::file_status s = status(p);
+  if (s.permissions() | fs::is_oth)
+
+    fs
+
+  // Check to make sure we can read the file
   if (fs::is_directory(input_source)) directory_count = true;
   else {
     if (fs::is_regular_file(input_source)) directory_count = false;
@@ -83,27 +80,34 @@ void LocalKmerCounter::setup_streams() {
  * Sets up the logger for this object
  */
 void LocalKmerCounter::init_logging() {
-  boost::log::add_common_attributes();
 
-  if (debug) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::debug);
-  else if (verbose) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
-  else boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::warning);
+  // boost::log::sources::severity_logger_mt<  severity_level >& lg = logger::get();
 
-  // log format: [TimeStamp] [Severity Level] Log message
-  auto fmtTimeStamp = boost::log::expressions::
-  format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S");
-  auto fmtSeverity = boost::log::expressions::
-  attr<boost::log::trivial::severity_level>("Severity");
 
-  boost::log::formatter logFmt =
-    boost::log::expressions::format("[%1%] [%2%] %3%")
-    % fmtTimeStamp
-    % fmtSeverity
-    % boost::log::expressions::smessage;
 
-  // console sink
-  auto consoleSink = boost::log::add_console_log(std::clog);
-  consoleSink->set_formatter(logFmt);
+
+
+//  boost::log::add_common_attributes();
+//
+//  if (debug) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::debug);
+//  else if (verbose) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
+//  else boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::warning);
+//
+//  // log format: [TimeStamp] [Severity Level] Log message
+//  auto fmtTimeStamp = boost::log::expressions::
+//  format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S");
+//  auto fmtSeverity = boost::log::expressions::
+//  attr<boost::log::trivial::severity_level>("Severity");
+//
+//  boost::log::formatter logFmt =
+//    boost::log::expressions::format("[%1%] [%2%] %3%")
+//    % fmtTimeStamp
+//    % fmtSeverity
+//    % boost::log::expressions::smessage;
+//
+//  // console sink
+//  auto consoleSink = boost::log::add_console_log(std::clog);
+//  consoleSink->set_formatter(logFmt);
 }
 
 /**

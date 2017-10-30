@@ -8,12 +8,13 @@
 #define _LOCAL_KMER_COUNTER_H_INCLUDED
 
 #include "async-kmer-counter.hpp"
-#include <threadpool.hpp>
-#include <boost/regex.hpp>
 
 #include <ostream>
 #include <string>
 #include <memory>
+#include <threadpool.hpp>
+#include <boost/regex.hpp>
+
 
 class LocalKmerCounter {
 
@@ -44,7 +45,6 @@ private:
   std::ostream* out_stream_p;
 
   void setup_streams();
-
   void init_logging();
   void parse_CLI_options(int argc, const char *argv[]);
 };
