@@ -15,7 +15,6 @@
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
 
-
 class LocalKmerCounter {
 
 public:

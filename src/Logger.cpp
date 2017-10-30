@@ -15,7 +15,7 @@ namespace expr = boost::log::expressions;
 namespace sinks = boost::log::sinks;
 namespace attrs = boost::log::attributes;
 
-BOOST_LOG_GLOBAL_LOGGER_INIT(logger, boost::log::sources::severity_logger_mt< severity_level >)
+BOOST_LOG_GLOBAL_LOGGER_INIT(logger, boost::log::sources::severity_logger_mt<severity_level>)
 {
   boost::log::sources::severity_logger_mt<severity_level> logger;
 

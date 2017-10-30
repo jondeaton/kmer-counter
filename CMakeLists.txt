@@ -4,6 +4,21 @@ set(CMAKE_CXX_STANDARD 11)
 
 include_directories(src include boost)
 
+find_package(Boost 1.54 REQUIRED)
+if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIR})
+    add_definitions("-DHAS_BOOST")
+
+    set(Boost_USE_STATIC ON)
+    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_MULTITHREADED ON)
+    set(Boost_USE_STATIC_RUNTIME ON)
+endif()
+
+############################
+#       local build        #
+############################
+
 # cmake -DCMAKE_BUILD_TYPE=Debug ..
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -Wall -Wextra -pedantic -DBOOST_LOG_DYN_LINK")
@@ -20,17 +35,6 @@ else()
     SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -DBOOST_LOG_DYN_LINK")
     SET(LOC_EXECUTABLE  "count-kmers")
     SET(DIST_EXECUTABLE "count-kmers-dist")
-endif()
-
-find_package(Boost 1.54 REQUIRED)
-if (Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIR})
-    add_definitions("-DHAS_BOOST")
-
-    set(Boost_USE_STATIC ON)
-    set(Boost_USE_STATIC_LIBS ON)
-    set(Boost_USE_MULTITHREADED ON)
-    set(Boost_USE_STATIC_RUNTIME ON)
 endif()
 
 set(SOURCE_FILES
@@ -72,7 +76,9 @@ else()
             boost_regex)
 endif()
 
-# Distributed Target
+############################
+#       Dist build        #
+############################
 find_package(MPI REQUIRED)
 if (MPI_FOUND)
 #    set(CMAKE_CXX_COMPILER "mpic++")
@@ -112,6 +118,10 @@ if (MPI_FOUND)
                 pthread boost_thread-mt
                 boost_system-mt
                 boost_filesystem-mt
+                boost_log-mt
+                boost_log_setup-mt
+                boost_chrono-mt
+                boost_date_time-mt
                 boost_program_options-mt
                 boost_regex-mt)
     else()
@@ -119,6 +129,10 @@ if (MPI_FOUND)
                 pthread boost_thread
                 boost_system
                 boost_filesystem
+                boost_log
+                boost_log_setup
+                boost_chrono
+                boost_date_time
                 boost_program_options
                 boost_regex)
     endif()

@@ -45,29 +45,23 @@ void LocalKmerCounter::run() {
  */
 void LocalKmerCounter::setup_streams() {
 
-  // Check to make sure that the file exists
-  if (!fs::exists(input_source)) {
-    BOOST_LOG_TRIVIAL(error) << "File not found: " << input_source;
-    exit(1);
-  }
-
-  fs::path p(input_source);
-  fs::file_status s = status(p);
-  if (s.permissions() | fs::is_oth)
-
-    fs
-
-  // Check to make sure we can read the file
-  if (fs::is_directory(input_source)) directory_count = true;
-  else {
-    if (fs::is_regular_file(input_source)) directory_count = false;
-    else {
-      BOOST_LOG_TRIVIAL(error) << "Not a regular file: " << input_source;
+  if (!from_stdin) {
+    // Check to make sure that the file exists
+    if (!fs::exists(input_source)) {
+      BOOST_LOG_TRIVIAL(error) << "File not found: " << input_source;
       exit(1);
     }
-  }
 
-  directory_count = fs::is_directory(input_source); // Counting from a directory
+    // Check to make sure we can read the file
+    if (fs::is_directory(input_source)) directory_count = true;
+    else {
+      if (fs::is_regular_file(input_source)) directory_count = false;
+      else {
+        BOOST_LOG_TRIVIAL(error) << "Not a regular file: " << input_source;
+        exit(1);
+      }
+    }
+  }
 
   // Make the output stream
   if (to_stdout) out_stream_p = &cout;
@@ -81,33 +75,6 @@ void LocalKmerCounter::setup_streams() {
  */
 void LocalKmerCounter::init_logging() {
 
-  // boost::log::sources::severity_logger_mt<  severity_level >& lg = logger::get();
-
-
-
-
-
-//  boost::log::add_common_attributes();
-//
-//  if (debug) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::debug);
-//  else if (verbose) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
-//  else boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::warning);
-//
-//  // log format: [TimeStamp] [Severity Level] Log message
-//  auto fmtTimeStamp = boost::log::expressions::
-//  format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S");
-//  auto fmtSeverity = boost::log::expressions::
-//  attr<boost::log::trivial::severity_level>("Severity");
-//
-//  boost::log::formatter logFmt =
-//    boost::log::expressions::format("[%1%] [%2%] %3%")
-//    % fmtTimeStamp
-//    % fmtSeverity
-//    % boost::log::expressions::smessage;
-//
-//  // console sink
-//  auto consoleSink = boost::log::add_console_log(std::clog);
-//  consoleSink->set_formatter(logFmt);
 }
 
 /**
@@ -120,7 +87,7 @@ void LocalKmerCounter::init_logging() {
  * @return: The number of flags
  */
 void LocalKmerCounter::parse_CLI_options(int argc, const char* argv[]) {
-  string file_regex;
+  string fre;
 
   po::options_description info("Info");
   info.add_options()
@@ -134,10 +101,11 @@ void LocalKmerCounter::parse_CLI_options(int argc, const char* argv[]) {
 
   po::options_description config("Config");
   config.add_options()
-    ("regex,r",   po::value<string>(&file_regex)->default_value(".*"),      "file pattern regular expression")
-    ("k,k",       po::value<size_t>(&kmer_length)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
-    ("symbols,s", po::value<string>(&symbols)->default_value(DNA_SYMBOLS), "symbols to use for counting")
-    ("sum,sum",   po::bool_switch(&sum_files), "sum all k-mer counts per file");
+          ("regex,r",   po::value<string>(&fre)->default_value(".*"),      "file pattern regular expression")
+          ("k,k",       po::value<size_t>(&kmer_length)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
+          ("symbols,s", po::value<string>(&symbols)->default_value(DNA_SYMBOLS), "symbols to use for counting")
+          ("sum,sum",   po::bool_switch(&sum_files), "sum all k-mer counts per file")
+          ("sequential,sequential", po::bool_switch(&sequential), "sequential processing");
 
   po::options_description hidden("Hidden");
   hidden.add_options()
@@ -147,7 +115,7 @@ void LocalKmerCounter::parse_CLI_options(int argc, const char* argv[]) {
   po::positional_options_description p;
   p.add("input", 1).add("output-file", 1);
 
-  po::options_description desc("Multithreaded k-mer counter options");
+  po::options_description desc("Multi-threaded k-mer counter options");
   desc.add(info).add(log_options).add(config);
 
   po::options_description cmdline_options;
@@ -166,9 +134,21 @@ void LocalKmerCounter::parse_CLI_options(int argc, const char* argv[]) {
   }
 
   if (vm.count("version")) {
-    cout << "Distributed k-mer counter version 1.0" << endl;
+    cout << "Asynchronous k-mer counter version 1.0" << endl;
     exit(1);
   }
 
-  boost::regex fileRegex(file_regex); // convert string to regex
+  boost::regex fileRegex(fre); // convert string to regex
+  file_regex = fileRegex;
+
+  // Figure out if we are reading from stdin
+  to_stdout = output_file.empty();
+  from_stdin = input_source.empty();
+
+  BOOST_LOG_TRIVIAL(info) << "Source: " << (from_stdin ? "standard input" : input_source);
+  BOOST_LOG_TRIVIAL(info) << "Output: " << (to_stdout ? "standard output" : output_file);
+  BOOST_LOG_TRIVIAL(info) << "k-mer length: " << kmer_length;
+  BOOST_LOG_TRIVIAL(info) << "Symbols: " << symbols;
+  BOOST_LOG_TRIVIAL(info) << "File regex: " << file_regex;
+  BOOST_LOG_TRIVIAL(info) << "Sequential processing " << (sequential ? "enabled" : "disabled");
 }

@@ -9,4 +9,4 @@ enum severity_level
   critical
 };
 
-BOOST_LOG_GLOBAL_LOGGER(logger, boost::log::sources::severity_logger_mt< severity_level >)
+BOOST_LOG_GLOBAL_LOGGER(logger, boost::log::sources::severity_logger_mt<severity_level>)
