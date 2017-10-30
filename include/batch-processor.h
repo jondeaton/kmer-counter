@@ -57,7 +57,7 @@ public:
   /**
    * Public Method: wait
    * -------------------
-   * Wait
+   * Wait for all tasks on the batch processor to be completed before returning.
    */
   void wait();
 

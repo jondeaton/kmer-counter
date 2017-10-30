@@ -9,7 +9,8 @@
 #ifndef _kmer_counter_
 #define _kmer_counter_
 
-#include <string>
+#include <>
+#include <cstring>
 #include <cstdio>
 #include <map>
 

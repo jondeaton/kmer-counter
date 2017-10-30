@@ -49,14 +49,20 @@ if(APPLE OR WIN32)
             boost_thread-mt
             boost_system-mt
             boost_filesystem-mt
-            boost_program_options-mt)
+            boost_smart_ptr-mt
+            boost_log-mt
+            boost_program_options-mt
+            boost_regex-mt)
 else()
     target_link_libraries(${LOC_EXECUTABLE}
             pthread
             boost_thread
             boost_system
             boost_filesystem
-            boost_program_options)
+            boost_smart_ptr
+            boost_log
+            boost_program_options
+            boost_regex)
 endif()
 
 # Distributed Target
