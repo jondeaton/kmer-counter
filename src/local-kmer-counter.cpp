@@ -8,11 +8,11 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
-#include <boost/smart_ptr/shared_ptr.hpp>
-#include <boost/smart_ptr/make_shared_object.hpp>
-#include <boost/log/sinks.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
+//#include <boost/smart_ptr/shared_ptr.hpp>
+//#include <boost/smart_ptr/make_shared_object.hpp>
+//#include <boost/log/sinks.hpp>
+//#include <boost/log/trivial.hpp>
+//#include <boost/log/expressions.hpp>
 
 #define NUM_THREADS 8
 #define K_DEFAULT 4
@@ -21,9 +21,9 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-namespace logging = boost::log;
-namespace sinks = boost::log::sinks;
-namespace expr = boost::log::expressions;
+//namespace logging = boost::log;
+//namespace sinks = boost::log::sinks;
+//namespace expr = boost::log::expressions;
 
 using namespace std;
 
@@ -83,21 +83,21 @@ void LocalKmerCounter::setup_logging() {
 //  if (to_stdout) sink->locked_backend()->add_stream(make_shared<ofstream>("kmers.log"));
 //  else sink->locked_backend()->add_stream(make_shared<ostream>(cout));
 
-  typedef sinks::synchronous_sink< sinks::text_ostream_backend > text_sink;
-  boost::shared_ptr< text_sink > sink = boost::make_shared<text_sink>();
-
-  sink->locked_backend()->add_stream(
-    boost::make_shared< std::ofstream >("sample.log"));
-
-  sink->set_formatter
-    (
-      expr::format("%1%: <%2%> %3%")
-      % expr::attr<unsigned int>("LineID")
-      % logging::trivial::severity
-      % expr::smessage
-    );
-
-  logging::core::get()->add_sink(sink);
+//  typedef sinks::synchronous_sink< sinks::text_ostream_backend > text_sink;
+//  boost::shared_ptr< text_sink > sink = boost::make_shared<text_sink>();
+//
+//  sink->locked_backend()->add_stream(
+//    boost::make_shared< std::ofstream >("sample.log"));
+//
+//  sink->set_formatter
+//    (
+//      expr::format("%1%: <%2%> %3%")
+//      % expr::attr<unsigned int>("LineID")
+//      % logging::trivial::severity
+//      % expr::smessage
+//    );
+//
+//  logging::core::get()->add_sink(sink);
 }
 
 /**

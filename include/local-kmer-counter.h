@@ -4,9 +4,13 @@
  * Class representing the command line local k-mer counter tool
  */
 
+#ifndef _LOCAL_KMER_COUNTER_H_INCLUDED
+#define _LOCAL_KMER_COUNTER_H_INCLUDED
+
 #include "async-kmer-counter.h"
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
+#include <iostream>
 
 class LocalKmerCounter {
 
@@ -41,3 +45,5 @@ private:
   void setup_logging();
   void parse_CLI_options(int argc, const char *argv[]);
 };
+
+#endif // _LOCAL_KMER_COUNTER_H_INCLUDED
