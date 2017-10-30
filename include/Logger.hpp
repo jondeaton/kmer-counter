@@ -1,5 +1,7 @@
-#include <boost/log/trivial.hpp>
-#include <boost/log/sources/global_logger_storage.hpp>
+#pragma once
+
+
+
 
 enum severity_level
 {
@@ -9,4 +11,6 @@ enum severity_level
   critical
 };
 
-BOOST_LOG_GLOBAL_LOGGER(logger, boost::log::sources::severity_logger_mt<severity_level>)
+typedef boost::log::sources::severity_logger_mt<boost::log::trivial::severity> logger_t;
+
+BOOST_LOG_GLOBAL_LOGGER(logger, logger_t)

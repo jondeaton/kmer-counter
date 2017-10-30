@@ -45,7 +45,7 @@ set(SOURCE_FILES
         include/fasta-parser.hpp                src/fasta-parser.cpp
         include/fasta-iterator.hpp              src/fasta-iterator.cpp
         include/ostreamlock.hpp                 src/ostreamlock.cc
-        include/Logger.hpp                      src/Logger.cpp
+        
         src/main-local.cpp)
 
 add_executable(${LOC_EXECUTABLE} ${SOURCE_FILES})
