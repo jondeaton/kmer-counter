@@ -18,7 +18,7 @@
 class LocalKmerCounter {
 
 public:
-  LocalKmerCounter(int argc, const char** argv);
+  LocalKmerCounter(int argc, const char* argv[]);
   void run();
 
 private:
@@ -41,7 +41,7 @@ private:
   boost::regex file_regex;
   std::string output_file;
 
-  //std::shared_ptr<std::ostream> out_stream;
+  std::ostream* out_stream_p;
 
   void setup_streams();
 

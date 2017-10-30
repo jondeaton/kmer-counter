@@ -27,7 +27,7 @@ namespace fs = boost::filesystem;
 
 using namespace std;
 
-LocalKmerCounter::LocalKmerCounter(int argc, const char** argv) : pool(NUM_THREADS), counter(pool) {
+LocalKmerCounter::LocalKmerCounter(int argc, const char* argv[]) : pool(NUM_THREADS), counter(pool) {
   parse_CLI_options(argc, argv);
 
   setup_streams();
@@ -39,11 +39,11 @@ LocalKmerCounter::LocalKmerCounter(int argc, const char** argv) : pool(NUM_THREA
 }
 
 void LocalKmerCounter::run() {
-//  if (from_stdin) counter.count(cin, *out_stream, sequential);
-//  else {
-//    if (directory_count) counter.count_directory(input_source, *out_stream, sequential);
-//    else counter.count_fasta_file(input_source, *out_stream, sequential);
-//  }
+  if (from_stdin) counter.count(cin, *out_stream_p, sequential);
+  else {
+    if (directory_count) counter.count_directory(input_source, *out_stream_p, sequential);
+    else counter.count_fasta_file(input_source, *out_stream_p, sequential);
+  }
 }
 
 /**
@@ -66,8 +66,9 @@ void LocalKmerCounter::setup_streams() {
   }
   directory_count = !fs::is_regular_file(input_source);
 
-//  if (from_stdin) out_stream = make_shared<ostream>(cout);
-//  else out_stream = make_shared<ofstream>(new ofstream(output_file));
+  // Make the output stream
+  if (from_stdin) out_stream_p = &cout;
+  else out_stream_p = new ofstream(output_file);
 }
 
 /**
@@ -109,7 +110,7 @@ void LocalKmerCounter::setup_logging() {
  * @param argv : NULL terminated list of arguments
  * @return: The number of flags
  */
-void LocalKmerCounter::parse_CLI_options(int argc, const char *argv[]) {
+void LocalKmerCounter::parse_CLI_options(int argc, const char* argv[]) {
   string file_regex;
 
   po::options_description info("Info");
