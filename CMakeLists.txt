@@ -46,25 +46,7 @@ set(SOURCE_FILES
 add_executable(${LOC_EXECUTABLE} ${SOURCE_FILES})
 if(APPLE OR WIN32)
 
-    set(proglog_dbg_libs
-            "${Boost_LOG_LIBRARY_DEBUG}"
-            "${Boost_LOG_SETUP_LIBRARY_DEBUG}"
-            "${Boost_THREAD_LIBRARY_DEBUG}"
-            "${Boost_DATE_TIME_LIBRARY_DEBUG}"
-            "${Boost_CHRONO_LIBRARY_DEBUG}"
-            "${Boost_FILESYSTEM_LIBRARY_DEBUG}"
-            "${Boost_SYSTEM_LIBRARY_DEBUG}")
-
-    set(proglog_opt_libs
-            "${Boost_LOG_LIBRARY_RELEASE}"
-            "${Boost_LOG_SETUP_LIBRARY_RELEASE}"
-            "${Boost_THREAD_LIBRARY_RELEASE}"
-            "${Boost_DATE_TIME_LIBRARY_RELEASE}"
-            "${Boost_CHRONO_LIBRARY_RELEASE}"
-            "${Boost_FILESYSTEM_LIBRARY_RELEASE}"
-            "${Boost_SYSTEM_LIBRARY_RELEASE}")
-
-    target_link_libraries(${LOC_EXECUTABLE} ${proglog_dbg_libs} ${proglog_opt_libs}
+    target_link_libraries(${LOC_EXECUTABLE}
             pthread
             boost_thread-mt
             boost_system-mt
@@ -76,7 +58,7 @@ if(APPLE OR WIN32)
             boost_program_options-mt
             boost_regex-mt)
 else()
-    target_link_libraries(${LOC_EXECUTABLE} ${proglog_dbg_libs} ${proglog_opt_libs}
+    target_link_libraries(${LOC_EXECUTABLE}
             pthread
             boost_thread
             boost_system
