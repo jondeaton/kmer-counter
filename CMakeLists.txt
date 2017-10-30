@@ -6,7 +6,7 @@ include_directories(src include boost)
 
 # cmake -DCMAKE_BUILD_TYPE=Debug ..
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -Wall -Wextra -pedantic")
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -Wall -Wextra -pedantic -DBOOST_LOG_DYN_LINK")
     if (APPLE)
         # LLDB needs executables to end with .o I guess...?
         SET(LOC_EXECUTABLE  "count-kmers.o")
@@ -17,19 +17,20 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif()
 else()
     # Release mode
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast")
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -DBOOST_LOG_DYN_LINK")
     SET(LOC_EXECUTABLE  "count-kmers")
     SET(DIST_EXECUTABLE "count-kmers-dist")
 endif()
 
 find_package(Boost 1.54 REQUIRED)
 if (Boost_FOUND)
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-    ADD_DEFINITIONS( "-DHAS_BOOST" )
+    include_directories(${Boost_INCLUDE_DIR})
+    add_definitions("-DHAS_BOOST")
 
+    set(Boost_USE_STATIC ON)
     set(Boost_USE_STATIC_LIBS ON)
     set(Boost_USE_MULTITHREADED ON)
-    set(Boost_USE_STATIC_RUNTIME OFF)
+    set(Boost_USE_STATIC_RUNTIME ON)
 endif()
 
 set(SOURCE_FILES
@@ -44,21 +45,46 @@ set(SOURCE_FILES
 
 add_executable(${LOC_EXECUTABLE} ${SOURCE_FILES})
 if(APPLE OR WIN32)
-    target_link_libraries(${LOC_EXECUTABLE}
+
+    set(proglog_dbg_libs
+            "${Boost_LOG_LIBRARY_DEBUG}"
+            "${Boost_LOG_SETUP_LIBRARY_DEBUG}"
+            "${Boost_THREAD_LIBRARY_DEBUG}"
+            "${Boost_DATE_TIME_LIBRARY_DEBUG}"
+            "${Boost_CHRONO_LIBRARY_DEBUG}"
+            "${Boost_FILESYSTEM_LIBRARY_DEBUG}"
+            "${Boost_SYSTEM_LIBRARY_DEBUG}")
+
+    set(proglog_opt_libs
+            "${Boost_LOG_LIBRARY_RELEASE}"
+            "${Boost_LOG_SETUP_LIBRARY_RELEASE}"
+            "${Boost_THREAD_LIBRARY_RELEASE}"
+            "${Boost_DATE_TIME_LIBRARY_RELEASE}"
+            "${Boost_CHRONO_LIBRARY_RELEASE}"
+            "${Boost_FILESYSTEM_LIBRARY_RELEASE}"
+            "${Boost_SYSTEM_LIBRARY_RELEASE}")
+
+    target_link_libraries(${LOC_EXECUTABLE} ${proglog_dbg_libs} ${proglog_opt_libs}
             pthread
             boost_thread-mt
             boost_system-mt
             boost_filesystem-mt
             boost_log-mt
+            boost_log_setup-mt
+            boost_chrono-mt
+            boost_date_time-mt
             boost_program_options-mt
             boost_regex-mt)
 else()
-    target_link_libraries(${LOC_EXECUTABLE}
+    target_link_libraries(${LOC_EXECUTABLE} ${proglog_dbg_libs} ${proglog_opt_libs}
             pthread
             boost_thread
             boost_system
             boost_filesystem
             boost_log
+            boost_log_setup
+            boost_chrono
+            boost_date_time
             boost_program_options
             boost_regex)
 endif()
