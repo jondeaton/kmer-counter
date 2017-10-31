@@ -7,8 +7,9 @@
 #ifndef _dist_kmer_counter_
 #define _dist_kmer_counter_
 
-#include "batch-processor.h"
-#include "async-kmer-counter.h"
+#include "batch-processor.hpp"
+#include "async-kmer-counter.hpp"
+#include <threadpool.hpp>
 #include <boost/regex.hpp>
 
 class DistributedKmerCounter {
@@ -28,16 +29,16 @@ public:
 
 private:
 
-  ThreadPool pool;
-  AsyncKmerCounter counter;
+  boost::threadpool::pool pool;
   BatchProcessor processor;
+  AsyncKmerCounter counter;
 
   bool verbose;
   bool debug;
 
-  int kmer_length;
+  size_t kmer_length;
   std::string symbols;
-  bool sum_files;
+  bool sum_files = false;
 
   std::string input_directory;
   boost::regex file_regex;

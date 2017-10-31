@@ -7,15 +7,20 @@
 #ifndef _BatchProcessor_H
 #define _BatchProcessor_H
 
-#include "boost-thread-pool.h"
+#include <threadpool.hpp>
 #include <functional>
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <memory>
 #include <mutex>
 #include <condition_variable>
+#include <boost/log/trivial.hpp>
+
+namespace logging = boost::log;
+namespace src = boost::log::sources;
 
 class BatchProcessor {
 
@@ -29,7 +34,7 @@ public:
    * @param argvp: Pointer to argv from program entry point
    * @param pool: A thread pool to schedule asynchronous tasks on
    */
-  BatchProcessor(int* argcp, char*** argvp, ThreadPool& pool);
+  BatchProcessor(int* argcp, char*** argvp, boost::threadpool::pool& pool);
 
   /**
    * Public Method: processKeys
@@ -56,9 +61,18 @@ public:
   /**
    * Public Method: wait
    * -------------------
-   * Wait
+   * Wait for all tasks on the batch processor to be completed before returning.
    */
   void wait();
+
+  /**
+   * Public method: init_logger
+   * --------------------------
+   * Initialize the logger for the batch processor
+   * @param verbose: True for verbose output
+   * @param debug" True for debugging output
+   */
+  void init_logger(bool verbose, bool debug);
 
   /**
    * Deconstructor
@@ -76,7 +90,7 @@ private:
   std::string processor_name;
 
   std::shared_ptr<std::ostream> output_stream; // stream for master node to write answers to
-  ThreadPool& pool;                           // For processing work asynchronously
+  boost::threadpool::pool& pool;                           // For processing work asynchronously
 
   // Synchronization primitives
   std::mutex schedule_mutex;
@@ -85,12 +99,17 @@ private:
   std::queue<std::string> keys;               // Queue of keys to process
   std::mutex queue_mutex;                     // Lock on the queue since it is modified in multiple threads
 
-  bool schedulingComplete;                    // Indicates when scheduling has been completed
+  bool scheduling_complete;                    // Indicates when scheduling has been completed
   std::mutex scheduling_complete_mutex;
 
   // Vector indicating which workers are ready
   std::vector<bool> worker_ready_list;
-  std::vector<std::mutex> worker_mutex_list;
+  std::vector<std::shared_ptr<std::mutex>> worker_mutex_list;
+
+  std::mutex worker_done_mutex;
+  std::condition_variable worker_done_cv;
+
+  src::severity_logger<logging::trivial::severity_level> log; // Logger
 
   /**
    * Private method: master_routine

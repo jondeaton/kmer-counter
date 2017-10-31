@@ -1,4 +1,4 @@
-#include "kmer-counter.h"
+#include "kmer-counter.hpp"
 #include <cstdio>
 #include <iostream>
 #include <boost/asio/io_service.hpp>

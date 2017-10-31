@@ -4,7 +4,7 @@
  * Presents the implementation of the FastaParser class.
  */
 
-#include "fasta-parser.h"
+#include "fasta-parser.hpp"
 using namespace std;
 
 FastaParser::FastaParser(istream* in) : fasta_stream(in), endit(nullptr) {}

@@ -10,20 +10,12 @@
 #define _kmer_counter_
 
 #include <string>
-#include <cstdio>
 #include <map>
 
 class KmerCounter {
 
 public:
 
-  /**
-   * Constructor
-   * -----------
-   * Creates a KmerCounter object. Calls to count after using this consructor without first
-   * setting symbols and  k-mer length results in undefined behavior.
-   */
-  KmerCounter() = default;
 
   /**
    * Constructor
@@ -32,6 +24,7 @@ public:
    * @param symbols: The symbols which are recognized. Order determined lexicographic ordering
    * @param kmerLength: The length of the window/word length to count in sequences
    */
+  KmerCounter() = default;
   KmerCounter(const std::string& symbols, unsigned int kmerLength);
 
   /**
@@ -44,7 +37,7 @@ public:
   void count(const std::string& sequence, long kmerCount[]);
 
   /**
-   * Public Method: setSymbols
+   * Public Method: set_symbols
    * -------------------------
    * Sets the symbols that the k-mer counter uses in future calls to count
    * @param symbols: The symbols which are recognized. Order determined lexicographic ordering
@@ -52,16 +45,16 @@ public:
   void set_symbols(const std::string &symbols);
 
   /**
-   * Public Method: setKmerLength
+   * Public Method: set_kmer_length
    * ----------------------------
    * Sets the k-mer length that will be used for future calls to count
-   * @param kmerLength: The length of the window/word length to count in sequences
+   * @param kmer_length: The length of the window/word length to count in sequences
    */
-  void set_kmer_length(unsigned int kmerLength);
+  void set_kmer_length(unsigned int kmer_length);
 
   /**
-   * Public Method: GetVectorSize
-   * ----------------------------
+   * Public Method: get_vector_size
+   * ------------------------------
    * Returns the size of the vector in which k-mer counts will be stored which is equal
    * to the number of unique k-mers of the given symbols and k-mer length
    */
@@ -71,7 +64,10 @@ private:
   std::string symbols;
   unsigned int num_symbols = 0;
   unsigned int kmer_length = 0;
-  unsigned int kmer_count_vector_size = 0; // The number of unique k-mers of the given symbols and k-mer length
+
+  // The number of unique k-mers of the given symbols and k-mer length
+  // kmer_count_vector_size = pow(num_symbols, kmer_length)
+  unsigned int kmer_count_vector_size = 0;
 
   std::map<char, int> symbol_index_map;
 

@@ -9,7 +9,8 @@
  *
  */
 
-#include "distributed-kmer-counter.h"
+#include "distributed-kmer-counter.hpp"
+using namespace std;
 
 int main(int argc, char* argv[]) {
   DistributedKmerCounter counter(&argc, &argv);

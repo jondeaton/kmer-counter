@@ -5,11 +5,11 @@
  * of exact counting of k-mers in a sequence.
  */
 
-#include "kmer-counter.h"
+#include "kmer-counter.hpp"
 using namespace std;
 
 KmerCounter::KmerCounter(const string& symbols, const unsigned int kmerLength) :
-  symbols(symbols), num_symbols((unsigned int) symbols.length()), kmer_length(kmerLength) {
+  symbols(symbols), num_symbols((unsigned int) symbols.size()), kmer_length(kmerLength) {
   kmer_count_vector_size = ipow(kmerLength, num_symbols);
   populate_map();
 }
@@ -61,15 +61,21 @@ int KmerCounter::calculate_index(const char *kmer, const unsigned int *significa
 void KmerCounter::set_symbols(const std::string &symbols) {
   this->symbols = symbols;
   num_symbols = (unsigned int) symbols.length();
+  kmer_count_vector_size = ipow(kmer_length, num_symbols);
   populate_map();
 }
 
-void KmerCounter::set_kmer_length(unsigned int kmerLength) {
-  this->kmer_length = kmerLength;
-  kmer_count_vector_size = ipow(kmerLength, num_symbols);
-  populate_map();
+void KmerCounter::set_kmer_length(unsigned int kmer_length) {
+  this->kmer_length = kmer_length;
+  kmer_count_vector_size = ipow(kmer_length, num_symbols);
 }
 
+/**
+ * Private method: populate_map
+ * ----------------------------
+ * Populates the map that maps symbol to lexicographic index. This method should
+ * only be called after symbols has been initialized.
+ */
 void KmerCounter::populate_map() {
   symbol_index_map.clear();
   for (unsigned int i = 0; i < num_symbols; i++) {
