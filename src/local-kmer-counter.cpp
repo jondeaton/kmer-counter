@@ -6,24 +6,15 @@
 
 #include "local-kmer-counter.hpp"
 
-#include <boost/log/expressions.hpp>
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sources/global_logger_storage.hpp>
-#include <boost/log/support/date_time.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/utility/setup.hpp>
-
-#include <boost/log/sinks.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/console.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/support/date_time.hpp>
-
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
+
+#include <boost/log/expressions.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
+#include <boost/log/support/date_time.hpp>
+#include <boost/log/utility/setup.hpp>
+#include <boost/log/sinks.hpp>
+#include <boost/log/sources/logger.hpp>
 
 #define NUM_THREADS 8
 #define K_DEFAULT 4
@@ -58,11 +49,13 @@ LocalKmerCounter::LocalKmerCounter(int argc, const char* argv[]) : pool(NUM_THRE
 }
 
 void LocalKmerCounter::run() {
+  BOOST_LOG_SEV(log, logging::trivial::info) << "Processing: " << (from_stdin ? "standard input" : input_source) << "...";
   if (from_stdin) counter.count(cin, *out_stream_p, sequential);
   else {
     if (directory_count) counter.count_directory(input_source, *out_stream_p, sequential);
     else counter.count_fasta_file(input_source, *out_stream_p, sequential);
   }
+  BOOST_LOG_SEV(log, logging::trivial::info) << "Processing complete.";
 }
 
 /**
@@ -102,7 +95,10 @@ void LocalKmerCounter::setup_streams() {
  */
 void LocalKmerCounter::init_logging() {
   boost::log::add_common_attributes();
-  boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
+
+  if (debug) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::debug);
+  else if (verbose) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
+  else boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::warning);
 
   // log format: [TimeStamp] [Severity Level] Log message
   auto fmtTimeStamp = boost::log::expressions::

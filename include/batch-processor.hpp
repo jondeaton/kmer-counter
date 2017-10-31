@@ -17,6 +17,10 @@
 #include <memory>
 #include <mutex>
 #include <condition_variable>
+#include <boost/log/trivial.hpp>
+
+namespace logging = boost::log;
+namespace src = boost::log::sources;
 
 class BatchProcessor {
 
@@ -96,6 +100,8 @@ private:
   std::mutex worker_done_mutex;
   std::condition_variable worker_done_cv;
 
+  src::severity_logger<logging::trivial::severity_level> log; // Logger
+
   /**
    * Private method: master_routine
    * -----------------------------
@@ -120,6 +126,7 @@ private:
   bool work_completed();
   bool queue_empty();
   void send_exit_signal(int worker);
+  void init_logger(bool verbose, bool debug);
 };
 
 #endif
