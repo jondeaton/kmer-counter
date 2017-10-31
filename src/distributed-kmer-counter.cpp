@@ -45,15 +45,17 @@ void DistributedKmerCounter::run() {
   processor.wait();
 }
 
+// File scheduling
 void DistributedKmerCounter::schedule_files() {
-  cout << "Scheculing files!!" << endl;
+
   fs::directory_iterator it(input_directory);
   fs::directory_iterator endit;
 
   while (it != endit) {
-    string file_name = it->path().filename().generic_string();
-    if (fs::is_regular_file(*it) && regex_match(file_name, file_regex))
+    string file_name = it->path().generic_string();
+    if (fs::is_regular_file(file_name) && regex_match(file_name, file_regex))
       processor.schedule_key(file_name);
+    ++it;
   }
 }
 
@@ -79,7 +81,7 @@ string DistributedKmerCounter::count_kmers(const string &file) {
  */
 void DistributedKmerCounter::parse_CLI_options(int argc, const char *const *argv) {
 
-  string file_regex;
+  string fre;
 
   po::options_description info("Info");
   info.add_options()
@@ -93,7 +95,7 @@ void DistributedKmerCounter::parse_CLI_options(int argc, const char *const *argv
 
   po::options_description config("Config");
   config.add_options()
-    ("regex,r",   po::value<string>(&file_regex)->default_value(".*"),      "file pattern regular expression")
+    ("regex,r",   po::value<string>(&fre)->default_value(".*"),      "file pattern regular expression")
     ("k,k",       po::value<size_t>(&kmer_length)->default_value(K_DEFAULT), "k-mer size (i.e. \"k\")")
     ("symbols,s", po::value<string>(&symbols)->default_value(DNA_SYMBOLS), "symbols to use for counting")
     ("sum,sum",   po::bool_switch(&sum_files), "sum all k-mer counts per file");
@@ -129,5 +131,6 @@ void DistributedKmerCounter::parse_CLI_options(int argc, const char *const *argv
     exit(1);
   }
 
-  boost::regex fileRegex(file_regex); // convert string to regex
+  boost::regex fileRegex(fre); // convert string to regex
+  file_regex = fileRegex;
 }

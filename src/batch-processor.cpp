@@ -133,10 +133,12 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
     char worker_ready;
 
     while (!work_completed()) {
-
+      BOOST_LOG_SEV(log, logging::trivial::debug) << "Waiting for ready worker...";
       // Find out what a worker wants to do next
       MPI_Probe(MPI_ANY_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
       if (status.MPI_ERROR) continue;
+
+      BOOST_LOG_SEV(log, logging::trivial::debug) << "Found ready worker: " << status.MPI_SOURCE;
 
       MPI_Recv(&worker_ready, sizeof(char), MPI_BYTE, status.MPI_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
       if (!worker_ready || status.MPI_ERROR) continue; // Worker didn't send correct signal
@@ -186,7 +188,7 @@ void BatchProcessor::worker_routine(function<string(const string &)> processKey)
   size_t numProcessed = 0; // Worker keeps track of how many it has processed
 
   MPI_Status status;
-  int ready = BP_WORKER_READY;
+  char ready = BP_WORKER_READY;
 
   size_t messageSize;
   string nextKey; // Stores the next key
@@ -194,27 +196,35 @@ void BatchProcessor::worker_routine(function<string(const string &)> processKey)
   while (true) {
 
     // Tell the head node we are ready to process something
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Sending ready for work signal...";
     MPI_Send(&ready, sizeof(int), MPI_BYTE, BP_HEAD_NODE, BP_WORKER_READY_TAG, MPI_COMM_WORLD);
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Sent ready for work signal...";
 
     // Get information about the next key to come
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Probing for incoming work key...";
     MPI_Probe(BP_HEAD_NODE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 
     if (status.MPI_TAG == BP_WORKER_EXIT_TAG) break;
 
     // Get the next key
     MPI_Get_count(&status, MPI_CHAR, (int *) &messageSize);
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Receiving key of size: " << messageSize;
     auto key_cstr = (char *) malloc(messageSize);
     MPI_Recv(key_cstr, (int) messageSize, MPI_CHAR, BP_HEAD_NODE, BP_WORK_TAG, MPI_COMM_WORLD, &status);
     nextKey = key_cstr;
     free(key_cstr);
 
     if (status.MPI_ERROR) continue;
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Received key: " << nextKey;
 
     // Process the key and send it back
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Processing: " << nextKey << " ...";
     string result = processKey(nextKey); // <-- work gets done here
-    MPI_Send(result.c_str(), (int) result.size(), MPI_CHAR, BP_HEAD_NODE, BP_RESULT_TAG, MPI_COMM_WORLD);
 
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Processing complete. Returning result from: " << nextKey;
+    MPI_Send(result.c_str(), (int) result.size(), MPI_CHAR, BP_HEAD_NODE, BP_RESULT_TAG, MPI_COMM_WORLD);
     numProcessed++;
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Result returned. Keys processed: " << numProcessed;
   }
 
   BOOST_LOG_SEV(log, logging::trivial::info) << "Worker exiting having processed: " << numProcessed << " keys.";
@@ -223,10 +233,8 @@ void BatchProcessor::worker_routine(function<string(const string &)> processKey)
 void BatchProcessor::schedule_key(const string &key) {
   if (world_rank != BP_HEAD_NODE) return;
 
-  BOOST_LOG_SEV(log, logging::trivial::debug) << "Trying to aquire queue lock... " << key;
-
-  lock_guard<mutex> lg(queue_mutex); // Lock the queue
   BOOST_LOG_SEV(log, logging::trivial::debug) << "Scheduling: " << key;
+  lock_guard<mutex> lg(queue_mutex); // Lock the queue
   keys.push(key);
   schedule_cv.notify_one(); // Notify potentially waiting thread of scheduling
 }
@@ -285,7 +293,6 @@ bool BatchProcessor::work_completed() {
     }
     worker_mutex_list[i]->unlock();
   }
-
   return true;
 }
 
@@ -301,7 +308,7 @@ void BatchProcessor::init_logger(bool verbose, bool debug) {
   else if (verbose) boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
   else boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::warning);
 
-  // log format: [TimeStamp] [Severity Level] Log message
+  // log format: [processor rank/world_size] [TimeStamp] [Severity Level] Log message
   auto fmtTimeStamp = boost::log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%H:%M:%S");
   auto fmtSeverity = boost::log::expressions::attr<boost::log::trivial::severity_level>("Severity");
 
