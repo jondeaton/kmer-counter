@@ -61,11 +61,9 @@ BatchProcessor::BatchProcessor(int* argcp, char*** argvp, boost::threadpool::poo
   BOOST_LOG_SEV(log, logging::trivial::debug) << "Batch processor initialized.";
 }
 
-void BatchProcessor::process_keys(function<void()> schedule_keys,
-                                  function<string(const string &)> process_key,
-                                  function<shared_ptr<ostream>()> get_ostream) {
+void BatchProcessor::process_keys(function<void()> schedule_keys, function<void(const string &)> process_key) {
 
-  if (world_rank == BP_HEAD_NODE) master_routine(schedule_keys, get_ostream);
+  if (world_rank == BP_HEAD_NODE) master_routine(schedule_keys);
   else worker_routine(process_key);
 }
 
@@ -89,13 +87,9 @@ void BatchProcessor::wait() {
  * This method will first call the get keys method which was passed, and fill the queue
  * of keys in the batch processor with
  */
-void BatchProcessor::master_routine(function<void()> schedule_keys,
-                                    function<shared_ptr<ostream>()> get_ostream) {
+void BatchProcessor::master_routine(function<void()> schedule_keys) {
 
   BOOST_LOG_SEV(log, logging::trivial::info) << "Starting master routine...";
-
-  output_stream = get_ostream(); // Get the output stream ready to write to
-  BOOST_LOG_SEV(log, logging::trivial::debug) << "Acquired output stream.";
 
   // Mark all workers as unavailable. (no need to lock, no threads yet)
   for (int i = 0; i < world_size; i++) {
@@ -116,20 +110,20 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
   BOOST_LOG_SEV(log, logging::trivial::debug) << "Created key scheduling thread task.";
 
   // I/O thread task
-  pool.schedule([&](){
-    MPI_Status status;
-    while (true) {
-      MPI_Probe(MPI_ANY_SOURCE, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
-      if (status.MPI_ERROR) continue;
-      BOOST_LOG_SEV(log, logging::trivial::debug) << "Received result from worker..";
-      unique_lock<mutex> lock(*worker_mutex_list[status.MPI_SOURCE]);
-      receive_and_process_result(status.MPI_SOURCE);
-      worker_ready_list[status.MPI_SOURCE] = true;
-      lock.unlock();
-    }
-  });
-
-  BOOST_LOG_SEV(log, logging::trivial::debug) << "Created key I/O thread task.";
+//  pool.schedule([&](){
+//    MPI_Status status;
+//    while (true) {
+//      MPI_Probe(MPI_ANY_SOURCE, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
+//      if (status.MPI_ERROR) continue;
+//      BOOST_LOG_SEV(log, logging::trivial::debug) << "Received result from worker..";
+//      unique_lock<mutex> lock(*worker_mutex_list[status.MPI_SOURCE]);
+//      receive_and_process_result(status.MPI_SOURCE);
+//      worker_ready_list[status.MPI_SOURCE] = true;
+//      lock.unlock();
+//    }
+//  });
+//
+//  BOOST_LOG_SEV(log, logging::trivial::debug) << "Created key I/O thread task.";
 
   pool.schedule([&](){
     MPI_Status status;
@@ -187,7 +181,7 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
  * as a parameter the key that will be sent over the network and return the result which will be
  * send back over the network to the master node.
  */
-void BatchProcessor::worker_routine(function<string(const string &)> processKey) {
+void BatchProcessor::worker_routine(function<void(const string &)> processKey) {
   BOOST_LOG_SEV(log, logging::trivial::info) << "Beginning worker routine...";
 
   size_t numProcessed = 0; // Worker keeps track of how many it has processed
@@ -225,13 +219,10 @@ void BatchProcessor::worker_routine(function<string(const string &)> processKey)
 
     // Process the key and send it back
     BOOST_LOG_SEV(log, logging::trivial::debug) << "Processing: " << nextKey << " ...";
-    string result = processKey(nextKey); // <-- work done here
-
+    processKey(nextKey); // <-- work done here
     BOOST_LOG_SEV(log, logging::trivial::debug) << "Completed: " << nextKey;
-    BOOST_LOG_SEV(log, logging::trivial::debug) << "Returning result of size: " << result.size();
-    MPI_Send(result.c_str(), (int) result.size(), MPI_CHAR, BP_HEAD_NODE, BP_RESULT_TAG, MPI_COMM_WORLD);
+
     numProcessed++;
-    BOOST_LOG_SEV(log, logging::trivial::debug) << "Result returned. Keys processed: " << numProcessed;
   }
 
   BOOST_LOG_SEV(log, logging::trivial::info) << "Worker exiting having processed: " << numProcessed << " keys.";

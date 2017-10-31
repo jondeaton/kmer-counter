@@ -9,6 +9,9 @@
 
 #include "batch-processor.hpp"
 #include "async-kmer-counter.hpp"
+#include <memory>
+#include <string>
+#include <iostream>
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
 
@@ -42,9 +45,11 @@ private:
 
   std::string input_directory;
   boost::regex file_regex;
-  std::string output_file;
 
-  std::string count_kmers(const std::string &file);
+  std::string output_file;
+  std::shared_ptr<std::ostream> out_stream_p;
+
+  void count_kmers(const std::string &file);
   void schedule_files();
 
   void parse_CLI_options(int argc, const char *const *argv);

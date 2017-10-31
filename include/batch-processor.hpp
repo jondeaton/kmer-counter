@@ -47,8 +47,7 @@ public:
    * @param process_key: Routine used to process a single key by a worker
    */
   void process_keys(std::function<void()> schedule_keys,
-                    std::function<std::string(const std::string &)> process_key,
-                    std::function<std::shared_ptr<std::ostream>()> get_ostream);
+                    std::function<void(const std::string &)> process_key);
 
   /**
    * Public Method: schedule
@@ -73,6 +72,14 @@ public:
    * @param debug" True for debugging output
    */
   void init_logger(bool verbose, bool debug);
+
+  /**
+   * Public method: getRank
+   * ----------------------
+   * Returns the rank of this processor in the MPI communication world
+   * @return: The rank
+   */
+  int getRank() { return world_rank; }
 
   /**
    * Deconstructor
@@ -118,8 +125,7 @@ private:
    * @param schedule_keys: Routine carried out by the head node to schedule keys
    * @param get_ostream: Routine carried out by the head node to get a stream to write answers into
    */
-  void master_routine(std::function<void()> schedule_keys,
-                      std::function<std::shared_ptr<std::ostream>()> get_ostream);
+  void master_routine(std::function<void()> schedule_keys);
 
   /**
    * Private method: worker_routine
@@ -127,7 +133,7 @@ private:
    * Routine carried out by worker nodes upon call to process_keys
    * @param processKey: The routine that should be used to process a single key
    */
-  void worker_routine(std::function<std::string(const std::string &)> processKey);
+  void worker_routine(std::function<void(const std::string &)> processKey);
 
   // Helpful utility functions
   void receive_and_process_result(int worker);
