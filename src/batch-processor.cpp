@@ -33,7 +33,6 @@ using namespace std;
 #define BP_RESULT_TAG 1337
 #define BP_WORKER_EXIT_TAG 42
 
-
 BatchProcessor::BatchProcessor(int* argcp, char*** argvp, boost::threadpool::pool& pool) :
   output_stream(nullptr), pool(pool), scheduling_complete(false) {
 

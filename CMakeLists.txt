@@ -32,7 +32,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif()
 else()
     # Release mode
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -DBOOST_LOG_DYN_LINK")
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -fpermissive -DBOOST_LOG_DYN_LINK")
     SET(LOC_EXECUTABLE  "count-kmers")
     SET(DIST_EXECUTABLE "count-kmers-dist")
 endif()
@@ -81,7 +81,7 @@ endif()
 ############################
 find_package(MPI REQUIRED)
 if (MPI_FOUND)
-#    set(CMAKE_CXX_COMPILER "mpic++")
+    set(CMAKE_CXX_COMPILER "mpic++")
     include_directories(${MPI_INCLUDE_PATH})
 
     set(MPI_SOURCES
