@@ -33,11 +33,20 @@ DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) :
 }
 
 void DistributedKmerCounter::run() {
-  processor.process_keys([this](){
+  processor.process_keys(
+
+    // Schedule files task
+    [this](){
     schedule_files();
-  }, [this](const string &file) {
+  },
+
+    // Process key task
+    [this](const string &file) {
     return count_kmers(file);
-  }, [this]() {
+  },
+
+    // Get ostream
+    [this]() {
     shared_ptr<ostream> osp(new ofstream(output_file));
     return osp;
   });
