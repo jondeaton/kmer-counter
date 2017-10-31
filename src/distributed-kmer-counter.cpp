@@ -7,10 +7,7 @@
 #include "distributed-kmer-counter.hpp"
 
 #include <boost/filesystem.hpp>
-#include <boost/regex.hpp>
 #include <boost/program_options.hpp>
-#include <functional>
-#include <memory>
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -25,6 +22,10 @@ DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) :
 
   parse_CLI_options(*argcp, *argvp);
 
+  stringstream s;
+  s << output_file << "." << processor.getRank();
+  out_stream_p = make_shared<ofstream>(s.str());
+
   counter.set_kmer_length(kmer_length);
   counter.set_symbols(symbols);
   counter.set_sum_files(sum_files);
@@ -33,23 +34,14 @@ DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) :
 }
 
 void DistributedKmerCounter::run() {
-  processor.process_keys(
+  processor.process_keys
+    (
+      // Schedule files task
+      [this](){ schedule_files(); },
 
-    // Schedule files task
-    [this](){
-    schedule_files();
-  },
-
-    // Process key task
-    [this](const string &file) {
-    return count_kmers(file);
-  },
-
-    // Get ostream
-    [this]() {
-    shared_ptr<ostream> osp(new ofstream(output_file));
-    return osp;
-  });
+      // Process key task
+      [this](const string &file) { return count_kmers(file); }
+    );
 
   processor.wait();
 }
@@ -75,10 +67,8 @@ void DistributedKmerCounter::schedule_files() {
  * @param file: The file to process
  * @return: The result of counting the file
  */
-string DistributedKmerCounter::count_kmers(const string &file) {
-  ostringstream ss;
-  counter.count_fasta_file(file, ss, true, true);
-  return ss.str();
+void DistributedKmerCounter::count_kmers(const string &file) {
+  counter.count_fasta_file(file, *out_stream_p, true, true);
 }
 
 /**
