@@ -125,14 +125,8 @@ void BatchProcessor::master_routine(function<void()> schedule_keys) {
       if (!worker_ready || status.MPI_ERROR) continue; // Error or incorrect signal?
 
       if (queue_empty()) { // no more keys empty
-        if (scheduling_completed()) { // No more work to do: worker may exit
-          for (int i = 0; i < world_size; i++) {
-            if (i == BP_HEAD_NODE) continue;
-            send_exit_signal(i);
-          }
-          break; // f**k this shit im out!
-
-        } else { // Wait until something has been put on the queue
+        if (scheduling_completed()) break;
+        else { // Wait until something has been put on the queue
           BOOST_LOG_SEV(log, logging::trivial::debug) << "Waiting for queue to be filled...";
           unique_lock<mutex> lock(schedule_mutex);
           schedule_cv.wait(lock, [this]() {
@@ -157,10 +151,17 @@ void BatchProcessor::master_routine(function<void()> schedule_keys) {
       keys.pop(); // Remove the key
       queue_mutex.unlock();
     }
+
+    BOOST_LOG_SEV(log, logging::trivial::debug) << "Instructing workers to exit.";
+    for (int i = 0; i < world_size; i++) {
+      if (i == BP_HEAD_NODE) continue;
+      send_exit_signal(i);
+    }
+
     BOOST_LOG_SEV(log, logging::trivial::debug) << "Work delegation thread exiting.";
   });
 
-  BOOST_LOG_SEV(log, logging::trivial::debug) << "Main thread exiting master routine...";
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Main thread exiting master routine.";
 }
 
 /**
@@ -192,7 +193,6 @@ void BatchProcessor::worker_routine(function<void(const string &)> processKey) {
     // Get information about the next key to come
     BOOST_LOG_SEV(log, logging::trivial::debug) << "Probing incoming work key...";
     MPI_Probe(BP_HEAD_NODE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-
     if (status.MPI_TAG == BP_WORKER_EXIT_TAG) break; // time to be done
 
     // Get the next key
