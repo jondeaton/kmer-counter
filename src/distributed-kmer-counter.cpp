@@ -18,12 +18,18 @@ using namespace std;
 
 #define K_DEFAULT 4
 #define DNA_SYMBOLS "ATGC"
+#define NUM_THREADS 8
 
-DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) : processor(argcp, argvp, pool), counter(pool) {
+DistributedKmerCounter::DistributedKmerCounter(int* argcp, char*** argvp) :
+  pool(NUM_THREADS), processor(argcp, argvp, pool), counter(pool) {
+
   parse_CLI_options(*argcp, *argvp);
+
   counter.set_kmer_length(kmer_length);
   counter.set_symbols(symbols);
   counter.set_sum_files(sum_files);
+
+  processor.init_logger(verbose, debug);
 }
 
 void DistributedKmerCounter::run() {
@@ -40,7 +46,7 @@ void DistributedKmerCounter::run() {
 }
 
 void DistributedKmerCounter::schedule_files() {
-
+  cout << "Scheculing files!!" << endl;
   fs::directory_iterator it(input_directory);
   fs::directory_iterator endit;
 

@@ -66,6 +66,15 @@ public:
   void wait();
 
   /**
+   * Public method: init_logger
+   * --------------------------
+   * Initialize the logger for the batch processor
+   * @param verbose: True for verbose output
+   * @param debug" True for debugging output
+   */
+  void init_logger(bool verbose, bool debug);
+
+  /**
    * Deconstructor
    * -------------
    * Calls MPI_Finalize
@@ -126,7 +135,6 @@ private:
   bool work_completed();
   bool queue_empty();
   void send_exit_signal(int worker);
-  void init_logger(bool verbose, bool debug);
 };
 
 #endif

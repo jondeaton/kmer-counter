@@ -57,6 +57,8 @@ BatchProcessor::BatchProcessor(int* argcp, char*** argvp, boost::threadpool::poo
   char tmp_proc_name[MPI_MAX_PROCESSOR_NAME];
   MPI_Get_processor_name(tmp_proc_name, &name_length);
   processor_name.assign(tmp_proc_name); // store processor name for later
+
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Batch processor initialized.";
 }
 
 void BatchProcessor::process_keys(function<void()> schedule_keys,
@@ -69,12 +71,15 @@ void BatchProcessor::process_keys(function<void()> schedule_keys,
 
 void BatchProcessor::wait() {
   if (world_rank != BP_HEAD_NODE) return;
+
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Waiting for batch processing tasks to complete...";
   pool.wait();
   unique_lock<mutex> lock(worker_done_mutex);
   worker_done_cv.wait(lock, [this](){
     return work_completed();
   });
   lock.unlock();
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Tasks completed.";
 }
 
 /**
@@ -90,8 +95,11 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
   BOOST_LOG_SEV(log, logging::trivial::info) << "Starting master routine...";
 
   output_stream = get_ostream(); // Get the output stream ready to write to
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Acquired output stream.";
+
   // Mark all workers as unavailable. (no need to lock, no threads yet)
-  for (int i = 0; i < world_size; i++) worker_ready_list[i] = false;
+  for (int i = 0; i < world_size; i++) worker_ready_list.push_back(false);
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Created worker readiness list.";
 
   // Spin up a thread to schedule all of the keys to be processed
   pool.schedule([&](){
@@ -102,18 +110,23 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
     BOOST_LOG_SEV(log, logging::trivial::info) << "Key scheduling complete...";
   });
 
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Created key scheduling thread task.";
+
   // I/O thread task
   pool.schedule([&](){
     MPI_Status status;
     while (true) {
       MPI_Probe(MPI_ANY_SOURCE, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
       if (status.MPI_ERROR) continue;
+      BOOST_LOG_SEV(log, logging::trivial::debug) << "Recieved result from worker..";
       unique_lock<mutex> lock(*worker_mutex_list[status.MPI_SOURCE]);
       receive_and_process_result(status.MPI_SOURCE);
       worker_ready_list[status.MPI_SOURCE] = true;
       lock.unlock();
     }
   });
+
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Created key I/O thread task.";
 
   pool.schedule([&](){
     MPI_Status status;
@@ -124,7 +137,6 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
       // Find out what a worker wants to do next
       MPI_Probe(MPI_ANY_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
       if (status.MPI_ERROR) continue;
-
 
       MPI_Recv(&worker_ready, sizeof(char), MPI_BYTE, status.MPI_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
       if (!worker_ready || status.MPI_ERROR) continue; // Worker didn't send correct signal
@@ -211,6 +223,8 @@ void BatchProcessor::worker_routine(function<string(const string &)> processKey)
 void BatchProcessor::schedule_key(const string &key) {
   if (world_rank != BP_HEAD_NODE) return;
 
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Trying to aquire queue lock... " << key;
+
   lock_guard<mutex> lg(queue_mutex); // Lock the queue
   BOOST_LOG_SEV(log, logging::trivial::debug) << "Scheduling: " << key;
   keys.push(key);
@@ -264,11 +278,15 @@ bool BatchProcessor::work_completed() {
 
   for (int i = 0; i < world_size; i++) {
     if (i == BP_HEAD_NODE) continue;
-
-
+    worker_mutex_list[i]->lock();
+    if (!worker_ready_list[i]) {
+      worker_mutex_list[i]->unlock();
+      return false;
+    }
+    worker_mutex_list[i]->unlock();
   }
 
-  return false;
+  return true;
 }
 
 /**
