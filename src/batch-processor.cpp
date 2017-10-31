@@ -169,7 +169,7 @@ void BatchProcessor::master_routine(function<void()> schedule_keys,
       // Send the next work to the worker
       queue_mutex.lock();
       string next_key = keys.front();
-      BOOST_LOG_SEV(log, logging::trivial::info) << "Sending: " << next_key << " to wokrer: " << status.MPI_SOURCE;
+      BOOST_LOG_SEV(log, logging::trivial::info) << "Sending: " << next_key << " to worker: " << status.MPI_SOURCE;
       MPI_Send(next_key.c_str(), (int) next_key.size(), MPI_CHAR, status.MPI_SOURCE, BP_WORK_TAG, MPI_COMM_WORLD);
       keys.pop(); // Remove the key
       queue_mutex.unlock();
@@ -240,7 +240,7 @@ void BatchProcessor::worker_routine(function<string(const string &)> processKey)
 void BatchProcessor::schedule_key(const string &key) {
   if (world_rank != BP_HEAD_NODE) return;
 
-  BOOST_LOG_SEV(log, logging::trivial::debug) << "Scheduling: " << key;
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Queueing: " << key;
   lock_guard<mutex> lg(queue_mutex); // Lock the queue
   keys.push(key);
   schedule_cv.notify_one(); // Notify potentially waiting thread of scheduling
