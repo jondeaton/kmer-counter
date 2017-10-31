@@ -109,22 +109,6 @@ void BatchProcessor::master_routine(function<void()> schedule_keys) {
 
   BOOST_LOG_SEV(log, logging::trivial::debug) << "Created key scheduling thread task.";
 
-  // I/O thread task
-//  pool.schedule([&](){
-//    MPI_Status status;
-//    while (true) {
-//      MPI_Probe(MPI_ANY_SOURCE, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
-//      if (status.MPI_ERROR) continue;
-//      BOOST_LOG_SEV(log, logging::trivial::debug) << "Received result from worker..";
-//      unique_lock<mutex> lock(*worker_mutex_list[status.MPI_SOURCE]);
-//      receive_and_process_result(status.MPI_SOURCE);
-//      worker_ready_list[status.MPI_SOURCE] = true;
-//      lock.unlock();
-//    }
-//  });
-//
-//  BOOST_LOG_SEV(log, logging::trivial::debug) << "Created key I/O thread task.";
-
   pool.schedule([&](){
     MPI_Status status;
     char worker_ready;
@@ -140,11 +124,11 @@ void BatchProcessor::master_routine(function<void()> schedule_keys) {
       MPI_Recv(&worker_ready, sizeof(char), MPI_BYTE, status.MPI_SOURCE, BP_WORKER_READY_TAG, MPI_COMM_WORLD, &status);
       if (!worker_ready || status.MPI_ERROR) continue; // Worker didn't send correct signal
 
-
       if (queue_empty()) { // no more keys empty
         if (scheduling_completed()) send_exit_signal(status.MPI_SOURCE); // No more work to do: worker may exit
+
         else { // Wait until something has been put on the queue
-          BOOST_LOG_SEV(log, logging::trivial::info) << "Waiting for queue to be filled...";
+          BOOST_LOG_SEV(log, logging::trivial::debug) << "Waiting for queue to be filled...";
           unique_lock<mutex> lock(schedule_mutex);
           schedule_cv.wait(lock, [this]() {
             return !queue_empty();
@@ -163,14 +147,14 @@ void BatchProcessor::master_routine(function<void()> schedule_keys) {
       // Send the next work to the worker
       queue_mutex.lock();
       string next_key = keys.front();
-      BOOST_LOG_SEV(log, logging::trivial::info) << "Sending: " << next_key << " to worker: " << status.MPI_SOURCE;
-      MPI_Send(next_key.c_str(), (int) next_key.size(), MPI_CHAR, status.MPI_SOURCE, BP_WORK_TAG, MPI_COMM_WORLD);
+      BOOST_LOG_SEV(log, logging::trivial::info) << "Sending: \"" << next_key << "\" to worker: " << status.MPI_SOURCE;
+      MPI_Send(next_key.c_str(), (int) next_key.size() + 1, MPI_CHAR, status.MPI_SOURCE, BP_WORK_TAG, MPI_COMM_WORLD);
       keys.pop(); // Remove the key
       queue_mutex.unlock();
     }
   });
 
-  BOOST_LOG_SEV(log, logging::trivial::info) << "Main thread exiting master routine...";
+  BOOST_LOG_SEV(log, logging::trivial::debug) << "Main thread exiting master routine...";
 }
 
 /**
@@ -209,20 +193,17 @@ void BatchProcessor::worker_routine(function<void(const string &)> processKey) {
     MPI_Get_count(&status, MPI_CHAR, &messageSize);
     BOOST_LOG_SEV(log, logging::trivial::debug) << "Receiving key of size: " << messageSize;
 
-    auto key_cstr = (char *) malloc(messageSize);
-    MPI_Recv(key_cstr, (int) messageSize, MPI_CHAR, BP_HEAD_NODE, BP_WORK_TAG, MPI_COMM_WORLD, &status);
+    auto key_cstr = (char*) malloc((size_t) messageSize);
+    MPI_Recv(key_cstr, messageSize, MPI_CHAR, BP_HEAD_NODE, BP_WORK_TAG, MPI_COMM_WORLD, &status);
     nextKey = key_cstr;
     free(key_cstr);
 
     if (status.MPI_ERROR) continue;
-    BOOST_LOG_SEV(log, logging::trivial::debug) << "Received key: " << nextKey;
 
-    // Process the key and send it back
-    BOOST_LOG_SEV(log, logging::trivial::debug) << "Processing: " << nextKey << " ...";
+    BOOST_LOG_SEV(log, logging::trivial::info) << "Processing: " << nextKey << " ...";
     processKey(nextKey); // <-- work done here
-    BOOST_LOG_SEV(log, logging::trivial::debug) << "Completed: " << nextKey;
-
     numProcessed++;
+    BOOST_LOG_SEV(log, logging::trivial::info) << "Completed: " << nextKey << ". Total: " << numProcessed;
   }
 
   BOOST_LOG_SEV(log, logging::trivial::info) << "Worker exiting having processed: " << numProcessed << " keys.";
@@ -231,36 +212,10 @@ void BatchProcessor::worker_routine(function<void(const string &)> processKey) {
 void BatchProcessor::schedule_key(const string &key) {
   if (world_rank != BP_HEAD_NODE) return;
 
-  BOOST_LOG_SEV(log, logging::trivial::debug) << "Queueing: " << key;
+  BOOST_LOG_SEV(log, logging::trivial::info) << "Queueing: " << key;
   lock_guard<mutex> lg(queue_mutex); // Lock the queue
   keys.push(key);
   schedule_cv.notify_one(); // Notify potentially waiting thread of scheduling
-}
-
-/**
- * Private method: receive_and_process_result
- * ------------------------------------------
- * Receives a single answer from a specified worker node and writes it to the output stream asynchronously
- */
-void BatchProcessor::receive_and_process_result(int worker) {
-  MPI_Status status;
-  size_t message_size;
-  MPI_Get_count(&status, MPI_CHAR, (int*) &message_size);
-
-  auto answer = new char[message_size];
-  MPI_Recv(answer, (int) message_size, MPI_CHAR, worker, BP_RESULT_TAG, MPI_COMM_WORLD, &status);
-  BOOST_LOG_SEV(log, logging::trivial::debug) << "Received result from: " << worker;
-
-  if (status.MPI_ERROR) {
-    delete[] answer;
-    return;
-  }
-
-  // Write answer to output file
-  pool.schedule([this, answer](){
-    *output_stream << oslock << answer << endl << osunlock;
-    delete[] answer;
-  });
 }
 
 bool BatchProcessor::scheduling_completed() {

@@ -101,10 +101,10 @@ private:
 
   // Synchronization primitives
   std::mutex schedule_mutex;
-  std::condition_variable schedule_cv;        // For signaling when there is work to be done
+  std::condition_variable schedule_cv;         // For signaling when there is work to be done
 
-  std::queue<std::string> keys;               // Queue of keys to process
-  std::mutex queue_mutex;                     // Lock on the queue since it is modified in multiple threads
+  std::queue<std::string> keys;                // Queue of keys to process
+  std::mutex queue_mutex;                      // Lock on the queue since it is modified in multiple threads
 
   bool scheduling_complete;                    // Indicates when scheduling has been completed
   std::mutex scheduling_complete_mutex;
@@ -136,7 +136,6 @@ private:
   void worker_routine(std::function<void(const std::string &)> processKey);
 
   // Helpful utility functions
-  void receive_and_process_result(int worker);
   bool scheduling_completed();
   bool work_completed();
   bool queue_empty();
