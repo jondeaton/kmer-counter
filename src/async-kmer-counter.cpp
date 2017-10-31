@@ -6,7 +6,6 @@
 
 #include "async-kmer-counter.hpp"
 #include "ostreamlock.hpp"
-#include "Logger.hpp"
 
 #include <boost/filesystem.hpp>
 using namespace std;
@@ -65,13 +64,9 @@ void AsyncKmerCounter::count_async(istream &in, ostream &out, bool block) {
 }
 
 void AsyncKmerCounter::count_fasta_file(const string &fastaFile, ostream &out, bool sequential, bool block) {
-  BOOST_LOG_TRIVIAL(info) << "Processing: " << fastaFile;
-
   if (!boost::filesystem::exists(fastaFile)) return; // File not found
   ifstream is(fastaFile);
   count(is, out, sequential, block);
-
-  if (block) BOOST_LOG_TRIVIAL(info) << "Completed processing: " << fastaFile;
 }
 
 void AsyncKmerCounter::count_directory(const string &directory, ostream &out, bool sequential, bool block) {

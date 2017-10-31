@@ -14,6 +14,10 @@
 #include <memory>
 #include <threadpool.hpp>
 #include <boost/regex.hpp>
+#include <boost/log/trivial.hpp>
+
+namespace logging = boost::log;
+namespace src = boost::log::sources;
 
 class LocalKmerCounter {
 
@@ -42,6 +46,8 @@ private:
   std::string output_file;
 
   std::ostream* out_stream_p;
+
+  src::severity_logger<logging::trivial::severity_level> log; // Logger
 
   void setup_streams();
   void init_logging();

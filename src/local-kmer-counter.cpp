@@ -32,6 +32,11 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
+namespace logging = boost::log;
+namespace src = boost::log::sources;
+namespace sinks = boost::log::sinks;
+namespace keywords = boost::log::keywords;
+
 using namespace std;
 
 LocalKmerCounter::LocalKmerCounter(int argc, const char* argv[]) : pool(NUM_THREADS), counter(pool) {
@@ -43,6 +48,13 @@ LocalKmerCounter::LocalKmerCounter(int argc, const char* argv[]) : pool(NUM_THRE
   counter.set_kmer_length(kmer_length);
   counter.set_symbols(symbols);
   counter.set_sum_files(sum_files);
+
+  BOOST_LOG_SEV(log, logging::trivial::info) << "Source: " << (from_stdin ? "standard input" : input_source);
+  BOOST_LOG_SEV(log, logging::trivial::info) << "Output: " << (to_stdout ? "standard output" : output_file);
+  BOOST_LOG_SEV(log, logging::trivial::info) << "k-mer length: " << kmer_length;
+  BOOST_LOG_SEV(log, logging::trivial::info) << "Symbols: " << symbols;
+  BOOST_LOG_SEV(log, logging::trivial::info) << "File regex: " << file_regex;
+  BOOST_LOG_SEV(log, logging::trivial::info) << "Sequential processing " << (sequential ? "enabled" : "disabled");
 }
 
 void LocalKmerCounter::run() {
@@ -63,7 +75,7 @@ void LocalKmerCounter::setup_streams() {
   if (!from_stdin) {
     // Check to make sure that the file exists
     if (!fs::exists(input_source)) {
-      BOOST_LOG_TRIVIAL(error) << "File not found: " << input_source;
+      BOOST_LOG_SEV(log, logging::trivial::error) << "File not found: " << input_source;
       exit(1);
     }
 
@@ -72,7 +84,7 @@ void LocalKmerCounter::setup_streams() {
     else {
       if (fs::is_regular_file(input_source)) directory_count = false;
       else {
-        BOOST_LOG_TRIVIAL(error) << "Not a regular file: " << input_source;
+        BOOST_LOG_SEV(log, logging::trivial::error) << "Not a regular file: " << input_source;
         exit(1);
       }
     }
@@ -176,11 +188,4 @@ void LocalKmerCounter::parse_CLI_options(int argc, const char* argv[]) {
   // Figure out if we are reading from stdin
   to_stdout = output_file.empty();
   from_stdin = input_source.empty();
-
-  BOOST_LOG_TRIVIAL(info) << "Source: " << (from_stdin ? "standard input" : input_source);
-  BOOST_LOG_TRIVIAL(info) << "Output: " << (to_stdout ? "standard output" : output_file);
-  BOOST_LOG_TRIVIAL(info) << "k-mer length: " << kmer_length;
-  BOOST_LOG_TRIVIAL(info) << "Symbols: " << symbols;
-  BOOST_LOG_TRIVIAL(info) << "File regex: " << file_regex;
-  BOOST_LOG_TRIVIAL(info) << "Sequential processing " << (sequential ? "enabled" : "disabled");
 }

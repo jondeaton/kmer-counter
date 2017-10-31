@@ -93,7 +93,6 @@ if (MPI_FOUND)
             include/fasta-parser.hpp                src/fasta-parser.cpp
             include/fasta-iterator.hpp              src/fasta-iterator.cpp
             include/ostreamlock.hpp                 src/ostreamlock.cc
-            include/Logger.hpp                      src/Logger.cpp
             src/main-distributed.cpp)
 
     add_executable(${DIST_EXECUTABLE} ${MPI_SOURCES})
