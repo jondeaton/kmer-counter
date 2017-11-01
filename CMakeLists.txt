@@ -32,7 +32,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif()
 else()
     # Release mode
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -ltcmalloc -fpermissive -DBOOST_LOG_DYN_LINK")
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -ltcmalloc_minimal -fpermissive -DBOOST_LOG_DYN_LINK")
     SET(LOC_EXECUTABLE  "count-kmers")
     SET(DIST_EXECUTABLE "count-kmers-dist")
 endif()
