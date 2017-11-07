@@ -21,7 +21,7 @@ endif()
 
 # cmake -DCMAKE_BUILD_TYPE=Debug ..
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -Wall -Wextra -pedantic -DBOOST_LOG_DYN_LINK")
+    SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -Wall -fpermissive -Wextra -pedantic -DBOOST_LOG_DYN_LINK")
     if (APPLE)
         # LLDB needs executables to end with .o I guess...?
         SET(LOC_EXECUTABLE  "count-kmers.o")
@@ -81,9 +81,10 @@ endif()
 ############################
 find_package(MPI REQUIRED)
 if (MPI_FOUND)
-    if (LINUX)
+    if (APPLE)
+    else()
         set(CMAKE_CXX_COMPILER mpic++)
-    endif()
+    endif(APPLE)
     include_directories(${MPI_INCLUDE_PATH})
 
     set(MPI_SOURCES
