@@ -21,6 +21,7 @@ endif()
 
 # cmake -DCMAKE_BUILD_TYPE=Debug ..
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Mode: Debug")
     SET(CMAKE_CXX_FLAGS "-std=c++11 -g -O0 -Wall -fpermissive -Wextra -pedantic -DBOOST_LOG_DYN_LINK")
     if (APPLE)
         # LLDB needs executables to end with .o I guess...?
@@ -31,6 +32,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         SET(DIST_EXECUTABLE "count-kmers-dist")
     endif()
 else()
+    message(STATUS "Mode: Release")
     # Release mode
     SET(CMAKE_CXX_FLAGS "-std=c++11 -Ofast -fpermissive -DBOOST_LOG_DYN_LINK")
     SET(LOC_EXECUTABLE  "count-kmers")
