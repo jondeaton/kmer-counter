@@ -62,7 +62,6 @@ BatchProcessor::BatchProcessor(int* argcp, char*** argvp, boost::threadpool::poo
 }
 
 void BatchProcessor::process_keys(function<void()> schedule_keys, function<void(const string &)> process_key) {
-
   if (world_rank == BP_HEAD_NODE) master_routine(schedule_keys);
   else worker_routine(process_key);
 }
