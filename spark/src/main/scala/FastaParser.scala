@@ -18,12 +18,12 @@ class FastaParser {
     lazy val sequence: Parser[String] = rep1(seqLine) ^^ { _.mkString }
 
     lazy val entry: Parser[Entry] = header ~ sequence ^^ {
-      case h ~ s => Entry(h,s)
+      case h ~ s => Entry(h, s)
     }
 
     lazy val entries: Parser[List[Entry]] = rep1(entry)
 
-    def parse(input: String): List[Entry]  = {
+    def parse(input: String): List[Entry] = {
       parseAll(entries, input) match {
         case Success(es , _) => es
         case x: NoSuccess =>  throw new Exception(x.toString)
