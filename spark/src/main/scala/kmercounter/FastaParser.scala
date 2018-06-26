@@ -1,13 +1,13 @@
-package KmerCounter
+package kmercounter
 
 import scala.util.parsing.combinator._
 
-case class FastaRecord(description: String, sequence: String)
+case class FastaRecord(id: String, sequence: String)
 
 class FastaParser {
 
-  def fromFile(fn: String): List[FastaRecord] = {
-    val lines = io.Source.fromFile(fn).getLines.mkString("\n")
+  def fromFile(file_name: String): List[FastaRecord] = {
+    val lines = io.Source.fromFile(file_name).getLines.mkString("\n")
     fromString(lines)
   }
 
@@ -20,7 +20,7 @@ class FastaParser {
     lazy val sequence: Parser[String] = rep1(seqLine) ^^ { _.mkString }
 
     lazy val entry: Parser[FastaRecord] = header ~ sequence ^^ {
-      case h ~ s => FastaRecord(h, s)
+      case h ~ s => FastaRecord(h, s.toUpperCase)
     }
 
     lazy val entries: Parser[List[FastaRecord]] = rep1(entry)
