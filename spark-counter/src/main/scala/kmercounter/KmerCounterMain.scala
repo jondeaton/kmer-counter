@@ -39,10 +39,17 @@ object KmerCounterMain {
     // parser.parse returns Option[C]
     parser.parse(args, Config()) match {
       case Some(config) =>
-        val kmer_counter = new KmerCounter
+
         if (config.verbose)
           println(s"Counting file: ${config.in}")
-        kmer_counter.countFile(config.in, config.out, config.k)
+
+        if (config.spark) {
+          val kmer_counter = new SparkKmerCounter
+          kmer_counter.countFile(config.in, config.out, config.k)
+        } else {
+          val kmer_counter = new KmerCounter
+          kmer_counter.countFile(config.in, config.out, config.k)
+        }
 
       case None =>
         // arguments are bad, error message will have been displayed
