@@ -1,13 +1,18 @@
 package kmercounter
 
 import scala.util.parsing.combinator._
+import scala.io
+import java.io.File
 
 case class FastaRecord(id: String, sequence: String)
 
 class FastaParser {
 
-  def fromFile(file_name: String): List[FastaRecord] = {
-    val lines = io.Source.fromFile(file_name).getLines.mkString("\n")
+  def fromFileName(file_name: String): List[FastaRecord] =
+    fromFile(new File(file_name))
+
+  def fromFile(file: File): List[FastaRecord] = {
+    val lines = io.Source.fromFile(file).getLines.mkString("\n")
     fromString(lines)
   }
 
