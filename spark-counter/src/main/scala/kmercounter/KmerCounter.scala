@@ -4,9 +4,13 @@ import scala.math._
 import java.io.PrintWriter
 import java.io.File
 
-case class CountRecord(id: String, counts: Array[Int])
 
-class KmerCounter {
+case class CountRecord(id: String, counts: Array[Int]) {
+  override def toString: String =
+    s">${this.id},${this.counts.mkString(",")}\n"
+}
+
+object KmerCounter {
 
   private val charMap = Map('A' -> 0, 'T' -> 1, 'G' -> 2, 'C' -> 3)
   private val sigs = for (i <- List.range(0, 4)) yield pow(4, i).toInt
@@ -18,8 +22,7 @@ class KmerCounter {
 
   private def _countFile(in: File, out: File, k: Int): Unit = {
     if (in.exists && in.isFile) {
-      val p = new FastaParser()
-      val fasta = p.fromFile(in)
+      val fasta = FastaParser.fromFile(in)
       val count_records = fasta.par.map {
         e => CountRecord(e.id, count(e.sequence.toUpperCase, k))
       }.toList
@@ -61,16 +64,12 @@ class KmerCounter {
 
   /**
     * Write k-mer counts out to file
-    * @param m List of k-mer counts
+    * @param countRecords List of k-mer counts
     * @param file_name Name of the file to write the k-mer counts to
     */
-  private def writeCounts(m: List[CountRecord], file_name: String): Unit = {
+  private def writeCounts(countRecords: List[CountRecord], file_name: String): Unit = {
     val pw = new PrintWriter(file_name)
-    m.foreach { writeCount(_, pw) }
+    countRecords.foreach(record => pw.write(record.toString))
     pw.close()
-  }
-
-  private def writeCount(m: CountRecord, pw: PrintWriter): Unit = {
-    pw.write(s">${m.id},${m.counts.mkString(",")}\n")
   }
 }

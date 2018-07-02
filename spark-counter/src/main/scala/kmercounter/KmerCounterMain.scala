@@ -52,11 +52,9 @@ object KmerCounterMain {
         }
 
         if (config.spark) {
-          val kmer_counter = new SparkKmerCounter
-          kmer_counter.countFile(config.in, config.out, config.k)
+          SparkKmerCounter.countFile(config.in, config.out, config.k)
         } else {
-          val kmer_counter = new KmerCounter
-          kmer_counter.countFile(config.in, config.out, config.k)
+          KmerCounter.countFile(config.in, config.out, config.k)
         }
 
       case None =>

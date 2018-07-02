@@ -6,7 +6,7 @@ import java.io.File
 
 case class FastaRecord(id: String, sequence: String)
 
-class FastaParser {
+object FastaParser {
 
   def fromFileName(file_name: String): List[FastaRecord] =
     fromFile(new File(file_name))
