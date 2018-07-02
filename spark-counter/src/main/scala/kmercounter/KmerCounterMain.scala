@@ -40,8 +40,16 @@ object KmerCounterMain {
     parser.parse(args, Config()) match {
       case Some(config) =>
 
-        if (config.verbose)
+        if (config.verbose) {
           println(s"Counting file: ${config.in}")
+          println(s"Writing counts to: ${config.out}")
+          println(s"k-mer length: ${config.k}")
+        }
+
+        if (!config.in.exists) {
+          println(s"No such file: ${config.in}")
+          return
+        }
 
         if (config.spark) {
           val kmer_counter = new SparkKmerCounter

@@ -31,8 +31,8 @@ class KmerCounter {
     if (in.exists && in.isDirectory)
       in.listFiles().filter(_.isFile).foreach(f => _countFile(f, out, k))
 
-  /** Counts occurrences of all sub-sequences of length `k` in `sequence`
-    *
+  /**
+    * Counts occurrences of all sub-sequences of length `k` in `sequence`
     * @param sequence Sequence to count k-mers in
     * @param k The length of each k-mer
     * @return Array containing the counts of each k-mer in `sequence`
@@ -46,22 +46,24 @@ class KmerCounter {
     arr
   }
 
-  /** Calculate the lexicographic index of the k-mer
-    *
+  /**
+    * Calculate the lexicographic index of the k-mer
     * @param kmer The k-mer to get the index of
     * @param k The length of the k-mer
     * @return The lexicographic index of the k-mer
     */
   private def kmerIndex (kmer: String, k: Int): Int = {
-    try {
-      kmer.map(charMap).reverse
+    kmer.map(c => if (charMap.contains(c)) charMap(c) else return -1)
+        .reverse
         .zip(sigs)
         .foldLeft(0) { (acc, t) => acc + t._1 * t._2 }
-    } catch {
-      case nse: java.util.NoSuchElementException => -1
-    }
   }
 
+  /**
+    * Write k-mer counts out to file
+    * @param m List of k-mer counts
+    * @param file_name Name of the file to write the k-mer counts to
+    */
   private def writeCounts(m: List[CountRecord], file_name: String): Unit = {
     val pw = new PrintWriter(file_name)
     m.foreach { writeCount(_, pw) }
