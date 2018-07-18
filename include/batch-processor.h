@@ -31,6 +31,8 @@ public:
    */
   void SayHello();
 
+  void run();
+
   /**
    * Destructor: BatchProcessor
    * --------------------------
