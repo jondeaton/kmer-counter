@@ -1,13 +1,12 @@
 # kmer-counter
-This repository contains code for exact counting of unique k-mers.
-This repository makes use of multithreading and distributed computing
-to count k-mers efficiently.
+This project showcases the exact couting of k-mers in DNA sequences using distributed batch processing with MPI (Message Passing Interface). This project implementes a simple but generic batch processing framework in MPI, for coordinating multiple nodes to complete a subset of some large data-processing tasks in parallel. This framework is then used to parallelize a k-mer counting application.
+
+There is also a Spark-based implementation for demonstration purposes.
 
 ## Dependencies
 1. C++11
 2. Boost
 3. OpenMPI
-
 
 ## Background
 In biology,  the analysis of DNA sequences is critical in understanding biologic systems. Many DNA analysis algorithms focus on identifying genes (the functional units that DNA encodes), however, some DNA analysis algorithms focus on other features of DNA sequences. One alternate approach is analyzing the "k-mer" content of a DNA sequence. K-mers are short sub-sequences of a DNA sequence of length k. Many DNA analysis algorithms make conclusions about biologic systems based on the abundances of each k-mer in the DNA sequence. Other k-mer based metrics include the number of unique k-mers in a DNA sequence and the shape of the distribution of k-mer frequencies. In my undergraduate research, I used the frequencies of k-mers in DNA sequences to
